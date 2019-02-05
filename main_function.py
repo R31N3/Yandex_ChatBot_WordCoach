@@ -100,13 +100,7 @@ def handle_dialog(request, response, user_storage, database):
             "Помощь, но она тут от старого навыка, да."
         ]
 
-        Named = database.get_entry("users_info", ['Named'], {'request_id': request.user_id})[0][0]
-
-        if not Named:
-            output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
-                     + ", ".join(user_storage['suggests'])
-        else:
-            output_message = random.choice(aliceAnswers["continueTextVariations"]).capitalize()+" Доступные разделы: " \
+        output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
                      + ", ".join(user_storage['suggests'])
         handler = "other_next"
         buttons, user_storage = get_suggests(user_storage)
