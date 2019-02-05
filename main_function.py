@@ -96,7 +96,7 @@ def handle_dialog(request, response, user_storage, database):
             database.update_entries('users_info', request.user_id, {'Name': input_message}, update_type='rewrite')
 
         user_storage['suggests'] = [
-            "Дальше я ничего не придумал",
+            "Выведи имя",
             "Помощь, но она тут от старого навыка, да."
         ]
 
@@ -127,136 +127,12 @@ def handle_dialog(request, response, user_storage, database):
                               handler, warning_message, congrats)
 
     if handler.endswith("other_next"):
-        print(input_message in "помощь")
-        if input_message == "источник дохода" or input_message == "доход":
-            handler = "profit_page"
-        elif input_message == "образование и курсы" or input_message == "образование" or input_message == "курсы":
-            handler = "education_page"
-        elif input_message == "основная информация" or input_message == "информация":
-            handler = "start_page"
-
-    # Основная стартовая страница с основными данными игрока(основной раздел data)
-    if handler.startswith("start_page"):
-        # start_page
-        if input_message == "назад" and not handler.endswith("job"):
-            splitted = handler.split("->")
-            if handler.endswith("next"):
-                handler = "->".join(splitted[:-3])
-            else:
-                if len(splitted) > 1:
-                    handler = "->".join(splitted[:-2])
-                else:
-                    handler = "null"
-            handler = "null" if not handler else handler
-
-        if handler.endswith("other") or handler == "null":
-            user_storage['suggests'] = [
-                "Основная информация",
-                "Источник дохода",
-                "Образование и курсы",
-                "Помощь",
-                "Следующий день"
-            ]
-
-            handler = "other->other_next"
-
-            output_message = "Похоже, мы вернулись в начало.\nДоступные опции: {}".format(
-                ", ".join(user_storage['suggests']))
-
+        if input_message == "Выведи имя" or input_message == "Имя":
+            output_message = "Имя пользователя: {}".format(database.get_entry("users_info", ['Name'],
+                                                                              {'request_id': request.user_id})[0][0])
             buttons, user_storage = get_suggests(user_storage)
-            return message_return(response, user_storage, output_message, buttons, database, request, handler, warning_message, congrats)
-
-        if handler == "start_page":
-            money = database.get_entry("users_info", ['Money'], {'request_id': request.user_id})[0][0]
-            exp = database.get_entry("users_info", ['Exp'], {'request_id': request.user_id})[0][0]
-            food = database.get_entry("users_info", ['Food'], {'request_id': request.user_id})[0][0]
-            mood = database.get_entry("users_info", ['Mood'], {'request_id': request.user_id})[0][0]
-            health = database.get_entry("users_info", ['Health'], {'request_id': request.user_id})[0][0]
-            date = database.get_entry("users_info", ['Day'], {'request_id': request.user_id})[0][0]
-
-            user_storage['suggests'] = [
-                "Восполнение сытости",
-                "Восполнение здоровья",
-                "Восполнение настроения",
-                "Назад",
-                "Следующий день"
-            ]
-
-            handler += "->start_next"
-
-            output_message = "Ваши деньги: {} \nВаш накопленный опыт: {} \nВаша сытость: {} \nВаше настроение: {}" \
-                             " \nВаше здоровье: {} \nДней с начала игры прошло: {} \nДоступные опции: {}"\
-                .format(money, exp, food, mood, health, date, ", ".join(user_storage['suggests']))
-
-            buttons, user_storage = get_suggests(user_storage)
-            return message_return(response, user_storage, output_message, buttons, database, request, handler, warning_message, congrats)
-
-        # start_page -> start_next
-        if handler.endswith("start_next"):
-            if input_message == "восполнение сытости" or input_message == "голод" or input_message == "сытость":
-                handler += "->food_recharge"
-            elif input_message == "восполнение здоровья" or input_message == "здоровье":
-                handler += "->health_recharge"
-            elif input_message == "восполнение настроения" or input_message == "настроение":
-                handler += "->mood_recharge"
-
-        if handler.count("food"):
-            # start_page -> start_next -> food_recharge
-            if handler.endswith("food_recharge"):
-                food = database.get_entry("users_info", ['Food'], {'request_id': request.user_id})[0][0]
-                index = database.get_entry("users_info", ['Lvl'], {'request_id': request.user_id})[0][0]
-                food_list = read_answers_data("data/start_page_list")["food"][index]
-                lst = [i + " - цена {}, восполнение {}".format(food_list[i][0], food_list[i][1]) for i in
-                                            food_list.keys()]
-                user_storage['suggests'] = [i for i in
-                                            food_list.keys()]+["Назад", "Следующий день"]
-                handler += "->next"
-
-                output_message = "Ваш голод: {} \nСписок продуктов:\n {}"\
-                    .format(food, ",\n".join(lst)
-                            + "\n Доступные опции: Назад")
-
-                buttons, user_storage = get_suggests(user_storage)
-                return message_return(response, user_storage, output_message, buttons, database, request, handler, warning_message, congrats)
-
-            # start_page -> start_next -> food_recharge -> food_next
-            if handler.endswith("next"):
-                food = database.get_entry("users_info", ['Food'], {'request_id': request.user_id})[0][0]
-                if food != 100:
-                    index = database.get_entry("users_info", ['Lvl'], {'request_id': request.user_id})[0][0]
-                    money = database.get_entry("users_info", ['Money'], {'request_id': request.user_id})[0][0]
-                    product = ""
-                    product_price = 0
-                    product_weight = 0
-                    food_list = read_answers_data("data/start_page_list")["food"][index]
-                    for i in food_list.keys():
-                        if i.lower().startswith(input_message):
-                            product = i
-                            product_price = food_list[i][0]
-                            product_weight = food_list[i][1]
-
-                    if product:
-                        if money - int(int(product_price)) >= 0:
-                            food = food + int(product_weight) if (food + int(product_weight)) % 100 and (food + int(product_weight))\
-                                                            < 100  else 100
-                            database.update_entries('users_info', request.user_id, {'Food': food},
-                                                    update_type='rewrite')
-                            database.update_entries('users_info', request.user_id, {'Money': money - int(int(product_price))},
-                                                    update_type='rewrite')
-                            output_message = "Продукт {} успешно преобретен.\nВаша сытость: {} \n Ваши финансы: {} \n Список продуктов: \n{}"\
-                                .format(product, food, money - int(product_price), ",\n".join(user_storage['suggests'][:-1]) + "\n Доступные команды: Назад, Следующий день")
-                        else:
-                            output_message = "Продукт {} нельзя преобрести, не хватает денег: {} \nВаша сытость: {} \n Ваши финансы: {} \n Список продуктов: \n{} "\
-                                .format(product, int(product_price) - money, food, money, ",\n".join(user_storage['suggests'][:-1]) + "\n Доступные команды: Назад, Следующий день")
-                    else:
-                        output_message = "Продукт {} не найден, повторите запрос \n Ваша сытость: {} \n Ваши финансы: {}".format(input_message, food, money)
-                else:
-                    output_message = "Вы не голодны. \n  Список продуктов: \n {} \nДоступные команды: Назад, Следующий день".format(
-                        ",\n".join(user_storage['suggests'][:-1])
-                    )
-
-                buttons, user_storage = get_suggests(user_storage)
-                return message_return(response, user_storage, output_message, buttons, database, request, handler, warning_message, congrats)
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  handler, warning_message, congrats)
 
     update_handler(handler, database, request)
 
