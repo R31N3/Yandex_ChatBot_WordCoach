@@ -40,7 +40,8 @@ def init_database(host, user, password, dbname):
     psdb = postgresql_database.DatabaseManager(host, user, password, dbname)
     psdb.create_table("users_info",
                       {'user_id': "serial primary", "request_id": "str NOT NULL UNIQUE",
-                       "handler": "str DEFAULT 'null'", "Name": "str DEFAULT 'null'", "Named": "bool DEFAULT False"})
+                       "handler": "str DEFAULT 'null'", "Name": "str DEFAULT 'null'", "Named": "bool DEFAULT False",
+                       "words" : "str DEFAULT ''", "translates" : "str DEFAULT ''"})
     return psdb
 
 

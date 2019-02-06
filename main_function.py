@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 import random
 import json
-
-Named = False
-
+from ans import *
 
 def find_difference(lst1, lst2):  # i = item
     return [i for i in lst1 if i not in lst2]
@@ -49,11 +47,9 @@ def IDontUnderstand(response, user_storage, buttons = ""):
     return response, user_storage
 
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
-def message_return(response, user_storage, message, button, database, request, handler, warning, congrats, flag=False):
+def message_return(response, user_storage, message, button, database, request, handler, flag=False):
     # ща будет магия
     update_handler(handler, database, request)
-    if warning:
-        message = warning+ message
     text_message = message.split("Доступные")[0]
     if flag:
         response.set_text(aliceSpeakMap(text_message))
@@ -67,13 +63,9 @@ def message_return(response, user_storage, message, button, database, request, h
 
 
 def handle_dialog(request, response, user_storage, database):
-    # request.command - сообщение от пользователя
-    warning_message = ""
-    congrats = ""
-    user_storage = user_storage
     if not user_storage:
         user_storage = {"suggests" : []}
-    input_message = request.command.lower().strip("?!.")
+    input_message = request.command.lower()
 
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'], {'request_id': request.user_id})[0][0]:
@@ -86,11 +78,11 @@ def handle_dialog(request, response, user_storage, database):
             response.set_text(aliceSpeakMap(output_message))
             response.set_tts(aliceSpeakMap(output_message))
             database.add_entries("users_info", {"request_id": request.user_id})
-            handler = "asking name"
+            handler = "-2"
             update_handler(handler, database, request)
             return response, user_storage
         handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
-        if handler == "asking name":
+        if handler == "-2":
             database.update_entries('users_info', request.user_id, {'Named': True}, update_type='rewrite')
             user_storage["name"] = request.command
             database.update_entries('users_info', request.user_id, {'Name': input_message}, update_type='rewrite')
@@ -102,11 +94,28 @@ def handle_dialog(request, response, user_storage, database):
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
                      + ", ".join(user_storage['suggests'])
-        handler = "other_next"
+        handler = "-1"
         buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request, handler, warning_message, congrats, True)
+        return message_return(response, user_storage, output_message, buttons, database, request, handler, True)
 
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
+    answer = classify(input_message, handler)
+    handle = answer['class']
+    warning = answer['warning']
+    answer = answer['answer']
+    if handle == "add":
+        words = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0] \
+                + answer[0] + "#$"
+        translates = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]\
+                + answer[1] + "#$"
+        database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
+        database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
+        output_message = "Слово {} добавлено с переводом {}. \n {}".format(answer[0], answer[1],
+                                database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0],
+                                database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0])
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              handler)
 
     if "помощь" in input_message or input_message in "а что ты умеешь":
         output_message = "В данной игре ты пройдешь путь карьерного роста от безработного до" \
@@ -118,15 +127,15 @@ def handle_dialog(request, response, user_storage, database):
         )
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
-                              handler, warning_message, congrats)
+                              handler)
 
-    if handler.endswith("other_next"):
+    if handler.endswith("-1"):
         if input_message == "Выведи имя" or input_message == "Имя":
             output_message = "Имя пользователя: {}".format(database.get_entry("users_info", ['Name'],
                                                                               {'request_id': request.user_id})[0][0])
             buttons, user_storage = get_suggests(user_storage)
             return message_return(response, user_storage, output_message, buttons, database, request,
-                                  handler, warning_message, congrats)
+                                  handler)
 
     update_handler(handler, database, request)
 
