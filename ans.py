@@ -23,7 +23,7 @@ def classify(text, mode):
     if words[0].startswith('delete') or words[0].startswith('del') or words[0].startswith('удали'):
         del_word = True
         words = words[1:]
-    if add_word or mode == 0:
+    if add_word:
         if mode != 0:
             warning = True
         else:
@@ -65,3 +65,5 @@ print(classify('Алиса, давай музло', 'game'))
 print(classify('Алиса, давай музло', 0))
 print(classify('Алиса, добавь музло', 'game'))
 print(classify('Алиса, добавь музло дважды трижды', 'game'))
+print(classify('-a', 3))
+print(classify('-a', 0))
