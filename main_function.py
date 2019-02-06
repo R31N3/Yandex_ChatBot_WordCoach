@@ -22,12 +22,6 @@ def read_answers_data(name):
 
 aliceAnswers = read_answers_data("data/answers_dict_example")
 
-
-def map_answer(myAns, withAccent=False):
-    if withAccent:
-        return myAns.replace(".", "").replace(";", "").strip()
-    return myAns.replace(".", "").replace(";", "").replace("+", "").strip()
-
 def update_handler(handler, database, request):
     database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
 
