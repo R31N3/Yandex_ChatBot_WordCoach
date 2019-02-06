@@ -23,12 +23,6 @@ def read_answers_data(name):
 aliceAnswers = read_answers_data("data/answers_dict_example")
 
 
-def aliceSpeakMap(myAns, withAccent=False):
-    if withAccent:
-        return myAns.strip()
-    return myAns.replace("+", "").strip()
-
-
 def map_answer(myAns, withAccent=False):
     if withAccent:
         return myAns.replace(".", "").replace(";", "").strip()
@@ -36,12 +30,12 @@ def map_answer(myAns, withAccent=False):
 
 def update_handler(handler, database, request):
     database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
-    
+
 
 def IDontUnderstand(response, user_storage, buttons = ""):
     message = random.choice(aliceAnswers["cantTranslate"])
-    response.set_text(aliceSpeakMap(message))
-    response.set_tts(aliceSpeakMap(message, True))
+    response.set_text(message)
+    response.set_tts(message)
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(buttons)
     return response, user_storage
@@ -50,13 +44,8 @@ def IDontUnderstand(response, user_storage, buttons = ""):
 def message_return(response, user_storage, message, button, database, request, handler, flag=False):
     # ща будет магия
     update_handler(handler, database, request)
-    text_message = message.split("Доступные")[0]
-    if flag:
-        response.set_text(aliceSpeakMap(text_message))
-        response.set_tts(aliceSpeakMap(message, True))
-    else:
-        response.set_text(text_message)
-        response.set_tts(message)
+    response.set_text(message)
+    response.set_tts(message)
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -75,8 +64,8 @@ def handle_dialog(request, response, user_storage, database):
             output_message = "Тебя приветствует #Навзание#, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
                              " собственными формулировками и ассоциациями для простого запоминания!"
-            response.set_text(aliceSpeakMap(output_message))
-            response.set_tts(aliceSpeakMap(output_message))
+            response.set_text(output_message)
+            response.set_tts(output_message)
             database.add_entries("users_info", {"request_id": request.user_id})
             handler = "-2"
             update_handler(handler, database, request)
@@ -141,8 +130,8 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
         choice = random.choice(aliceAnswers["quitTextVariations"])
-        response.set_text(aliceSpeakMap(choice))
-        response.set_tts(aliceSpeakMap(choice,True))
+        response.set_text(choice)
+        response.set_tts(choice,True)
         response.end_session = True
         return response, user_storage
 
