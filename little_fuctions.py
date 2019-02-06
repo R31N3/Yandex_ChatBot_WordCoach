@@ -36,3 +36,13 @@ def error_protection(executable_function):
         else:
             return result
     return decorate
+
+def add_word(word, translate, id, database):
+    pass
+def del_word(word, id, database):
+    pass
+def change_mod(mode, id, database):
+    pass
+def get_dictionary(id, database):
+    pass
+    #return {'learned': [[word, translate], [word, translate]], 'unlearned': [[word, translate], [word, translate]]}
