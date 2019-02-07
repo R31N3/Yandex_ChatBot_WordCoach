@@ -91,6 +91,7 @@ def handle_dialog(request, response, user_storage, database):
         for x in dictionary['to_learn'].values():
             s += ' '.join(x)
         output_message = s
+        output_message = 'heystack'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
