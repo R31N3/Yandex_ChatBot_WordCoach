@@ -141,5 +141,22 @@ def get_stat(id, database, modes_count):
     yield ('to_learn', len(dictionary['to_learn'].keys()))
     pass
 
-def update_dictionary(id, words_to_add):
-    pass
+def update_dictionary(id, words_to_add, database):
+
+    eng_words = []
+    rus_words = []
+    to_learn = words_to_add["to_learn"]
+    for i in to_learn.keys():
+        eng_words.append(i)
+        rus_words.append("$%".join(to_learn[i]))
+    database.update_entries('users_info', id, {'eng_words': eng_words,
+                                               'rus_words': rus_words}, update_type='rewrite')
+
+    learned_eng_words = []
+    learned_rus_words = []
+    learned = words_to_add["learned"]
+    for i in learned.keys():
+        learned_eng_words.append(i)
+        learned_rus_words.append("$%".join(learned[i]))
+    database.update_entries('users_info', id, {'learned_eng_words': learned_eng_words,
+                                               'learned_rus_words': learned_rus_words}, update_type='rewrite')
