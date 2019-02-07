@@ -91,7 +91,6 @@ def handle_dialog(request, response, user_storage, database):
         for x in dictionary['to_learn'].values():
             s += ' '.join(x)
         output_message = s
-        output_message = 'heystack'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
@@ -109,11 +108,25 @@ def handle_dialog(request, response, user_storage, database):
         #         + answer[1] + "#$"
         # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
         # database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
-        if succes != 'already exists':
-            output_message = "Слово {} добавлено с переводом {}.".format(answer[0], answer[1])
-            update_dictionary(request.user_id, succes, database)
+        if succes == 'already exists':
+            output_message = 'В Вашем словаре уже есть такой перевод'
+        elif not succes:
+            output_message = 'Пара должна состоять из русского и английского слова'
         else:
-            output_message = 'Такой перевод уже существует в вашем словаре'
+            output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
+            update_dictionary(request.user_id, succes, database)
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              handler)
+    elif handle == 'del':
+        succes = del_word(answer.strip(), request.user_id, database)
+        if succes == 'no such word':
+            output_message = 'В Вашем словаре нет такого слова'
+        elif not succes:
+            output_message = 'Слово должно быть русским или английским'
+        else:
+            output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
+            update_dictionary(request.user_id, succes, database)
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
