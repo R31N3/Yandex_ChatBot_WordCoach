@@ -149,8 +149,8 @@ def update_dictionary(id, words_to_add, database):
     for i in to_learn.keys():
         eng_words.append(i)
         rus_words.append("$%".join(to_learn[i]))
-    database.update_entries('users_info', id, {'eng_words': eng_words,
-                                               'rus_words': rus_words}, update_type='rewrite')
+    database.update_entries('users_info', id, {'eng_words': "#$".join(eng_words),
+                                               'rus_words': "#$".join(rus_words)}, update_type='rewrite')
 
     learned_eng_words = []
     learned_rus_words = []
@@ -158,5 +158,5 @@ def update_dictionary(id, words_to_add, database):
     for i in learned.keys():
         learned_eng_words.append(i)
         learned_rus_words.append("$%".join(learned[i]))
-    database.update_entries('users_info', id, {'learned_eng_words': learned_eng_words,
-                                               'learned_rus_words': learned_rus_words}, update_type='rewrite')
+    database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
+                                               'learned_rus_words': "#$".join(learned_rus_words)}, update_type='rewrite')
