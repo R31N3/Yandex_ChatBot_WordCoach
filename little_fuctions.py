@@ -106,7 +106,6 @@ def change_mode(mode, id, database):
 
 
 def get_dictionary(id, database):
-    return {'to_learn': dict(), 'learned': dict()}
     eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
     words_to_learn = {}
     rus_words = database.get_entry("users_info", ['rus_words'], {'request_id': id})[0][0].split("#$")
