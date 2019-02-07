@@ -108,7 +108,7 @@ def handle_dialog(request, response, user_storage, database):
         #         + answer[1] + "#$"
         # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
         # database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
-        if succes != 'already exists' : output_message = "Слово {} добавлено с переводом {}.".format(answer[0], answer[1])
+        if succes != 'already exists':output_message = "Слово {} добавлено с переводом {}.".format(answer[0], answer[1])
         else:
             output_message = 'Такой перевод уже существует в вашем словаре'
         buttons, user_storage = get_suggests(user_storage)
