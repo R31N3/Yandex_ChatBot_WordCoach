@@ -122,8 +122,8 @@ def get_dictionary(id, database):
         learned_words[learned_eng_words[i]] = learned_rus_words[i].split("$%")
 
     dct = {
-        "words_to_learn": words_to_learn,
-        "learned_words": learned_words
+        "to_learn": words_to_learn,
+        "learned": learned_words
     }
 
     return dct
