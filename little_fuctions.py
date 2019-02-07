@@ -106,7 +106,7 @@ def change_mode(mode, id, database):
 
 
 def get_dictionary(id, database):
-
+    return {'to_learn': dict(), 'learned': dict()}
     eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
     words_to_learn = {}
     rus_words = database.get_entry("users_info", ['rus_words'], {'request_id': id})[0][0].split("#$")
@@ -157,3 +157,6 @@ def update_dictionary(id, words_to_add, database):
         learned_rus_words.append("$%".join(learned[i]))
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)}, update_type='rewrite')
+
+print(add_word('hello', 'привет', 1, 1))
+print(add_word('hello', 'Приветс', 1, 1))

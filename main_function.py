@@ -85,7 +85,7 @@ def handle_dialog(request, response, user_storage, database):
 
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
 
-    if input_message == 'Look':
+    if input_message == 'look':
         dictionary = get_dictionary(request.user_id, database)
         s = ''
         for x in dictionary['to_learn'].values():
@@ -108,7 +108,9 @@ def handle_dialog(request, response, user_storage, database):
         #         + answer[1] + "#$"
         # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
         # database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
-        if succes != 'already exists':output_message = "Слово {} добавлено с переводом {}.".format(answer[0], answer[1])
+        if succes != 'already exists':
+            output_message = "Слово {} добавлено с переводом {}.".format(answer[0], answer[1])
+            update_dictionary(request.user_id, succes, database)
         else:
             output_message = 'Такой перевод уже существует в вашем словаре'
         buttons, user_storage = get_suggests(user_storage)
