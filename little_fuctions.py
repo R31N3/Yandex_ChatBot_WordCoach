@@ -71,7 +71,6 @@ def add_word(word, translate, id, database):
     else:
         dictionary['to_learn'][word] = [translate]
     return dictionary
-    pass
 
 
 def del_word(word, id, database):
@@ -100,7 +99,6 @@ def del_word(word, id, database):
             return 'no such word'
     else:
         return False #word is neither eng nor rus
-    pass
 
 
 def change_mode(mode, id, database):
@@ -139,7 +137,6 @@ def get_stat(id, database, modes_count):
     dictionary = get_dictionary(id, database)
     yield ('learned', len(dictionary['learned'].keys()))
     yield ('to_learn', len(dictionary['to_learn'].keys()))
-    pass
 
 def update_dictionary(id, words_to_add, database):
 
