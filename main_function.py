@@ -84,6 +84,17 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request, handler, True)
 
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
+
+    if input_message == 'Look':
+        dictionary = get_dictionary(request.user_id, database)
+        s = ''
+        for x in dictionary['to_learn'].values():
+            s += ' '.join(x)
+        output_message = s
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              handler)
+
     answer = classify(input_message, handler)
     handle = answer['class']
     warning = answer['warning']
