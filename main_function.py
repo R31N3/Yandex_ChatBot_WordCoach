@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import random
 import json
 from ans import *
+from little_fuctions import *
 
 def find_difference(lst1, lst2):  # i = item
     return [i for i in lst1 if i not in lst2]
@@ -55,9 +56,10 @@ def handle_dialog(request, response, user_storage, database):
         if request.is_new_session and (database.get_entry("users_info", ['Name'],
                                                           {'request_id': request.user_id}) == 'null'
                                        or not database.get_entry("users_info", ['Name'], {'request_id': request.user_id})):
-            output_message = "Тебя приветствует #Навзание#, благодаря мне ты сможешь потренироваться в знании" \
+            output_message = "Тебя приветствует Word Master, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
-                             " собственными формулировками и ассоциациями для простого запоминания!"
+                             " собственными формулировками и ассоциациями для простого запоминания!\n \"" \
+                             "Введите ваше имя"
             response.set_text(output_message)
             response.set_tts(output_message)
             database.add_entries("users_info", {"request_id": request.user_id})
@@ -72,7 +74,7 @@ def handle_dialog(request, response, user_storage, database):
 
         user_storage['suggests'] = [
             "Выведи имя",
-            "Помощь, но она тут от старого навыка, да."
+            "Помощь"
         ]
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
@@ -88,15 +90,18 @@ def handle_dialog(request, response, user_storage, database):
     answer = answer['answer']
 
     if handle == "add":
-        words = database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0] \
-                + answer[0] + "#$"
-        translates = database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0]\
-                + answer[1] + "#$"
-        database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
-        database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
-        output_message = "Слово {} добавлено с переводом {}. \n {} \n {}".format(answer[0], answer[1],
+        # words = database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0] \
+        #         + answer[0] + "#$"
+        succes = add_word(answer[0], answer[1], request.user_id, database)
+        # translates = database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0]\
+        #         + answer[1] + "#$"
+        # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
+        # database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
+        if succes != 'already exists': output_message = "Слово {} добавлено с переводом {}. \n {} \n {}".format(answer[0], answer[1],
                                 database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0],
                                 database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0])
+        else:
+            output_message = 'Такой перевод уже существует в вашем словаре'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
