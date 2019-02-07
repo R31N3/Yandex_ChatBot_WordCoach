@@ -108,9 +108,25 @@ def change_mode(mode, id, database):
 
 
 def get_dictionary(id, database):
-    pass
-    #return {'learned': {word: [translate1, translate2], word: [translate1, translate2]},
-    #        'to_learn': {word: [translate1, translate2], word: [translate1, translate2]}}
+
+    eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
+    words_to_learn = {}
+    rus_words = database.get_entry("users_info", ['rus_words'], {'request_id': id})[0][0].split("#$")
+    for i in range(len(eng_words)):
+        words_to_learn[eng_words[i]] = rus_words[i].split("$%")
+
+    learned_eng_words = database.get_entry("users_info", ['learned_eng_words'], {'request_id': id})[0][0].split("#$")
+    learned_words = {}
+    learned_rus_words = database.get_entry("users_info", ['learned_rus_words'], {'request_id': id})[0][0].split("#$")
+    for i in range(len(learned_eng_words)):
+        learned_words[learned_eng_words[i]] = learned_rus_words[i].split("$%")
+
+    dct = {
+        "words_to_learn": words_to_learn,
+        "learned_words": learned_words
+    }
+
+    return dct
 
 
 def get_progress_mode_x(x, id, database):
@@ -125,5 +141,5 @@ def get_stat(id, database, modes_count):
     yield ('to_learn', len(dictionary['to_learn'].keys()))
     pass
 
-def update_dictionary(id, dictionary):
+def update_dictionary(id, words_to_add):
     pass

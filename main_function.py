@@ -86,16 +86,17 @@ def handle_dialog(request, response, user_storage, database):
     handle = answer['class']
     warning = answer['warning']
     answer = answer['answer']
+
     if handle == "add":
-        words = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0] \
+        words = database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0] \
                 + answer[0] + "#$"
-        translates = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]\
+        translates = database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0]\
                 + answer[1] + "#$"
         database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
         database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
-        output_message = "Слово {} добавлено с переводом {}. \n {}".format(answer[0], answer[1],
-                                database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0],
-                                database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0])
+        output_message = "Слово {} добавлено с переводом {}. \n {} \n {}".format(answer[0], answer[1],
+                                database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0],
+                                database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0])
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
