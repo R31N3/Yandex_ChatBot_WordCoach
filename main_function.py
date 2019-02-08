@@ -104,6 +104,8 @@ def handle_dialog(request, response, user_storage, database):
         # words = database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0] \
         #         + answer[0] + "#$"
         succes = add_word(answer[0], answer[1], request.user_id, database)
+        if language_match(answer[0], answer[1]) == 'miss':
+            answer = answer[::-1]
         # translates = database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0]\
         #         + answer[1] + "#$"
         # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')

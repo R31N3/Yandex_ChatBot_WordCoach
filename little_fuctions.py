@@ -77,8 +77,8 @@ def del_word(word, id, database):
     if language_match(word, 'г'):
         dictionary = get_dictionary(id, database)
         if word in dictionary['to_learn'] or word in dictionary['learned']:
-            dictionary['to_learn'][word] = None
-            dictionary['learned'][word] = None
+            dictionary['to_learn'].pop(word, None)
+            dictionary['learned'].pop(word, None)
             return dictionary
         else:
             return 'no such word'
@@ -89,10 +89,14 @@ def del_word(word, id, database):
             if word in translates:
                 dictionary['to_learn'][eng].remove(word)
                 found = True
+                if len(dictionary['to_learn'][eng]) == 0:
+                    dictionary['to_learn'].pop(eng, None)
         for eng, translates in dictionary['to_learn'].items():
             if word in translates:
                 dictionary['to_learn'][eng].remove(word)
                 found = True
+                if len(dictionary['learned'][eng]) == 0:
+                    dictionary['learned'].pop(eng, None)
         if found:
             return dictionary
         else:

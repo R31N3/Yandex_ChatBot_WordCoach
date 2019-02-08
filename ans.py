@@ -67,3 +67,6 @@ print(classify('Алиса, добавь музло', 'game'))
 print(classify('Алиса, добавь музло дважды трижды', 'game'))
 print(classify('-a', 3))
 print(classify('-a', 0))
+a = {'a' : 'b', 'c' : 'd'}
+a['c'] = None
+print(a)
