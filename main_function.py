@@ -91,15 +91,9 @@ def handle_dialog(request, response, user_storage, database):
     answer = answer['answer']
 
     if handle == "add":
-        # words = database.get_entry("users_info", ['words'], {'request_id': request.user_id})[0][0] \
-        #         + answer[0] + "#$"
         succes = add_word(answer[0], answer[1], request.user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
-        # translates = database.get_entry("users_info", ['translates'], {'request_id': request.user_id})[0][0]\
-        #         + answer[1] + "#$"
-        # database.update_entries('users_info', request.user_id, {'words': words}, update_type='rewrite')
-        # database.update_entries('users_info', request.user_id, {'translates': translates}, update_type='rewrite')
         if succes == 'already exists':
             output_message = 'В Вашем словаре уже есть такой перевод'
         elif not succes:
@@ -124,13 +118,7 @@ def handle_dialog(request, response, user_storage, database):
                               handler)
 
     if "помощь" in input_message or input_message in "а что ты умеешь":
-        output_message = "В данной игре ты пройдешь путь карьерного роста от безработного до" \
-                         " главы собственной компании, в то же время на нем тебе придется следить и бороться с самыми" \
-                         " злейшими врагами программистов: голодом и плохим настроением! Проживая день за днем, " \
-                         "тебе придется питаться и развлекать себя, дабы не умереть от стресса. Перемещайся по разделам," \
-                         "выполняй желаемые действия и переходи на следующий день, всё просто! Удачи! Доступные разделы: {}".format(
-            "\n".join(user_storage["suggests"])
-        )
+        output_message = "to be writted"
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
