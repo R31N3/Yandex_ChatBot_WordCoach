@@ -76,7 +76,7 @@ def handle_dialog(request, response, user_storage, database):
 
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
 
-    if input_message == 'Покажи словарь':
+    if input_message == 'покажи словарь':
         dictionary = get_dictionary(request.user_id, database)
         s = 'В вашем словаре {} слов'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
         s += '\n\nСреди которых {} неизученных:'.format(len(dictionary['to_learn']))
