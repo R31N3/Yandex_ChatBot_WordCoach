@@ -85,15 +85,15 @@ def del_word(word, id, database):
     elif language_match('v', word):
         dictionary = get_dictionary(id, database)
         found = False
-        for eng, translates in dictionary['to_learn'].items():
-            if word in translates:
+        for eng in dictionary['to_learn'].keys():
+            if word in dictionary['to_learn'][eng]:
                 dictionary['to_learn'][eng].remove(word)
                 found = True
                 if len(dictionary['to_learn'][eng]) == 0:
                     dictionary['to_learn'].pop(eng, None)
-        for eng, translates in dictionary['to_learn'].items():
-            if word in translates:
-                dictionary['to_learn'][eng].remove(word)
+        for eng in dictionary['learned'].keys():
+            if word in dictionary['learned'][eng]:
+                dictionary['learned'][eng].remove(word)
                 found = True
                 if len(dictionary['learned'][eng]) == 0:
                     dictionary['learned'].pop(eng, None)
@@ -160,3 +160,6 @@ def update_dictionary(id, words_to_add, database):
         learned_rus_words.append("$%".join(learned[i]))
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)}, update_type='rewrite')
+
+for a, b in {'a' : 'b'}.items():
+    print(a, b)
