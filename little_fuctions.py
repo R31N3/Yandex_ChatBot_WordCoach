@@ -161,3 +161,4 @@ def update_dictionary(id, words_to_add, database):
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)}, update_type='rewrite')
 
+print()
