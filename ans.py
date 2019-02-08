@@ -19,7 +19,10 @@ def classify(text, mode):
         words = words[1:]
     if words[0].startswith('add') or words[0].startswith('добавь'):
         add_word = True
-        words = words[1:]
+        if (words[0].startswith('add') and words[1].startswith('word')) or (words[0].startswith('добавь') and words[1].startswith('слово')):
+            words = words[2:]
+        else:
+            words = words[1:]
     if words[0].startswith('delete') or words[0].startswith('del') or words[0].startswith('удали'):
         del_word = True
         words = words[1:]
