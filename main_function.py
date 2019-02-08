@@ -78,11 +78,11 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message == 'покажи словарь':
         dictionary = get_dictionary(request.user_id, database)
-        s = 'В вашем словаре {} слов'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
-        s += '\n\nСреди которых {} неизученных:'.format(len(dictionary['to_learn']))
+        s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
+        s += '\n\nНеизучено: {}:'.format(len(dictionary['to_learn']))
         for eng, rus in dictionary['to_learn'].items():
             s += '\n{} - {}'.format(eng,', '.join(rus))
-        s+= '\n\n И {} изученных'.format(len(dictionary['learned']))
+        s+= '\n\nИзучено: {}'.format(len(dictionary['learned']))
         for eng, rus in dictionary['learned'].items():
             s += '\n{} - {}'.format(eng,', '.join(rus))
         output_message = s
