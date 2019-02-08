@@ -134,7 +134,7 @@ def get_progress_mode_x(x, id, database):
     pass
 
 
-def get_stat(id, database, modes_count):
+def get_stat(id, database, modes_count = 1):
     for x in range(1, modes_count + 1):
         yield (x, get_progress_mode_x(x, id, database))
     dictionary = get_dictionary(id, database)
