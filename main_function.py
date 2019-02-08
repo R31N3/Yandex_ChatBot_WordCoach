@@ -5,16 +5,6 @@ import json
 from ans import *
 from little_fuctions import *
 
-def find_difference(lst1, lst2):  # i = item
-    return [i for i in lst1 if i not in lst2]
-
-
-def read_data():
-    with open("words.json", encoding="utf-8") as file:
-        data = json.loads(file.read())
-        return data
-
-
 def read_answers_data(name):
     with open(name+".json", encoding="utf-8") as file:
         data = json.loads(file.read())
