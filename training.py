@@ -28,7 +28,7 @@ def get_buttons(q, id, database):
     if language_match(q, 'г'):
         words = {'рыба', 'картошка', 'трава', 'макароны'}
         for k in ('to_learn', 'learned'):
-            for rus_words in dictionary['to_learn'].values():
+            for rus_words in dictionary[k].values():
                 words = words.union(set(rus_words))
         words = list(words)
         output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
