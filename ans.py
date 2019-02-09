@@ -57,17 +57,3 @@ def classify(text, mode):
         warning = False
 
     return {'warning': warning, 'class': label, 'answer': answer}
-
-print(classify('+a', 0))
-print(classify('a', 0))
-print(classify('a', 3))
-print(classify('+a', 3))
-print(classify('Alice, add smth', 0))
-print(classify('Alice, add smth что-то', 0))
-print(classify('Алиса, давай музло', 'game'))
-print(classify('Алиса, давай музло', 0))
-print(classify('Алиса, добавь музло', 'game'))
-print(classify('Алиса, добавь музло дважды трижды', 'game'))
-print(classify('-a', 3))
-print(classify('-a', 0))
-print(classify('добавь слово word', 0))
