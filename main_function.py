@@ -130,7 +130,7 @@ def handle_dialog(request, response, user_storage, database):
                          " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
                          " команд для этого: +; Аdd; Добавь слово; Добавь. \nТак же ты можешь полностью очистить " \
                          "свой словарь или же удалить отдельно слово из него, используя, например, команду 'Удали" \
-                         "hello'.\n Полный список команд для этого: -; Del; Удали."
+                         "hello'.\nПолный список команд для этого: -; Del; Удали."
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
