@@ -115,9 +115,8 @@ def get_dictionary(id, database):
     words_to_learn = {}
     rus_words = database.get_entry("users_info", ['rus_words'], {'request_id': id})[0][0].split("#$")
     for i in range(len(eng_words)):
-        if i == '':
-            continue
         words_to_learn[eng_words[i]] = rus_words[i].split("$%")
+    words_to_learn.pop('', None)
     print(rus_words, "\n", eng_words)
 
     learned_eng_words = database.get_entry("users_info", ['learned_eng_words'], {'request_id': id})[0][0].split("#$")
