@@ -23,6 +23,8 @@ def inf():
     return 'Тренируй, не ной'
 
 def get_buttons(q, id, database):
+    if q == '###empty':
+        return ['+ I Я', '+ Яблоко Apple', 'Закончить']
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
@@ -50,13 +52,14 @@ def get_question(id, database):
         k = 5
     elif len(dictionary['to_learn']) == 0:
         k = 1
+    if len(dictionary['learned']) == 0 and len(dictionary['to_learn']) == 0:
+        update_q(id, '###empty', database)
+        return 'empty'
     if k <= 2:
         key = 'learned'
     else:
         key = 'to_learn'
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
-    if index_word == '-1':
-        return 'empty'
     if randint(0, 1) == 0:
         update_q(id, list(dictionary[key].keys())[index_word], database)
         return list(dictionary[key].keys())[index_word]
