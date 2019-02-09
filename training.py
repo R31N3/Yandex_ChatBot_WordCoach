@@ -1,4 +1,5 @@
 from little_fuctions import *
+from random import randint
 
 def revise(q, answer, q_type, id, database):
     dictionary = get_dictionary(id, database)
@@ -14,7 +15,18 @@ def inf():
 
 def get_question(id, database):
     dictionary = get_dictionary(id, database)
-    progress = get_progress_mode_x('training', id, database)
+    if randint(0, 10) <= 2:
+        key = 'learned'
+    else:
+        key = 'to_learn'
+    index_word = randint(0, len(list(dictionary[key].keys())) - 1)
+    if randint(0, 1) == 0:
+        return list(dictionary[key].keys())[index_word]
+    else:
+        word = list(dictionary[key].keys())[index_word]
+        return ' '.join(dictionary[key][word])
+
+
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
         return inf()
@@ -53,3 +65,5 @@ def main(q, answer, q_type, id, database):
             return 'Неверно' + get_question(id, database)
     elif q_type == 'end':
         return 'Хорошо поиграли!\nТы ответил на {} из {} моих вопросов'.format(*get_stat_session('training', id, database))
+    else:
+        return False
