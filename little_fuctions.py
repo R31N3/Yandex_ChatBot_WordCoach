@@ -37,6 +37,7 @@ def error_protection(executable_function):
             return result
     return decorate
 
+
 def name(id, database):
     if named:
         return True #name вытащить из database
@@ -131,7 +132,17 @@ def get_dictionary(id, database):
 
 
 def get_progress_mode_x(x, id, database):
-    pass
+    if x == "training":
+        eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
+        score = database.get_entry("users_info", ['training_score'], {'request_id': id})[0][0].split("#$")
+        for i in range(len(eng_words)):
+            score[eng_words[i]] = score[i]
+        return score
+
+
+def update_progress(x, id, score, database):
+    if x == "training":
+        database.update_entries('users_info', id, {'training_score': "#$".join(score)}, update_type='rewrite')
 
 
 def get_stat(id, database, modes_count = 1):
@@ -141,8 +152,8 @@ def get_stat(id, database, modes_count = 1):
     yield ('learned', len(dictionary['learned'].keys()))
     yield ('to_learn', len(dictionary['to_learn'].keys()))
 
-def update_dictionary(id, words_to_add, database):
 
+def update_dictionary(id, words_to_add, database):
     eng_words = []
     rus_words = []
     to_learn = words_to_add["to_learn"]
@@ -159,3 +170,4 @@ def update_dictionary(id, words_to_add, database):
         learned_eng_words.append(i)
         learned_rus_words.append("$%".join(learned[i]))
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
+                                               'learned_rus_words': "#$".join(learned_rus_words)})
