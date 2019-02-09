@@ -192,8 +192,8 @@ def envision_dictionary(id, database):
 
 def get_stat_session(mode, id, database):
     if mode == 'training':
-        return database.get_entry("users_info", ['q_count'], {'request_id': id})[0][0],\
-               database.get_entry("users_info", ['q_true'], {'request_id': id})[0][0]
+        return [database.get_entry("users_info", ['q_count'], {'request_id': id})[0][0],
+                database.get_entry("users_info", ['q_true'], {'request_id': id})[0][0]]
     else:
         return False
 
