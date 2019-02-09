@@ -139,7 +139,7 @@ def get_progress_mode(mode, id, database):
         if score[0]:
             for i in score:
                 lst = i.split(":")
-                dct[lst[0]] = lst[1]
+                dct[lst[0]] = int(lst[1])
         return dct
     else:
         return False
