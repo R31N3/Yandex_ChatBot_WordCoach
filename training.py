@@ -31,22 +31,16 @@ def get_buttons(q, id, database):
             for rus_words in dictionary['to_learn'].values():
                 words = words.union(set(rus_words))
         words = list(words)
-        while True:
-            output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
-            if len(set(output)) == 3 and ans not in output:
-                break
-        output.insert(randint(0, 3), ans)
+        output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
+        output.insert(randint(0, 2), ans)
         return output
     elif language_match('f', q):
         words = {'fish', 'potato', 'grass', 'pasta'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
         words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)
-        while True:
-            output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
-            if len(set(output)) == 3 and ans not in output:
-                break
-        output.insert(randint(0, 3), ans)
+        output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
+        output.insert(randint(0, 2), ans)
         return output
 
 def get_question(id, database):
