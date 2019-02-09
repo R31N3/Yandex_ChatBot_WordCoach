@@ -74,6 +74,8 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+    if input_message == 'training':
+        update_mode(id, 'training', database)
 
     answer = classify(input_message, mode)
     handle = answer['class']
