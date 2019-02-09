@@ -5,6 +5,7 @@ import json
 from ans import *
 from little_fuctions import *
 
+
 def read_answers_data(name):
     with open(name+".json", encoding="utf-8") as file:
         data = json.loads(file.read())
@@ -12,6 +13,7 @@ def read_answers_data(name):
 
 
 aliceAnswers = read_answers_data("data/answers_dict_example")
+
 
 def update_handler(handler, database, request):
     database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
@@ -25,8 +27,9 @@ def IDontUnderstand(response, user_storage, buttons = ""):
     response.set_buttons(buttons)
     return response, user_storage
 
+
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
-def message_return(response, user_storage, message, button, database, request, handler, flag=False):
+def message_return(response, user_storage, message, button, database, request, handler):
     # ща будет магия
     update_handler(handler, database, request)
     response.set_text(message)
@@ -38,14 +41,15 @@ def message_return(response, user_storage, message, button, database, request, h
 
 def handle_dialog(request, response, user_storage, database):
     if not user_storage:
-        user_storage = {"suggests" : []}
+        user_storage = {"suggests": []}
     input_message = request.command.lower()
 
     # первый запуск/перезапуск диалога
-    if request.is_new_session or not database.get_entry("users_info",  ['Named'], {'request_id': request.user_id})[0][0]:
+    if request.is_new_session or not database.get_entry("users_info",  ['Named'],
+                                                        {'request_id': request.user_id})[0][0]:
         if request.is_new_session and (database.get_entry("users_info", ['Name'],
-                                                          {'request_id': request.user_id}) == 'null'
-                                       or not database.get_entry("users_info", ['Name'], {'request_id': request.user_id})):
+                                                          {'request_id': request.user_id}) == 'null'or
+                                       not database.get_entry("users_info", ['Name'], {'request_id': request.user_id})):
             output_message = "Тебя приветствует Word Master, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
                              " собственными формулировками и ассоциациями для простого запоминания!\n \"" \
@@ -65,14 +69,14 @@ def handle_dialog(request, response, user_storage, database):
         user_storage['suggests'] = [
             "Помощь",
             "Покажи словарь",
-            "Отчисть словарь"
+            "Очистить словарь"
         ]
 
-        output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
-                     + ", ".join(user_storage['suggests'])
+        output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
+            .join(user_storage['suggests'])
         handler = "-1"
         buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request, handler, True)
+        return message_return(response, user_storage, output_message, buttons, database, request, handler)
 
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
 
@@ -82,8 +86,8 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
 
-    if input_message == 'отчисть словарь':
-        update_dictionary(request.user_id, {'to_learn' : {}, 'learned' : {}}, database)
+    if input_message == 'очистить словарь':
+        update_dictionary(request.user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -122,7 +126,11 @@ def handle_dialog(request, response, user_storage, database):
                               handler)
 
     if "помощь" in input_message or input_message in "а что ты умеешь":
-        output_message = "to be writted"
+        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется! \nДля занесения" \
+                         " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
+                         " команд для этого: +; Аdd; Добавь слово; Добавь. \nТак же ты можешь полностью очистить " \
+                         "свой словарь или же удалить отдельно слово из него, используя, например, команду 'Удали" \
+                         "hello'.\n Полный список команд для этого: -; Del; Удали."
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
@@ -140,7 +148,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
         choice = random.choice(aliceAnswers["quitTextVariations"])
         response.set_text(choice)
-        response.set_tts(choice,True)
+        response.set_tts(choice, True)
         response.end_session = True
         return response, user_storage
 
