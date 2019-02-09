@@ -178,7 +178,7 @@ def update_dictionary(id, words_to_add, database):
 def envision_dictionary(id, database):
     dictionary = get_dictionary(id, database)
     s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
-    s += '\n\nНеизучено: {}:'.format(len(dictionary['to_learn']))
+    s += '\n\nНеизучено: {}'.format(len(dictionary['to_learn']))
     for eng, rus in dictionary['to_learn'].items():
         s += '\n{} - {}'.format(eng, ', '.join(rus))
     s += '\n\nИзучено: {}'.format(len(dictionary['learned']))
