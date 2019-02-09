@@ -34,7 +34,7 @@ def handle_dialog(request, response, user_storage, database):
                                        not database.get_entry("users_info", ['Name'], {'request_id': user_id})):
             output_message = "Тебя приветствует Тренер слов, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
-                             " собственными формулировками и ассоциациями для простого запоминания!\n \"" \
+                             " собственными формулировками и ассоциациями для простого запоминания!\n"\
                              "Введите ваше имя"
             response.set_text(output_message)
             response.set_tts(output_message)

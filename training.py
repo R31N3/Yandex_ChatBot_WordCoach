@@ -70,7 +70,8 @@ def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif answer == 'end' or answer == 'закончить':
-        return 'Хорошо поиграли! Вы ответили на {} из {} моих вопросов'.format(*get_stat_session('training', id, database))
+        update_mode(id, '', database)
+        return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(*get_stat_session('training', id, database))
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
@@ -125,6 +126,6 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return 'Неверно' + get_question(id, database)
+            return 'Неверно! ' + get_question(id, database)
     else:
         return False
