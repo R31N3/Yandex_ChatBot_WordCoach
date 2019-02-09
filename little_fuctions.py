@@ -227,18 +227,18 @@ def IDontUnderstand(response, user_storage, answer):
     response.set_buttons(buttons)
     return response, user_storage
 
-def update_handler(handler, database, request):
-    database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
-
 
 def read_answers_data(name):
+    import json
     with open(name+".json", encoding="utf-8") as file:
         data = json.loads(file.read())
         return data
 
 
 def get_mode(id, database):
-    return #False if no mode
+    return database.get_entry("users_info", ['mode'], {'request_id': id})[0][0]
 
-def update_mode(id, database):
+
+def update_mode(id, mode, database):
+    database.update_entries('users_info', id, {'mode': mode}, update_type='rewrite')
     return True
