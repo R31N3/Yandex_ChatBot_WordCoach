@@ -65,7 +65,8 @@ def handle_dialog(request, response, user_storage, database):
         user_storage['suggests'] = [
             "Выведи имя",
             "Помощь",
-            "Покажи словарь"
+            "Покажи словарь",
+            "Отчисть словарь"
         ]
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " \
@@ -77,18 +78,13 @@ def handle_dialog(request, response, user_storage, database):
     handler = database.get_entry("users_info", ['handler'], {'request_id': request.user_id})[0][0]
 
     if input_message == 'покажи словарь':
-        dictionary = get_dictionary(request.user_id, database)
-        s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
-        s += '\n\nНеизучено: {}:'.format(len(dictionary['to_learn']))
-        for eng, rus in dictionary['to_learn'].items():
-            s += '\n{} - {}'.format(eng,', '.join(rus))
-        s+= '\n\nИзучено: {}'.format(len(dictionary['learned']))
-        for eng, rus in dictionary['learned'].items():
-            s += '\n{} - {}'.format(eng,', '.join(rus))
-        output_message = s
+        output_message = envision_dictionary(request.user_id, database)
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
+
+    if input_message == 'почисть словарь':
+        update_dictionary(request.user_id, {'to_learn' : {}, 'learned' : {}}, database)
 
     answer = classify(input_message, handler)
     handle = answer['class']

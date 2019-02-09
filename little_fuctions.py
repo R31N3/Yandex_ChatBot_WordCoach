@@ -175,3 +175,14 @@ def update_dictionary(id, words_to_add, database):
         learned_rus_words.append("$%".join(learned[i]))
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)})
+
+def envision_dictionary(id, database):
+    dictionary = get_dictionary(id, database)
+    s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
+    s += '\n\nНеизучено: {}:'.format(len(dictionary['to_learn']))
+    for eng, rus in dictionary['to_learn'].items():
+        s += '\n{} - {}'.format(eng, ', '.join(rus))
+    s += '\n\nИзучено: {}'.format(len(dictionary['learned']))
+    for eng, rus in dictionary['learned'].items():
+        s += '\n{} - {}'.format(eng, ', '.join(rus))
+    return s
