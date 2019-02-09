@@ -135,7 +135,7 @@ def get_progress_mode(mode, id, database):
     if mode == "training":
         dct = {}
         score = database.get_entry("users_info", ['training_score'], {'request_id': id})[0][0].split("#$")
-        if score:
+        if score[0]:
             for i in score:
                 lst = i.split(":")
                 dct[lst[0]] = score[lst[1]]
