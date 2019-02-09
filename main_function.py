@@ -82,7 +82,6 @@ def handle_dialog(request, response, user_storage, database):
     handle = answer['class']
     warning = answer['warning']
     answer = answer['answer']
-    print(mode, handle)
 
     if handle == "add":
         success = add_word(answer[0], answer[1], user_id, database)
