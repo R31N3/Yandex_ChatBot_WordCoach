@@ -3,7 +3,6 @@ from random import randint
 
 def revise(q, answer, q_type, id, database):
     dictionary = get_dictionary(id, database)
-    progress = get_progress_mode_x('training', id, database)
     if q_type == 'translate_to_rus':
         if answer in dictionary['to_learn'][q]:
             return True
@@ -34,7 +33,7 @@ def main(q, answer, q_type, id, database):
         return get_question(id, database)
     elif q_type == 'revise&next':
         if revise(q, answer, q_type, id, database):
-            score = get_progress_mode_x('training', id, database)
+            score = get_progress_mode('training', id, database)
             score[q] += 1
             update_progress('training', id, score, database)
             if score[q] >= 4:
@@ -50,7 +49,7 @@ def main(q, answer, q_type, id, database):
                     update_dictionary(id, dictionary, database)
             return 'Верно! ' + get_question(id, database)
         else:
-            score = get_progress_mode_x('training', id, database)
+            score = get_progress_mode('training', id, database)
             score[q] = max(0, score[q] - 2)
             update_progress('training', id, score, database)
             if score[q] < 4:

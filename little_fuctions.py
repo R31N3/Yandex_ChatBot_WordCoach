@@ -134,8 +134,8 @@ def get_dictionary(id, database):
     return dct
 
 
-def get_progress_mode_x(x, id, database):
-    if x == "training":
+def get_progress_mode(mode, id, database):
+    if mode == "training":
         eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
         score = database.get_entry("users_info", ['training_score'], {'request_id': id})[0][0].split("#$")
         for i in range(len(eng_words)):
@@ -145,14 +145,14 @@ def get_progress_mode_x(x, id, database):
         return False
 
 
-def update_progress(x, id, score, database):
-    if x == "training":
+def update_progress(mode, id, score, database):
+    if mode == "training":
         database.update_entries('users_info', id, {'training_score': "#$".join(score)}, update_type='rewrite')
 
 
 def get_stat(id, database, modes_count = 1):
     for x in range(1, modes_count + 1):
-        yield (x, get_progress_mode_x(x, id, database))
+        yield (x, get_progress_mode(x, id, database))
     dictionary = get_dictionary(id, database)
     yield ('learned', len(dictionary['learned'].keys()))
     yield ('to_learn', len(dictionary['to_learn'].keys()))
@@ -187,3 +187,19 @@ def envision_dictionary(id, database):
     for eng, rus in dictionary['learned'].items():
         s += '\n{} - {}'.format(eng, ', '.join(rus))
     return s
+
+
+def get_stat_session(mode, id, database):
+    if mode == 'training':
+        #Это 2 переменных которые нужно хранить по этому режиму
+        #Количество заданных вопросов и количество правильных ответов
+        return q_count, q_true
+    else:
+        return False
+
+def update_stat_session(mode, data, id, database):
+    if mode == 'training':
+        #data = [q_count, q_true]
+        return True
+    else:
+        return False
