@@ -51,14 +51,21 @@ def get_buttons(q, id, database):
 
 def get_question(id, database):
     dictionary = get_dictionary(id, database)
-    if randint(0, 10) <= 2:
+    k = randint(0, 10)
+    if len(dictionary['learned']) == 0:
+        k = 5
+    elif len(dictionary['to_learn']) == 0:
+        k = 1
+    if k <= 2:
         key = 'learned'
     else:
         key = 'to_learn'
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
+    if index_word == '-1':
+        return 'empty'
     if randint(0, 1) == 0:
-        update_q(id, dictionary[key].keys()[index_word], database)
-        return dictionary[key].keys()[index_word]
+        update_q(id, list(dictionary[key].keys())[index_word], database)
+        return list(dictionary[key].keys())[index_word]
     else:
         word = list(dictionary[key].keys())[index_word]
         update_q(id, ' '.join(dictionary[key][word]), database)
@@ -71,6 +78,10 @@ def main(q, answer, q_type, id, database):
     elif answer == 'end' or answer == 'закончить':
         return 'Хорошо поиграли! Вы ответили на {} из {} моих вопросов'.format(*get_stat_session('training', id, database))
     elif get_stat_session('training', id, database) == (0, 0):
+        dictionary = get_dictionary(id, database)
+        if len(dictionary['to_learn']) + len(dictionary['learned']) == 0:
+            update_mode(id, '', database)
+            return 'Словарь пуст. Для начала - добавьте в него слова.'
         return get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
