@@ -30,9 +30,14 @@ def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif q_type == 'begin':
+        update_stat_session('training', (0, 0), id, database)
         return get_question(id, database)
     elif q_type == 'revise&next':
+        stat_session = get_stat_session('training', id, database)
+        stat_session[0] += 1
         if revise(q, answer, q_type, id, database):
+            stat_session[1] += 1
+            update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
             score[q] += 1
             update_progress('training', id, score, database)
@@ -49,6 +54,7 @@ def main(q, answer, q_type, id, database):
                     update_dictionary(id, dictionary, database)
             return 'Верно! ' + get_question(id, database)
         else:
+            update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
             score[q] = max(0, score[q] - 2)
             update_progress('training', id, score, database)
