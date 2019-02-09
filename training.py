@@ -57,9 +57,11 @@ def get_question(id, database):
         key = 'to_learn'
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
     if randint(0, 1) == 0:
-        return list(dictionary[key].keys())[index_word]
+        update_q(id, dictionary[key].keys()[index_word], database)
+        return dictionary[key].keys()[index_word]
     else:
         word = list(dictionary[key].keys())[index_word]
+        update_q(id, ' '.join(dictionary[key][word]), database)
         return ' '.join(dictionary[key][word])
 
 
