@@ -148,7 +148,7 @@ def get_progress_mode(mode, id, database):
 def update_progress(mode, id, score, database):
     if mode == "training":
         database.update_entries('users_info', id,
-                                {'training_score': "#$".join([key+":"+score[key] for key in score.keys()])},
+                                {'training_score': "#$".join([key+":"+str(score[key]) for key in score.keys()])},
                                 update_type='rewrite')
 
 
