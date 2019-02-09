@@ -50,7 +50,7 @@ def handle_dialog(request, response, user_storage, database):
         if request.is_new_session and (database.get_entry("users_info", ['Name'],
                                                           {'request_id': request.user_id}) == 'null'or
                                        not database.get_entry("users_info", ['Name'], {'request_id': request.user_id})):
-            output_message = "Тебя приветствует Word Master, благодаря мне ты сможешь потренироваться в знании" \
+            output_message = "Тебя приветствует Тренер слов, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
                              " собственными формулировками и ассоциациями для простого запоминания!\n \"" \
                              "Введите ваше имя"
