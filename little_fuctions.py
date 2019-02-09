@@ -127,7 +127,7 @@ def get_dictionary(id, database):
         "to_learn": words_to_learn,
         "learned": learned_words
     }
-
+    print(dct)
     return dct
 
 
