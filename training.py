@@ -39,8 +39,8 @@ def get_buttons(q, id, database):
         return output
     elif language_match('f', q):
         words = {'fish', 'potato', 'grass', 'pasta'}
-        words = words.union(set(list(dictionary['to_learn'].keys)))
-        words = words.union(set(list(dictionary['learned'].keys)))
+        words = words.union(set(list(dictionary['to_learn'].keys())))
+        words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)
         while True:
             output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
