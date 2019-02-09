@@ -146,6 +146,10 @@ def get_progress_mode(mode, id, database):
 
 
 def update_progress(mode, id, score, database):
+    dictionary = get_dictionary(id, database)
+    keys = list(dictionary['to_learn'].keys()) + list(dictionary['learned'].keys())
+    for key in keys:
+        key : score[key]
     if mode == "training":
         database.update_entries('users_info', id, {'training_score': "#$".join(score)}, update_type='rewrite')
 
