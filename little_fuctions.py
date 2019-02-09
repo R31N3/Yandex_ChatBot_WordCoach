@@ -136,20 +136,21 @@ def get_dictionary(id, database):
 
 def get_progress_mode(mode, id, database):
     if mode == "training":
-        eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
+        dct = {}
         score = database.get_entry("users_info", ['training_score'], {'request_id': id})[0][0].split("#$")
-        for i in range(len(eng_words)):
-            score[eng_words[i]] = score[i]
-        return score
+        for i in score:
+            lst = i.split(":")
+            dct[lst[0]] = score[lst[1]]
+        return dct
     else:
         return False
 
 
 def update_progress(mode, id, score, database):
-    for key in score.keys():
-        key : score[key]
     if mode == "training":
-        database.update_entries('users_info', id, {'training_score': "#$".join(score)}, update_type='rewrite')
+        database.update_entries('users_info', id,
+                                {'training_score': "#$".join([key+":"+score[key] for key in score.keys()])},
+                                update_type='rewrite')
 
 
 def get_stat(id, database, modes_count = 1):
