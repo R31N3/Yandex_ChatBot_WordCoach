@@ -1,16 +1,53 @@
 from little_fuctions import *
 from random import randint
 
-def revise(q, answer, q_type, id, database):
+def get_ans(q, id, database):
     dictionary = get_dictionary(id, database)
-    if q_type == 'translate_to_rus':
-        if answer in dictionary['to_learn'][q]:
-            return True
+    for k in ['to_learn', 'learned']:
+        if q in dictionary[k]:
+            return ' '.join(dictionary[k][q])
         else:
-            return False
+            for key in dictionary[k].keys():
+                if q in dictionary[k][key]:
+                    return key
+    return False
+
+
+def revise(q, answer, q_type, id, database):
+    if answer == get_ans(q, id, database):
+        return True
+    else:
+        return False
 
 def inf():
     return 'Тренируй, не ной'
+
+def get_buttons(q, id, database):
+    ans = get_ans(q, id, database)
+    dictionary = get_dictionary(id, database)
+    if language_match(q, 'г'):
+        words = {'рыба', 'картошка', 'трава', 'макароны'}
+        for k in ('to_learn', 'learned'):
+            for rus_words in dictionary['to_learn'].values():
+                words = words.union(set(rus_words))
+        words = list(words)
+        while True:
+            output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
+            if len(set(output)) == 3 and ans not in output:
+                break
+        output.insert(randint(0, 3), ans)
+        return output
+    elif language_match('f', q):
+        words = {'fish', 'potato', 'grass', 'pasta'}
+        words = words.union(set(list(dictionary['to_learn'].keys)))
+        words = words.union(set(list(dictionary['learned'].keys)))
+        words = list(words)
+        while True:
+            output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
+            if len(set(output)) == 3 and ans not in output:
+                break
+        output.insert(randint(0, 3), ans)
+        return output
 
 def get_question(id, database):
     dictionary = get_dictionary(id, database)

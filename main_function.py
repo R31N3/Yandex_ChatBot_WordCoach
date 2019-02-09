@@ -109,9 +109,10 @@ def handle_dialog(request, response, user_storage, database):
     elif handle == 'use mode':
         if get_mode(id, database) == 'training':
             output_message = training.main(get_q(id, database), answer, 'revise&next', id, database)
+            buttons, user_storage = get_suggests(training.get_buttons(get_q(id, database), id, database))
         else:
             output_message = 'Ля-ля-ля'
-        buttons, user_storage = get_suggests(user_storage)
+            buttons, user_storage = get_suggests(['Дальше', 'Попробовать еще'])
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
