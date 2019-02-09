@@ -141,6 +141,8 @@ def get_progress_mode_x(x, id, database):
         for i in range(len(eng_words)):
             score[eng_words[i]] = score[i]
         return score
+    else:
+        return False
 
 
 def update_progress(x, id, score, database):
