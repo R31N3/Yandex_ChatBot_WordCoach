@@ -4,6 +4,7 @@ import random
 import json
 from ans import *
 from little_fuctions import *
+import training
 
 
 aliceAnswers = read_answers_data("data/answers_dict_example")
@@ -102,6 +103,14 @@ def handle_dialog(request, response, user_storage, database):
         else:
             output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
             update_dictionary(request.user_id, success, database)
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+    elif handle == 'use mode':
+        if get_mode(id, database) == 'training':
+            output_message = training.main(get_q(id, database), answer, 'revise&next', id, database)
+        else:
+            output_message = 'Ля-ля-ля'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
