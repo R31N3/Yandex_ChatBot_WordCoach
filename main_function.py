@@ -63,7 +63,6 @@ def handle_dialog(request, response, user_storage, database):
             database.update_entries('users_info', request.user_id, {'Name': input_message}, update_type='rewrite')
 
         user_storage['suggests'] = [
-            "Выведи имя",
             "Помощь",
             "Покажи словарь",
             "Отчисть словарь"
@@ -96,28 +95,28 @@ def handle_dialog(request, response, user_storage, database):
     answer = answer['answer']
 
     if handle == "add":
-        succes = add_word(answer[0], answer[1], request.user_id, database)
+        success = add_word(answer[0], answer[1], request.user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
-        if succes == 'already exists':
+        if success == 'already exists':
             output_message = 'В Вашем словаре уже есть такой перевод'
-        elif not succes:
+        elif not success:
             output_message = 'Пара должна состоять из русского и английского слова'
         else:
             output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
-            update_dictionary(request.user_id, succes, database)
+            update_dictionary(request.user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
     elif handle == 'del':
-        succes = del_word(answer.strip(), request.user_id, database)
-        if succes == 'no such word':
+        success = del_word(answer.strip(), request.user_id, database)
+        if success == 'no such word':
             output_message = 'В Вашем словаре нет такого слова'
-        elif not succes:
+        elif not success:
             output_message = 'Слово должно быть русским или английским'
         else:
             output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
-            update_dictionary(request.user_id, succes, database)
+            update_dictionary(request.user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
