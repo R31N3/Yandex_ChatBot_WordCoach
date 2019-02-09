@@ -71,7 +71,7 @@ def main(q, answer, q_type, id, database):
         return inf()
     elif answer == 'end' or answer == 'закончить':
         return 'Хорошо поиграли! Вы ответили на {} из {} моих вопросов'.format(*get_stat_session('training', id, database))
-    elif get_stat_session('training', id, database) == (0, 0):
+    elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
