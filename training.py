@@ -52,9 +52,6 @@ def get_question(id, database):
         k = 5
     elif len(dictionary['to_learn']) == 0:
         k = 1
-    if len(dictionary['learned']) == 0 and len(dictionary['to_learn']) == 0:
-        update_q(id, '###empty', database)
-        return 'empty'
     if k <= 2:
         key = 'learned'
     else:
@@ -77,12 +74,13 @@ def main(q, answer, q_type, id, database):
         return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(*get_stat_session('training', id, database))
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
-        stat_session[0] += 1
-        update_stat_session('training', stat_session, id, database)
         dictionary = get_dictionary(id, database)
         if len(dictionary['to_learn'].keys()) + len(dictionary['learned'].keys()) == 0:
             update_mode(id, '', database)
+            update_q(id, '###empty', database)
             return 'Словарь пуст. Для начала - добавьте в него слова.'
+        stat_session[0] += 1
+        update_stat_session('training', stat_session, id, database)
         return get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
