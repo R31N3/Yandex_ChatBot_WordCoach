@@ -84,6 +84,8 @@ def main(q, answer, q_type, id, database):
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
         if revise(q, answer, q_type, id, database):
+            if language_match(q, 'f'):
+                q = get_ans(q, id, database)
             stat_session[1] += 1
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
@@ -107,6 +109,8 @@ def main(q, answer, q_type, id, database):
         else:
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
+            if language_match(q, 'f'):
+                q = get_ans(q, id, database)
             if q in score:
                 score[q] = max(0, score[q] - 2)
             else:
