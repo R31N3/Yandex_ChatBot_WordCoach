@@ -6,26 +6,7 @@ from ans import *
 from little_fuctions import *
 
 
-def read_answers_data(name):
-    with open(name+".json", encoding="utf-8") as file:
-        data = json.loads(file.read())
-        return data
-
-
 aliceAnswers = read_answers_data("data/answers_dict_example")
-
-
-def update_handler(handler, database, request):
-    database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
-
-
-def IDontUnderstand(response, user_storage, buttons = ""):
-    message = random.choice(aliceAnswers["cantTranslate"])
-    response.set_text(message)
-    response.set_tts(message)
-    buttons, user_storage = get_suggests(user_storage)
-    response.set_buttons(buttons)
-    return response, user_storage
 
 
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
@@ -135,14 +116,6 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
 
-    if handler.endswith("-1"):
-        if input_message == "Выведи имя" or input_message == "Имя":
-            output_message = "Имя пользователя: {}".format(database.get_entry("users_info", ['Name'],
-                                                                              {'request_id': request.user_id})[0][0])
-            buttons, user_storage = get_suggests(user_storage)
-            return message_return(response, user_storage, output_message, buttons, database, request,
-                                  handler)
-
     update_handler(handler, database, request)
 
     if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
@@ -153,16 +126,7 @@ def handle_dialog(request, response, user_storage, database):
         return response, user_storage
 
     buttons, user_storage = get_suggests(user_storage)
-    return IDontUnderstand(response, user_storage)
+    return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
 
 
-def get_suggests(user_storage):
-    if "suggests" in user_storage.keys():
-        suggests = [
-            {'title': suggest, 'hide': True}
-            for suggest in user_storage['suggests']
-        ]
-    else:
-        suggests = []
 
-    return suggests, user_storage

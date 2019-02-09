@@ -204,3 +204,41 @@ def update_stat_session(mode, data, id, database):
         return True
     else:
         return False
+
+
+def get_suggests(user_storage):
+    if "suggests" in user_storage.keys():
+        suggests = [
+            {'title': suggest, 'hide': True}
+            for suggest in user_storage['suggests']
+        ]
+    else:
+        suggests = []
+
+    return suggests, user_storage
+
+
+def IDontUnderstand(response, user_storage, answer):
+    import random
+    message = random.choice(answer)
+    response.set_text(message)
+    response.set_tts(message)
+    buttons, user_storage = get_suggests(user_storage)
+    response.set_buttons(buttons)
+    return response, user_storage
+
+def update_handler(handler, database, request):
+    database.update_entries('users_info', request.user_id, {'handler': handler}, update_type='rewrite')
+
+
+def read_answers_data(name):
+    with open(name+".json", encoding="utf-8") as file:
+        data = json.loads(file.read())
+        return data
+
+
+def get_mode(id, database):
+    return #False if no mode
+
+def update_mode(id, database):
+    return True
