@@ -177,6 +177,7 @@ def update_dictionary(id, words_to_add, database):
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)})
 
+
 def envision_dictionary(id, database):
     dictionary = get_dictionary(id, database)
     s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
@@ -191,15 +192,15 @@ def envision_dictionary(id, database):
 
 def get_stat_session(mode, id, database):
     if mode == 'training':
-        #Это 2 переменных которые нужно хранить по этому режиму
-        #Количество заданных вопросов и количество правильных ответов
-        return q_count, q_true
+        return database.get_entry("users_info", ['q_count'], {'request_id': id})[0][0],\
+               database.get_entry("users_info", ['q_true'], {'request_id': id})[0][0]
     else:
         return False
 
+
 def update_stat_session(mode, data, id, database):
     if mode == 'training':
-        #data = [q_count, q_true]
+        database.update_entries('users_info', id, {'q_count': data[0], 'q_true': data[1]})
         return True
     else:
         return False

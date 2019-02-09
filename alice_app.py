@@ -43,7 +43,7 @@ def init_database(host, user, password, dbname):
                        "handler": "str DEFAULT 'null'", "Name": "str DEFAULT 'null'", "Named": "bool DEFAULT False",
                        "eng_words": "str DEFAULT ''", "rus_words": "str DEFAULT ''",
                        "learned_eng_words": "str DEFAULT ''", "learned_rus_words": "str DEFAULT ''",
-                       "training_score": "str DEFAULT ''"
+                       "training_score": "str DEFAULT ''", "q_count": "int DEFAULT 0", "q_true": "int DEFAULT 0"
                        })
     return psdb
 
