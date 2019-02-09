@@ -81,6 +81,7 @@ def handle_dialog(request, response, user_storage, database):
     handle = answer['class']
     warning = answer['warning']
     answer = answer['answer']
+    print(mode, handle)
 
     if handle == "add":
         success = add_word(answer[0], answer[1], user_id, database)
@@ -115,7 +116,7 @@ def handle_dialog(request, response, user_storage, database):
             buttons, user_storage = get_suggests(stor)
         else:
             output_message = 'Ля-ля-ля'
-            stor = {'sggests' : ['Дальше', 'Попробовать еще']}
+            stor = {'suggests' : ['Дальше', 'Попробовать еще']}
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
