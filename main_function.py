@@ -76,6 +76,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
     if input_message == 'training':
         update_mode(user_id, 'training', database)
+        mode = 'training'
 
     answer = classify(input_message, mode)
     handle = answer['class']
