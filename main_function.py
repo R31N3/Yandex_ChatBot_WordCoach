@@ -83,7 +83,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               handler)
 
-    if input_message == 'почисть словарь':
+    if input_message == 'отчисть словарь':
         update_dictionary(request.user_id, {'to_learn' : {}, 'learned' : {}}, database)
 
     answer = classify(input_message, handler)
