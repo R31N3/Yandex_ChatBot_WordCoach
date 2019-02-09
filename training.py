@@ -87,7 +87,10 @@ def main(q, answer, q_type, id, database):
             stat_session[1] += 1
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
-            score[q] += 1
+            if q in score:
+                score[q] += 1
+            else:
+                score[q] = 0
             update_progress('training', id, score, database)
             if score[q] >= 4:
                 dictionary = get_dictionary(id, database)
@@ -104,7 +107,10 @@ def main(q, answer, q_type, id, database):
         else:
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
-            score[q] = max(0, score[q] - 2)
+            if q in score:
+                score[q] = max(0, score[q] - 2)
+            else:
+                score[q] = 0
             update_progress('training', id, score, database)
             if score[q] < 4:
                 dictionary = get_dictionary(id, database)
