@@ -100,8 +100,10 @@ def handle_dialog(request, response, user_storage, database):
         if warning:
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
+            update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
     elif handle == 'del':
         success = del_word(answer.strip(), user_id, database)
         if success == 'no such word':
@@ -115,8 +117,10 @@ def handle_dialog(request, response, user_storage, database):
         if warning:
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
+            update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
     elif handle == 'use_mode':
         if get_mode(user_id, database) == 'training':
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
@@ -124,7 +128,7 @@ def handle_dialog(request, response, user_storage, database):
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
                 stor = {'suggests' : but}
             else:
-                stor = user_storage
+                stor = user_storage.copy()
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
         else:

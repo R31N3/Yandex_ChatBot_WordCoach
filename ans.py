@@ -1,4 +1,6 @@
 def classify(text, mode):
+    if mode == '':
+        mode = 0
     text = text.strip()
     text = text.lower()
     warning = True
