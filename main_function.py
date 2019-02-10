@@ -29,8 +29,9 @@ def handle_dialog(request, response, user_storage, database):
     user_storage['suggests'] = [
         "Помощь",
         "Покажи словарь",
-        "Очистить словарь",
-        "Тренировка"
+        "Очисть словарь",
+        "Тренировка",
+        "Наборы слов"
     ]
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
@@ -69,6 +70,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
 
     if input_message == 'очистить словарь':
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
@@ -146,7 +148,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
             if get_mode(user_id, database) == 'training':
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
-                stor = {'suggests' : but + ['Закончить']}
+                stor = {'suggests' : but + ['Закончить тренировку', 'Помощь']}
             else:
                 stor = {'suggests' : user_storage['suggests']}
                 update_mode(user_id, '', database)

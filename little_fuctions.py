@@ -253,3 +253,6 @@ def get_q(id, database):
 def update_q(id, q, database):
     database.update_entries('users_info', id, {'q': q}, update_type='rewrite')
     return True
+
+def get_name(id, database):
+    return database.get_entry("users_info", ['Name'], {'request_id': id})[0][0]
