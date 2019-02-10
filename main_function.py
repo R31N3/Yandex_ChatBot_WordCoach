@@ -126,7 +126,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message == 'наборы слов' and mode == '':
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам'
-        buttons, user_storage = get_suggests({'suggests' : list(words['nouns'].keys()) + ['В начало'])
+        buttons, user_storage = get_suggests({'suggests' : list(words['nouns'].keys()) + ['В начало']})
         mode = 'add_set'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
