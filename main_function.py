@@ -51,7 +51,8 @@ def handle_dialog(request, response, user_storage, database):
         user_storage['suggests'] = [
             "Помощь",
             "Покажи словарь",
-            "Очистить словарь"
+            "Очистить словарь",
+            "Тренировка"
         ]
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
@@ -74,7 +75,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-    if input_message == 'training':
+    if input_message == 'Тренировка':
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
@@ -128,7 +129,7 @@ def handle_dialog(request, response, user_storage, database):
             mode = get_mode(user_id, database)
         else:
             output_message = 'Ля-ля-ля'
-            stor = {'suggests' : ['Дальше', 'Попробовать еще']}
+            stor = user_storage
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
