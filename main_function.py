@@ -129,6 +129,7 @@ def handle_dialog(request, response, user_storage, database):
                 stor = {'suggests' : but}
             else:
                 stor = user_storage.copy()
+                update_mode(user_id, '', database)
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
         else:
