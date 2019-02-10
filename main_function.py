@@ -16,7 +16,10 @@ def message_return(response, user_storage, message, button, database, request, m
     # ща будет магия
     update_mode(request.user_id, mode, database)
     response.set_text(message)
-    response.set_tts(message + "Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
+    if mode != 'training':
+        response.set_tts(message + "Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
+    else:
+        response.set_tts(message + "Варианты: {}".format(", ".join(user_storage['suggests'])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
