@@ -62,11 +62,11 @@ def get_question(id, database):
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
     if randint(0, 1) == 0:
         update_q(id, list(dictionary[key].keys())[index_word], database)
-        return list(dictionary[key].keys())[index_word]
+        return (list(dictionary[key].keys())[index_word]).upper()
     else:
         word = list(dictionary[key].keys())[index_word]
         update_q(id, ' '.join(dictionary[key][word]), database)
-        return ' '.join(dictionary[key][word])
+        return (' '.join(dictionary[key][word])).upper()
 
 def random_true(id, database):
     return ['Правильно', 'Верно', 'Так держать', 'Вперед'][randint(0, 3)] + (', ' + get_name(id, database)) * randint(0, 1) + '!'
@@ -91,7 +91,7 @@ def main(q, answer, q_type, id, database):
             return 'Словарь пуст. Для начала - добавьте в него слова.'
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
-        return 'В этом режиме нужно переводить слова из вашего словаря :)\n' + get_question(id, database)
+        return 'В этом режиме нужно переводить слова из вашего словаря :)\n Команда "Закончить" завершит тренировку\n' + get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
