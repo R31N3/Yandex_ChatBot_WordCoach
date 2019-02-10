@@ -70,13 +70,15 @@ def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif answer == 'end' or answer == 'закончить':
-        update_mode(id, '', database)
-        return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(*get_stat_session('training', id, database))
+        update_mode(id, 'end_training', database)
+        q_count, q_true = get_stat_session('training', id, database)
+        if q_count != 0:
+            q_count -= 1
+        return 'Хорошо поиграли! Вы ответили на {} из {} моих вопросов'.format(q_true, q_count)
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         dictionary = get_dictionary(id, database)
         if len(dictionary['to_learn'].keys()) + len(dictionary['learned'].keys()) == 0:
-            update_mode(id, '', database)
             update_q(id, '###empty', database)
             return 'Словарь пуст. Для начала - добавьте в него слова.'
         stat_session[0] += 1

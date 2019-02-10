@@ -26,6 +26,12 @@ def handle_dialog(request, response, user_storage, database):
         user_storage = {"suggests": []}
     input_message = request.command.lower()
     user_id = request.user_id
+    user_storage['suggests'] = [
+        "Помощь",
+        "Покажи словарь",
+        "Очистить словарь",
+        "Тренировка"
+    ]
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
                                                         {'request_id': user_id})[0][0]:
@@ -48,11 +54,6 @@ def handle_dialog(request, response, user_storage, database):
             user_storage["name"] = request.command
             database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
 
-        user_storage['suggests'] = [
-            "Помощь",
-            "Покажи словарь",
-            "Очистить словарь"
-        ]
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
             .join(user_storage['suggests'])
@@ -60,7 +61,8 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
-    mode = database.get_entry("users_info", ['mode'], {'request_id': user_id})[0][0]
+    mode = get_mode(user_id, database)
+
 
     if input_message == 'покажи словарь':
         output_message = envision_dictionary(user_id, database)
@@ -74,53 +76,10 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-    if input_message == 'training':
+    if input_message == 'тренировка':
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
-
-    answer = classify(input_message, mode)
-    handle = answer['class']
-    warning = answer['warning']
-    answer = answer['answer']
-
-    if handle == "add":
-        success = add_word(answer[0], answer[1], user_id, database)
-        if language_match(answer[0], answer[1]) == 'miss':
-            answer = answer[::-1]
-        if success == 'already exists':
-            output_message = 'В Вашем словаре уже есть такой перевод'
-        elif not success:
-            output_message = 'Пара должна состоять из русского и английского слова'
-        else:
-            output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
-            update_dictionary(user_id, success, database)
-        buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
-    elif handle == 'del':
-        success = del_word(answer.strip(), user_id, database)
-        if success == 'no such word':
-            output_message = 'В Вашем словаре нет такого слова'
-        elif not success:
-            output_message = 'Слово должно быть русским или английским'
-        else:
-            output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
-            update_dictionary(user_id, success, database)
-        buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
-    elif handle == 'use_mode':
-        if get_mode(user_id, database) == 'training':
-            output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
-            stor = {'suggests' : training.get_buttons(get_q(user_id, database), user_id, database)}
-            buttons, user_storage = get_suggests(stor)
-        else:
-            output_message = 'Ля-ля-ля'
-            stor = {'suggests' : ['Дальше', 'Попробовать еще']}
-            buttons, user_storage = get_suggests(stor)
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
 
     if "помощь" in input_message or input_message in "а что ты умеешь":
         output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется! \nДля занесения" \
@@ -140,6 +99,65 @@ def handle_dialog(request, response, user_storage, database):
         response.set_tts(choice, True)
         response.end_session = True
         return response, user_storage
+
+    answer = classify(input_message, mode)
+    handle = answer['class']
+    warning = answer['warning']
+    answer = answer['answer']
+
+    if handle == "add":
+        success = add_word(answer[0], answer[1], user_id, database)
+        if language_match(answer[0], answer[1]) == 'miss':
+            answer = answer[::-1]
+        if success == 'already exists':
+            output_message = 'В Вашем словаре уже есть такой перевод'
+        elif not success:
+            output_message = 'Пара должна состоять из русского и английского слова'
+        else:
+            output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
+            update_dictionary(user_id, success, database)
+        buttons, user_storage = get_suggests(user_storage)
+        if warning:
+            output_message += '\nРежим тренировки автоматически завершен'
+            mode = ''
+            update_mode(user_id, mode, database)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    elif handle == 'del':
+        success = del_word(answer.strip(), user_id, database)
+        if success == 'no such word':
+            output_message = 'В Вашем словаре нет такого слова'
+        elif not success:
+            output_message = 'Слово должно быть русским или английским'
+        else:
+            output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
+            update_dictionary(user_id, success, database)
+        buttons, user_storage = get_suggests(user_storage)
+        if warning:
+            output_message += '\nРежим тренировки автоматически завершен'
+            mode = ''
+            update_mode(user_id, mode, database)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    elif handle == 'use_mode':
+        if get_mode(user_id, database) == 'training':
+            output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
+            if get_mode(user_id, database) == 'training':
+                but = training.get_buttons(get_q(user_id, database), user_id, database)
+                stor = {'suggests' : but + ['Закончить']}
+            else:
+                stor = {'suggests' : user_storage['suggests']}
+                update_mode(user_id, '', database)
+            buttons, user_storage = get_suggests(stor)
+            mode = get_mode(user_id, database)
+        else:
+            output_message = 'Ля-ля-ля'
+            stor = {'suggests' : user_storage['suggests']}
+            buttons, user_storage = get_suggests(stor)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
 
     buttons, user_storage = get_suggests(user_storage)
     return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
