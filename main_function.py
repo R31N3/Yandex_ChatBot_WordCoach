@@ -118,6 +118,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
             update_mode(user_id, mode, database)
+            output_message += '\n {} {}'.format(mode, ' '.join(buttons))
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -134,7 +135,7 @@ def handle_dialog(request, response, user_storage, database):
             mode = get_mode(user_id, database)
         else:
             output_message = 'Ля-ля-ля'
-            stor = user_storage
+            stor = user_storage.copy()
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
