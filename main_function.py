@@ -48,12 +48,6 @@ def handle_dialog(request, response, user_storage, database):
             user_storage["name"] = request.command
             database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
 
-        user_storage['suggests'] = [
-            "Помощь",
-            "Покажи словарь",
-            "Очистить словарь",
-            "Тренировка"
-        ]
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
             .join(user_storage['suggests'])
@@ -62,6 +56,12 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
     mode = get_mode(user_id, database)
+    user_storage['suggests'] = [
+        "Помощь",
+        "Покажи словарь",
+        "Очистить словарь",
+        "Тренировка"
+    ]
 
     if input_message == 'покажи словарь':
         output_message = envision_dictionary(user_id, database)
@@ -101,6 +101,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
             update_mode(user_id, mode, database)
+            output_message += '\n {} {}'.format(mode, ' '.join(buttons))
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -118,7 +119,6 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
             update_mode(user_id, mode, database)
-            output_message += '\n {} {}'.format(mode, ' '.join(buttons))
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -129,13 +129,13 @@ def handle_dialog(request, response, user_storage, database):
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
                 stor = {'suggests' : but}
             else:
-                stor = user_storage.copy()
+                stor = {'suggests' : user_storage['suggests']}
                 update_mode(user_id, '', database)
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
         else:
             output_message = 'Ля-ля-ля'
-            stor = user_storage.copy()
+            stor = {'suggests' : user_storage['suggests']}
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
