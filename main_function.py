@@ -5,6 +5,7 @@ import json
 from ans import *
 from little_fuctions import *
 import training
+from words import words
 
 
 aliceAnswers = read_answers_data("data/answers_dict_example")
@@ -78,6 +79,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
     if input_message == 'тренировка':
         update_mode(user_id, 'training', database)
         mode = 'training'
@@ -86,11 +88,11 @@ def handle_dialog(request, response, user_storage, database):
     if "помощь" in input_message or input_message in "а что ты умеешь" and mode == '':
         output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
         buttons, user_storage = get_suggests({'suggests' : ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?', 'В начало']})
-        mode = ''
+        mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'как добавлять слова?' and mode == '':
+    if input_message == 'как добавлять слова?' and mode == 'help':
         output_message = "Для занесения" \
                          " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
                          " команд для этого: +; Аdd; Добавь слово; Добавь."
@@ -99,7 +101,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'как удалять слова?' and mode == '':
+    if input_message == 'как удалять слова?' and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
                          "свой словарь или же удалить из него отдельное слово, используя, например, команду 'Удали" \
                          "hello'.\nПолный список команд для этого: -; Del; Удали."
@@ -108,17 +110,42 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'что делать?' and mode == '':
-        output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом.'\
+    if input_message == 'что делать?' and mode == 'help':
+        output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом. '\
                          'В итоге прочитал Н.Г. Чернышевского "Что делать?" и начал учить английский!'
         mode = ''
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'в начало' and mode == '':
+    if input_message == 'в начало' and (mode == 'help' or mode == 'add_set'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'наборы слов' and mode == '':
+        output_message = 'Ты можешь добавить наборы слов по следующим тематикам'
+        buttons, user_storage = get_suggests({'suggests' : list(words['nouns'].keys()) + ['В начало'])
+        mode = 'add_set'
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'animals' and mode == 'add_set':
+        for word, translate in words['nouns']['animals']:
+            add_word(word, translate, user_id, database)
+        buttons, user_storage = get_suggests(user_storage)
+        output_message = 'Добавил, теперь потренируемся?'
+        mode = ''
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'food' and mode == 'add_set':
+        for word, translate in words['nouns']['food']:
+            add_word(word, translate, user_id, database)
+        buttons, user_storage = get_suggests(user_storage)
+        output_message = 'Добавил, теперь потренируемся?'
+        mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
