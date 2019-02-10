@@ -58,7 +58,7 @@ def handle_dialog(request, response, user_storage, database):
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
             .join(user_storage['suggests'])
-        mode = "-1"
+        mode = ""
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
@@ -83,13 +83,42 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
 
-    if "помощь" in input_message or input_message in "а что ты умеешь":
-        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется! \nДля занесения" \
+    if "помощь" in input_message or input_message in "а что ты умеешь" and mode == '':
+        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
+        buttons, user_storage = get_suggests({'suggests' : ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?', 'В начало']})
+        mode = ''
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'как добавлять слова?' and mode == '':
+        output_message = "Для занесения" \
                          " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
-                         " команд для этого: +; Аdd; Добавь слово; Добавь. \nТак же ты можешь полностью очистить " \
-                         "свой словарь или же удалить отдельно слово из него, используя, например, команду 'Удали" \
+                         " команд для этого: +; Аdd; Добавь слово; Добавь."
+        buttons, user_storage = get_suggests(
+            {'suggests': ['Как удалять слова?', 'Что делать?', 'В начало']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'как удалять слова?' and mode == '':
+        output_message = "Ты можешь полностью очистить " \
+                         "свой словарь или же удалить из него отдельное слово, используя, например, команду 'Удали" \
                          "hello'.\nПолный список команд для этого: -; Del; Удали."
+        buttons, user_storage = get_suggests(
+            {'suggests': ['Как добавлять слова?', 'Что делать?', 'В начало']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'что делать?' and mode == '':
+        output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом.'\
+                         'В итоге прочитал Н.Г. Чернышевского "Что делать?" и начал учить английский!'
+        mode = ''
         buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'в начало' and mode == '':
+        buttons, user_storage = get_suggests(user_storage)
+        output_message = 'Ок, начнем с начала ;)'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -148,7 +177,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
             if get_mode(user_id, database) == 'training':
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
-                stor = {'suggests' : but + ['Закончить тренировку', 'Помощь']}
+                stor = {'suggests' : but + ['Закончить тренировку']}
             else:
                 stor = {'suggests' : user_storage['suggests']}
                 update_mode(user_id, '', database)
