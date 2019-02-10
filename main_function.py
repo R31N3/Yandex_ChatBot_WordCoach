@@ -26,6 +26,12 @@ def handle_dialog(request, response, user_storage, database):
         user_storage = {"suggests": []}
     input_message = request.command.lower()
     user_id = request.user_id
+    user_storage['suggests'] = [
+        "Помощь",
+        "Покажи словарь",
+        "Очистить словарь",
+        "Тренировка"
+    ]
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
                                                         {'request_id': user_id})[0][0]:
@@ -56,12 +62,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
     mode = get_mode(user_id, database)
-    user_storage['suggests'] = [
-        "Помощь",
-        "Покажи словарь",
-        "Очистить словарь",
-        "Тренировка"
-    ]
+
 
     if input_message == 'покажи словарь':
         output_message = envision_dictionary(user_id, database)
@@ -101,7 +102,6 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен'
             mode = ''
             update_mode(user_id, mode, database)
-            output_message += '\n {} {}'.format(mode, ' '.join(buttons))
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
