@@ -62,7 +62,7 @@ def get_question(id, database):
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
     if randint(0, 1) == 0:
         update_q(id, list(dictionary[key].keys())[index_word], database)
-        return (list(dictionary[key].keys())[index_word]).upper()
+        return '\n' + (list(dictionary[key].keys())[index_word]).upper()
     else:
         word = list(dictionary[key].keys())[index_word]
         update_q(id, ' '.join(dictionary[key][word]), database)
@@ -122,18 +122,20 @@ def main(q, answer, q_type, id, database):
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
             if language_match(q, 'f'):
-                q = get_ans(q, id, database)
-            if q in score:
-                score[q] = max(0, score[q] - 2)
+                q_eng = get_ans(q, id, database)
             else:
-                score[q] = 0
+                q_eng = q[:]
+            if q_eng in score:
+                score[q_eng] = max(0, score[q_eng] - 2)
+            else:
+                score[q_eng] = 0
             update_progress('training', id, score, database)
-            if score[q] < 4:
+            if score[q_eng] < 4:
                 dictionary = get_dictionary(id, database)
                 updated = False
-                if q in dictionary['learned']:
-                    dictionary['to_learn'][q] = dictionary['learned'][q]
-                    dictionary['learned'].pop(q)
+                if q_eng in dictionary['learned']:
+                    dictionary['to_learn'][q_eng] = dictionary['learned'][q_eng]
+                    dictionary['learned'].pop(q_eng)
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
