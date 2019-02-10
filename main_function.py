@@ -60,7 +60,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
-    mode = database.get_entry("users_info", ['mode'], {'request_id': user_id})[0][0]
+    mode = get_mode(user_id, database)
 
     if input_message == 'покажи словарь':
         output_message = envision_dictionary(user_id, database)
@@ -96,6 +96,9 @@ def handle_dialog(request, response, user_storage, database):
             output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
+        if warning:
+            output_message += '\nРежим тренировки автоматически завершен'
+            update_mode(user_id, '', database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
     elif handle == 'del':
@@ -108,6 +111,9 @@ def handle_dialog(request, response, user_storage, database):
             output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
+        if warning:
+            output_message += '\nРежим тренировки автоматически завершен'
+            update_mode(user_id, '', database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
     elif handle == 'use_mode':
