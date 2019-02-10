@@ -134,7 +134,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'animals' and mode == 'add_set':
         for word, translate in words['nouns']['animals'].items():
             dictionary = add_word(word, translate, user_id, database)
-            if dictionary:
+            if dictionary != 'already exists':
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Добавил, теперь потренируемся?'
@@ -145,7 +145,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'food' and mode == 'add_set':
         for word, translate in words['nouns']['food'].items():
             dictionary = add_word(word, translate, user_id, database)
-            if dictionary:
+            if dictionary != 'already exists':
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Добавил, теперь потренируемся?'
