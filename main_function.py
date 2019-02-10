@@ -86,8 +86,8 @@ def handle_dialog(request, response, user_storage, database):
 
     if "помощь" in input_message or input_message in "а что ты умеешь" and mode == '':
         output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
-        buttons, user_storage = get_suggests({'suggests' : ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
-                                                            'В начало']})
+        buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
+                                                           'В начало']})
         mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -126,7 +126,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     if input_message == 'наборы слов' and mode == '':
-        output_message = 'Ты можешь добавить наборы слов по следующим тематикам'
+        output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'
         buttons, user_storage = get_suggests({'suggests': list(words['nouns'].keys()) + ['В начало']})
         mode = 'add_set'
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -173,15 +173,15 @@ def handle_dialog(request, response, user_storage, database):
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
         if success == 'already exists':
-            output_message = 'В Вашем словаре уже есть такой перевод'
+            output_message = 'В Вашем словаре уже есть такой перевод.'
         elif not success:
-            output_message = 'Пара должна состоять из русского и английского слова'
+            output_message = 'Пара должна состоять из русского и английского слова.'
         else:
             output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         if warning:
-            output_message += '\nРежим тренировки автоматически завершен'
+            output_message += '\nРежим тренировки автоматически завершен.'
             mode = ''
             update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -190,15 +190,15 @@ def handle_dialog(request, response, user_storage, database):
     elif handle == 'del':
         success = del_word(answer.strip(), user_id, database)
         if success == 'no such word':
-            output_message = 'В Вашем словаре нет такого слова'
+            output_message = 'В Вашем словаре нет такого слова.'
         elif not success:
-            output_message = 'Слово должно быть русским или английским'
+            output_message = 'Слово должно быть русским или английским.'
         else:
-            output_message = 'Слово {} удалено из Вашего словаря'.format(answer)
+            output_message = 'Слово {} удалено из Вашего словаря.'.format(answer)
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         if warning:
-            output_message += '\nРежим тренировки автоматически завершен'
+            output_message += '\nРежим тренировки автоматически завершен.'
             mode = ''
             update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -216,7 +216,7 @@ def handle_dialog(request, response, user_storage, database):
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
         else:
-            output_message = 'Ля-ля-ля'
+            output_message = 'Ля-ля-ля.'
             stor = {'suggests': user_storage['suggests']}
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
