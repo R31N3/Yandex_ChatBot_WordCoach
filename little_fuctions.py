@@ -224,7 +224,7 @@ def IDontUnderstand(response, user_storage, answer):
     import random
     message = random.choice(answer)
     response.set_text(message)
-    response.set_tts(message)
+    response.set_tts(message + "Доступные команды: {}.".format(user_storage['suggests']))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(buttons)
     return response, user_storage

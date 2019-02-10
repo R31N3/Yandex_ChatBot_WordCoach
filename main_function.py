@@ -16,7 +16,7 @@ def message_return(response, user_storage, message, button, database, request, m
     # ща будет магия
     update_mode(request.user_id, mode, database)
     response.set_text(message)
-    response.set_tts(message)
+    response.set_tts(message + "Доступные команды: {}.".format(user_storage['suggests']))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -56,7 +56,6 @@ def handle_dialog(request, response, user_storage, database):
             user_storage["name"] = request.command
             database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
 
-
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()+" Доступные разделы: " + ", "\
             .join(user_storage['suggests'])
         mode = ""
@@ -65,13 +64,11 @@ def handle_dialog(request, response, user_storage, database):
 
     mode = get_mode(user_id, database)
 
-
     if input_message == 'покажи словарь':
         output_message = envision_dictionary(user_id, database)
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-
 
     if input_message == 'очисть словарь':
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
@@ -87,7 +84,8 @@ def handle_dialog(request, response, user_storage, database):
 
     if "помощь" in input_message or input_message in "а что ты умеешь" and mode == '':
         output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
-        buttons, user_storage = get_suggests({'suggests' : ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?', 'В начало']})
+        buttons, user_storage = get_suggests({'suggests' : ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
+                                                            'В начало']})
         mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -126,7 +124,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message == 'наборы слов' and mode == '':
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам'
-        buttons, user_storage = get_suggests({'suggests' : list(words['nouns'].keys()) + ['В начало']})
+        buttons, user_storage = get_suggests({'suggests': list(words['nouns'].keys()) + ['В начало']})
         mode = 'add_set'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -208,21 +206,18 @@ def handle_dialog(request, response, user_storage, database):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
             if get_mode(user_id, database) == 'training':
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
-                stor = {'suggests' : but + ['Закончить тренировку']}
+                stor = {'suggests': but + ['Закончить тренировку']}
             else:
-                stor = {'suggests' : user_storage['suggests']}
+                stor = {'suggests': user_storage['suggests']}
                 update_mode(user_id, '', database)
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
         else:
             output_message = 'Ля-ля-ля'
-            stor = {'suggests' : user_storage['suggests']}
+            stor = {'suggests': user_storage['suggests']}
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
     buttons, user_storage = get_suggests(user_storage)
     return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
-
-
-
