@@ -76,7 +76,6 @@ def main(q, answer, q_type, id, database):
         stat_session = get_stat_session('training', id, database)
         dictionary = get_dictionary(id, database)
         if len(dictionary['to_learn'].keys()) + len(dictionary['learned'].keys()) == 0:
-            update_mode(id, '', database)
             update_q(id, '###empty', database)
             return 'Словарь пуст. Для начала - добавьте в него слова.'
         stat_session[0] += 1
