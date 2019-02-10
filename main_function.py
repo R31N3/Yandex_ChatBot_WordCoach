@@ -72,7 +72,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
 
-    if input_message == 'очистить словарь':
+    if input_message == 'очисть словарь':
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)

@@ -33,8 +33,10 @@ def get_buttons(q, id, database):
             for rus_words in dictionary[k].values():
                 words = words.union(set(rus_words))
         words = list(words)
-        output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
-        output.insert(randint(0, 2), ans)
+        output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
+        while len(set(output)) != 3:
+            output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
+        output.insert(randint(0, 3), ans)
         return output
     elif language_match('f', q):
         words = {'fish', 'potato', 'grass', 'pasta'}
