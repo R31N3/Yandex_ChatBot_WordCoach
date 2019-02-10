@@ -47,10 +47,14 @@ def name(id, database):
 
 def language_match(word, translate):
     if set(list(word)).intersection(set(list('abcdefghijklmnopqrstuvwxyz'))) \
-        and  set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
+        and  set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
+        and not set(list(translate)).intersection(set(list('abcdefghijklmnopqrstuvwxyz')))\
+        and not set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
         return True
     elif set(list(translate)).intersection(set(list('abcdefghijklmnopqrstuvwxyz'))) \
-        and  set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
+        and  set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
+        and not set(list(word)).intersection(set(list('abcdefghijklmnopqrstuvwxyz')))\
+        and not set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
         return 'miss'
     else:
         return False #(word, translate) is neither (rus, eng) nor (eng, rus)

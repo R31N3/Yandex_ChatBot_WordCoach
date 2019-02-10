@@ -135,7 +135,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'animals' and mode == 'add_set':
         for word, translate in words['nouns']['animals'].items():
             dictionary = add_word(word, translate, user_id, database)
-            if dictionary != 'already exists':
+            if dictionary != 'already exists' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Добавил, теперь потренируемся?'
