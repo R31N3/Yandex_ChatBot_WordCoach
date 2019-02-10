@@ -71,7 +71,10 @@ def main(q, answer, q_type, id, database):
         return inf()
     elif answer == 'end' or answer == 'закончить':
         update_mode(id, 'end_training', database)
-        return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(*get_stat_session('training', id, database))
+        q_count, q_true = get_stat_session('training', id, database)
+        if q_count != 0:
+            q_count -= 1
+        return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(q_true, q_count)
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         dictionary = get_dictionary(id, database)
