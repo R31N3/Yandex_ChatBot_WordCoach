@@ -81,6 +81,25 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
 
+    if "помощь" in input_message or input_message in "а что ты умеешь":
+        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется! \nДля занесения" \
+                         " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
+                         " команд для этого: +; Аdd; Добавь слово; Добавь. \nТак же ты можешь полностью очистить " \
+                         "свой словарь или же удалить отдельно слово из него, используя, например, команду 'Удали" \
+                         "hello'.\nПолный список команд для этого: -; Del; Удали."
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    update_mode(user_id, mode, database)
+
+    if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
+        choice = random.choice(aliceAnswers["quitTextVariations"])
+        response.set_text(choice)
+        response.set_tts(choice, True)
+        response.end_session = True
+        return response, user_storage
+
     answer = classify(input_message, mode)
     handle = answer['class']
     warning = answer['warning']
@@ -127,7 +146,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
             if get_mode(user_id, database) == 'training':
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
-                stor = {'suggests' : but}
+                stor = {'suggests' : but + ['Закончить']}
             else:
                 stor = {'suggests' : user_storage['suggests']}
                 update_mode(user_id, '', database)
@@ -139,25 +158,6 @@ def handle_dialog(request, response, user_storage, database):
             buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-
-    if "помощь" in input_message or input_message in "а что ты умеешь":
-        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется! \nДля занесения" \
-                         " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
-                         " команд для этого: +; Аdd; Добавь слово; Добавь. \nТак же ты можешь полностью очистить " \
-                         "свой словарь или же удалить отдельно слово из него, используя, например, команду 'Удали" \
-                         "hello'.\nПолный список команд для этого: -; Del; Удали."
-        buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
-
-    update_mode(user_id, mode, database)
-
-    if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
-        choice = random.choice(aliceAnswers["quitTextVariations"])
-        response.set_text(choice)
-        response.set_tts(choice, True)
-        response.end_session = True
-        return response, user_storage
 
     buttons, user_storage = get_suggests(user_storage)
     return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
