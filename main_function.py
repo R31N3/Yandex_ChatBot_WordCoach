@@ -98,7 +98,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         if warning:
             output_message += '\nРежим тренировки автоматически завершен'
-            update_mode(user_id, '', database)
+            mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
     elif handle == 'del':
@@ -113,18 +113,19 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         if warning:
             output_message += '\nРежим тренировки автоматически завершен'
-            update_mode(user_id, '', database)
+            mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
     elif handle == 'use_mode':
         if get_mode(user_id, database) == 'training':
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
-            but = training.get_buttons(get_q(user_id, database), user_id, database)
-            if but:
+            if get_mode(id, database) == 'training':
+                but = training.get_buttons(get_q(user_id, database), user_id, database)
                 stor = {'suggests' : but}
             else:
                 stor = user_storage
             buttons, user_storage = get_suggests(stor)
+            mode = get_mode(user_id, database)
         else:
             output_message = 'Ля-ля-ля'
             stor = {'suggests' : ['Дальше', 'Попробовать еще']}

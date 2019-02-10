@@ -24,11 +24,7 @@ def inf():
 
 def get_buttons(q, id, database):
     if q == '###empty':
-        dictionary = get_dictionary(id, database)
-        if len(dictionary['to_learn'].keys()) + len(dictionary['learned'].keys()) == 0:
-            return ['add I Я', 'add Яблоко Apple', 'Закончить']
-        else:
-            return False
+        return ['add I Я', 'add Яблоко Apple', 'Закончить']
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
@@ -74,7 +70,7 @@ def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif answer == 'end' or answer == 'закончить':
-        update_mode(id, '', database)
+        update_mode(id, 'end_training', database)
         return 'Хорошо поиграли! Вы ответили на {1} из {0} моих вопросов'.format(*get_stat_session('training', id, database))
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
