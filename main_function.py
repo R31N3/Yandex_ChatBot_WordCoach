@@ -75,7 +75,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-    if input_message == 'Тренировка':
+    if input_message == 'тренировка':
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
