@@ -142,13 +142,13 @@ words = {
     "have": "иметь",
     "be": "быть",
   },
-  "cars": {
+  "Сars": {
     "mers": "мэрс"
   },
-  'ebola': {
+  'Ebola': {
     'ebola ubivaet': 'эбола убивает'
   },
-  'ebola1': {
+  'Ebola1': {
     'ebola ubivaet1': 'эбола убивает1'
   }
 }

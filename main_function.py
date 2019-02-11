@@ -205,7 +205,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in words.keys() and mode.startswith('add_set'):
+    if input_message in list(map(lambda x: x.lower(), words.keys())) and mode.startswith('add_set'):
         for word, translate in words[input_message].items():
             dictionary = add_word(word, translate, user_id, database)
             if dictionary != 'already exists' and dictionary:
