@@ -41,7 +41,7 @@ def handle_dialog(request, response, user_storage, database):
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
                                                         {'request_id': user_id})[0][0]:
         if request.is_new_session and (database.get_entry("users_info", ['Name'],
-                                                          {'request_id': user_id}) == 'null'or
+                                                          {'request_id': user_id}) == 'null' or
                                        not database.get_entry("users_info", ['Name'], {'request_id': user_id})):
             output_message = "Тебя приветствует Word Coach, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
@@ -84,8 +84,10 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
 
-    if "помощь" in input_message or "а что ты умеешь" in input_message:
-        output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
+    if "помощь" in input_message or "что ты умеешь" in input_message:
+        output_message = "Благодаря данному навыку ты можешь учить английский так, как тебе хочется! Ты можешь " \
+                         "добавить слова, которые хочешь выучить, используя удобные тебе ассоциации, или же выбрать" \
+                         "набор из доступных категорий, после чего испытать свои силы в тренировке!"
         buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
                                                            'В начало']})
         if mode == 'training':
