@@ -91,7 +91,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (input_message == 'незученные слова' and mode == '1_dict')\
+    if (input_message == 'неизученные слова' and mode == '1_dict')\
             or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
         page = int(mode.split('_')[0])
         output_message = envision_dictionary(user_id, database, True, page)
