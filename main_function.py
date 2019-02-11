@@ -82,6 +82,8 @@ def handle_dialog(request, response, user_storage, database):
         else:
             mode = '{}_dict'.format(page - 1)
         max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
+        if max_page == 0:
+            output_message = 'У тебя еще нет изученных слов.'
         buttons = ['В начало']
         if page < max_page:
             buttons = ['Дальше'] + buttons
@@ -100,11 +102,16 @@ def handle_dialog(request, response, user_storage, database):
         else:
             mode = '{}_dict'.format(page - 1)
         max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
-        buttons = ['В начало']
-        if page < max_page:
-            buttons = ['Дальше'] + buttons
-        if page > 1:
-            buttons = ['Назад'] + buttons
+        if max_page == 0:
+            output_message = 'У тебя еще нет неизученных слов.\nМожешь добавить готовые наборы слов.'
+            buttons = ['В начало', 'Наборы слов']
+            mode = ''
+        else:
+            buttons = ['В начало']
+            if page < max_page:
+                buttons = ['Дальше'] + buttons
+            if page > 1:
+                buttons = ['Назад'] + buttons
         buttons, user_storage = get_suggests({'suggests' : buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -205,7 +212,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in list(map(lambda x: x.lower(), words.keys())) and mode.startswith('add_set'):
+    if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message].items():
             dictionary = add_word(word, translate, user_id, database)
             if dictionary != 'already exists' and dictionary:
