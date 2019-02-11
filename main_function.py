@@ -131,7 +131,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (input_message == 'наборы слов' and mode == '') or (input_message == 'назад' and mode == 'add_set 1'):
+    if (input_message == 'наборы слов' and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'\
                          + '\n1 / {}'.format((len(list(words.keys())) + 3) // 4)\
                          if (len(list(words.keys())) + 3) // 4 > 1 else ''
