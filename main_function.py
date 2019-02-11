@@ -29,6 +29,7 @@ def handle_dialog(request, response, user_storage, database):
     if not user_storage:
         user_storage = {"suggests": []}
     input_message = request.command.lower()
+    input_message = input_message.replace("'", "`")
     user_id = request.user_id
     user_storage['suggests'] = [
         "Помощь",
