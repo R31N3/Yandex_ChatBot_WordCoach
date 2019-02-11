@@ -221,10 +221,6 @@ def handle_dialog(request, response, user_storage, database):
                 update_mode(user_id, '', database)
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
-        else:
-            output_message = 'Ля-ля-ля.'
-            stor = {'suggests': user_storage['suggests']}
-            buttons, user_storage = get_suggests(stor)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 

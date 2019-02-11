@@ -1,5 +1,4 @@
 words = {
-  "nouns": {
     "animals": {
       "wolf": "волк",
       "fox": "лиса",
@@ -55,5 +54,4 @@ words = {
       "sour cream": "сметана",
       "pearl barley": "перловка"
     }
-  }
 }
