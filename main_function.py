@@ -84,10 +84,13 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
 
-    if "помощь" in input_message or input_message in "а что ты умеешь" and mode == '':
+    if "помощь" in input_message or "а что ты умеешь" in input_message:
         output_message = "Благодаря данному навыку ты можешь запоминать слова так, как тебе хочется!"
         buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
                                                            'В начало']})
+        if mode == 'training':
+            output_message = training.main(get_q(user_id, database), 'end', 'revise&next', user_id, database) + '\n'\
+                                + output_message
         mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
