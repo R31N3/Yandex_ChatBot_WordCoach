@@ -77,7 +77,7 @@ def handle_dialog(request, response, user_storage, database):
             or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
         page = int(mode.split('_')[0])
         output_message = envision_dictionary(user_id, database, False, page)
-        if input_message == 'дальше' or input_message == 'дальше':
+        if input_message == 'дальше' or input_message == 'изученные слова':
             mode = '{}_dict'.format(page + 1)
         else:
             mode = '{}_dict'.format(page - 1)
@@ -97,7 +97,7 @@ def handle_dialog(request, response, user_storage, database):
             or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict_n')):
         page = int(mode.split('_')[0])
         output_message = envision_dictionary(user_id, database, True, page)
-        if input_message == 'дальше' or input_message == 'дальше':
+        if input_message == 'дальше' or input_message == 'неизученные слова':
             mode = '{}_dict_n'.format(page + 1)
         else:
             mode = '{}_dict_n'.format(page - 1)
