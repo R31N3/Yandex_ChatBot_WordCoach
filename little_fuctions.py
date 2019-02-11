@@ -177,15 +177,19 @@ def update_dictionary(id, words_to_add, database):
                                                'learned_rus_words': "#$".join(learned_rus_words)})
 
 
-def envision_dictionary(id, database):
+def envision_dictionary(id, database, to_learn, page):
     dictionary = get_dictionary(id, database)
-    s = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
-    s += '\n\nНеизучено: {}'.format(len(dictionary['to_learn']))
-    for eng, rus in dictionary['to_learn'].items():
-        s += '\n{} - {}'.format(eng, ', '.join(rus))
-    s += '\n\nИзучено: {}'.format(len(dictionary['learned']))
-    for eng, rus in dictionary['learned'].items():
-        s += '\n{} - {}'.format(eng, ', '.join(rus))
+    s = ''
+    if to_learn:
+        if page == 1: s += 'Неизучено: {}'.format(len(dictionary['to_learn']))
+        for eng, rus in list(dictionary['to_learn'].items())[page*10 - 10:page*10]:
+            s += '\n{} - {}'.format(eng, ', '.join(rus))
+        s += '\n{} / {}'.format(page, (len(list(dictionary['to_learn'].items())) + 9) // 10)
+    else:
+        if page == 1: s += 'Изучено: {}'.format(len(dictionary['learned']))
+        for eng, rus in list(dictionary['learned'].items())[page*10 - 10:page*10]:
+            s += '\n{} - {}'.format(eng, ', '.join(rus))
+        s += '\n{} / {}'.format(page, (len(list(dictionary['learned'].items())) + 9) // 10)
     return s
 
 

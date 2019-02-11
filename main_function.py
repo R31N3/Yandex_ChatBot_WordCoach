@@ -32,8 +32,7 @@ def handle_dialog(request, response, user_storage, database):
     user_id = request.user_id
     user_storage['suggests'] = [
         "Помощь",
-        "Покажи словарь",
-        "Очисть словарь",
+        "Cловарь",
         "Тренировка",
         "Наборы слов"
     ]
@@ -66,25 +65,63 @@ def handle_dialog(request, response, user_storage, database):
 
     mode = get_mode(user_id, database)
 
-    if input_message == 'покажи словарь':
-        output_message = envision_dictionary(user_id, database)
-        buttons, user_storage = get_suggests(user_storage)
+    if input_message == 'словарь':
+        dictionary = get_dictionary(user_id, database)
+        output_message = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
+        buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Очисть словарь', 'В начало']})
+        mode = '1_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'очисть словарь':
+    if (input_message == 'изученные слова' and mode == '1_dict')\
+            or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
+        page = int(mode.split('_')[0])
+        output_message = envision_dictionary(user_id, database, False, page)
+        if input_message == 'дальше' or input_message == 'дальше':
+            mode = '{}_dict'.format(page + 1)
+        else:
+            mode = '{}_dict'.format(page - 1)
+        max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
+        buttons = ['В начало']
+        if page < max_page:
+            buttons = ['Дальше'] + buttons
+        if page > 1:
+            buttons = ['Назад'] + buttons
+        buttons, user_storage = get_suggests({'suggests' : buttons})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if (input_message == 'незученные слова' and mode == '1_dict')\
+            or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
+        page = int(mode.split('_')[0])
+        output_message = envision_dictionary(user_id, database, True, page)
+        if input_message == 'дальше' or input_message == 'дальше':
+            mode = '{}_dict'.format(page + 1)
+        else:
+            mode = '{}_dict'.format(page - 1)
+        max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
+        buttons = ['В начало']
+        if page < max_page:
+            buttons = ['Дальше'] + buttons
+        if page > 1:
+            buttons = ['Назад'] + buttons
+        buttons, user_storage = get_suggests({'suggests' : buttons})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'очисть словарь' and (mode == '' or mode == '1_dict'):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'тренировка':
+    if input_message == 'тренировка' and mode == '':
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
 
-    if "помощь" in input_message or "что ты умеешь" in input_message:
+    if ("помощь" in input_message or "что ты умеешь" in input_message) and mode = '':
         output_message = "Благодаря данному навыку ты можешь учить английский так, как тебе хочется! Ты можешь " \
                          "добавить слова, которые хочешь выучить, используя удобные тебе ассоциации, или же выбрать" \
                          "набор из доступных категорий, после чего испытать свои силы в тренировке!"
@@ -124,7 +161,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'в начало' and (mode == 'help' or mode == 'add_set' or mode == ''):
+    if input_message == 'в начало' and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict')):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
