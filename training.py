@@ -24,7 +24,8 @@ def inf():
 
 def get_buttons(q, id, database):
     if q == '###empty':
-        return ['add I Я', 'add Яблоко Apple', 'Закончить тренировку']
+        update_mode(id, '', database)
+        return ['add I Я', 'add Яблоко Apple', 'Наборы слов', 'В начало']
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
