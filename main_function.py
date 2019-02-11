@@ -172,7 +172,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'в начало' and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict')):
+    if input_message == 'в начало' and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict') or mode.endswith('_dict_n')):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
