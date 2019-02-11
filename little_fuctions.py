@@ -38,31 +38,24 @@ def error_protection(executable_function):
     return decorate
 
 
-def name(id, database):
-    if named:
-        return True #name вытащить из database
-    else:
-        return False #noname
-
-
 def language_match(word, translate):
     if set(list(word)).intersection(set(list('abcdefghijklmnopqrstuvwxyz'))) \
-        and  set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
+        and set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
         and not set(list(translate)).intersection(set(list('abcdefghijklmnopqrstuvwxyz')))\
         and not set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
         return True
     elif set(list(translate)).intersection(set(list('abcdefghijklmnopqrstuvwxyz'))) \
-        and  set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
+        and set(list(word)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
         and not set(list(word)).intersection(set(list('abcdefghijklmnopqrstuvwxyz')))\
         and not set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))):
         return 'miss'
     else:
-        return False #(word, translate) is neither (rus, eng) nor (eng, rus)
+        return False # (word, translate) is neither (rus, eng) nor (eng, rus)
 
 
 def add_word(word, translate, id, database):
-    if language_match(word, translate) == False:
-        return False #incorrect format
+    if not language_match(word, translate):
+        return False # incorrect format
     elif language_match(word, translate) == 'miss':
         word, translate = translate, word
     dictionary = get_dictionary(id, database)
@@ -107,7 +100,7 @@ def del_word(word, id, database):
         else:
             return 'no such word'
     else:
-        return False #word is neither eng nor rus
+        return False # word is neither eng nor rus
 
 
 def change_mode(mode, id, database):
@@ -258,5 +251,24 @@ def update_q(id, q, database):
     database.update_entries('users_info', id, {'q': q}, update_type='rewrite')
     return True
 
+
 def get_name(id, database):
     return database.get_entry("users_info", ['Name'], {'request_id': id})[0][0]
+
+
+def translate_text(text, lang):
+    import requests
+    # lang: en-ru - с английского на русский, ru-en - с русского на английский
+    try:
+        key = "trnsl.1.1.20190206T150145Z.7764248d93f72476.2644ce5f93cfd028b00d8f8fe6f4f1855d7e7b10"
+        request = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&text={}&lang={}".format(key,
+                                                                                                          text, lang)
+        response = requests.get(request)
+
+        if response:
+            return response.json()["text"][0]
+
+        return "Ошибка выполнения запроса:\nHttp статус:", response.status_code, "(", response.reason, \
+               ")\n Саша, чини, твой косяк(наверное)"
+    except:
+        return "Запрос не удалось выполнить. Проверьте наличие сети Интернет."
