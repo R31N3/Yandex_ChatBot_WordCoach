@@ -146,7 +146,7 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) + 1
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
                          + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
-        butts = {'suggests': list(words.keys())[0:4] + \
+        butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Дальше'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
@@ -159,7 +159,7 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) - 1
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
                          + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
-        butts = {'suggests': list(words.keys())[0:4] + \
+        butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Дальше'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')

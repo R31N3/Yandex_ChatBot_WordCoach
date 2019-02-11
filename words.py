@@ -53,5 +53,14 @@ words = {
       "mustard": "горчица",
       "sour cream": "сметана",
       "pearl barley": "перловка"
+    },
+    'cars': {
+        'mers': 'мэрс'
+    },
+    'ebola': {
+        'ebola ubivaet': 'эбола убивает'
+    },
+    'ebola1': {
+        'ebola ubivaet1': 'эбола убивает1'
     }
 }
