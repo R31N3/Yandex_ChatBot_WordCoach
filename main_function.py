@@ -76,13 +76,13 @@ def handle_dialog(request, response, user_storage, database):
     if (input_message == 'изученные слова' and mode == '0_dict')\
             or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
         page = int(mode.split('_')[0])
-        output_message = envision_dictionary(user_id, database, False, page)
         if input_message == 'дальше' or input_message == 'изученные слова':
             mode = '{}_dict'.format(page + 1)
             page += 1
         else:
             mode = '{}_dict'.format(page - 1)
             page -= 1
+        output_message = envision_dictionary(user_id, database, False, page)
         max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
         if max_page == 0:
             output_message = 'У тебя еще нет изученных слов.'
@@ -98,13 +98,13 @@ def handle_dialog(request, response, user_storage, database):
     if (input_message == 'неизученные слова' and mode == '0_dict')\
             or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict_n')):
         page = int(mode.split('_')[0])
-        output_message = envision_dictionary(user_id, database, True, page)
         if input_message == 'дальше' or input_message == 'неизученные слова':
             mode = '{}_dict_n'.format(page + 1)
             page += 1
         else:
             mode = '{}_dict_n'.format(page - 1)
             page -= 1
+        output_message = envision_dictionary(user_id, database, True, page)
         max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
         if max_page == 0:
             output_message = 'У тебя еще нет неизученных слов.\nМожешь добавить готовые наборы слов.'
