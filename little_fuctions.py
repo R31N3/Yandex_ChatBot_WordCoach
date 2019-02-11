@@ -266,7 +266,7 @@ def translate_text(text, lang):
         response = requests.get(request)
 
         if response:
-            return response.json()["text"][0]
+            return response.json()["text"]
 
         return "Ошибка выполнения запроса:\nHttp статус:", response.status_code, "(", response.reason, \
                ")\n Саша, чини, твой косяк(наверное)"
