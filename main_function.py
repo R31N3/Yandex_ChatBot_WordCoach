@@ -213,7 +213,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     if input_message.capitalize() in words and mode.startswith('add_set'):
-        for word, translate in words[input_message].items():
+        for word, translate in words[input_message.capitalize()].items():
             dictionary = add_word(word, translate, user_id, database)
             if dictionary != 'already exists' and dictionary:
                 update_dictionary(user_id, dictionary, database)
