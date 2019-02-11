@@ -32,7 +32,7 @@ def handle_dialog(request, response, user_storage, database):
     user_id = request.user_id
     user_storage['suggests'] = [
         "Помощь",
-        "Cловарь",
+        "Словарь",
         "Тренировка",
         "Наборы слов"
     ]
@@ -65,7 +65,7 @@ def handle_dialog(request, response, user_storage, database):
 
     mode = get_mode(user_id, database)
 
-    if input_message == 'словарь':
+    if input_message == 'словарь' and mode == '':
         dictionary = get_dictionary(user_id, database)
         output_message = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
         buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Очисть словарь', 'В начало']})
