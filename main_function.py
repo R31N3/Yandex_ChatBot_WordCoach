@@ -281,4 +281,6 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     buttons, user_storage = get_suggests(user_storage)
+    mode = ''
+    update_mode(user_id, mode, database)
     return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
