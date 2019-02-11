@@ -100,7 +100,8 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'как добавлять слова?' and mode == 'help':
         output_message = "Для занесения" \
                          " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
-                         " команд для этого: +; Аdd; Добавь слово; Добавь."
+                         " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные" \
+                         "наборы слов из доступных категорий."
         buttons, user_storage = get_suggests(
             {'suggests': ['Как удалять слова?', 'Что делать?', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -109,7 +110,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'как удалять слова?' and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
                          "свой словарь или же удалить из него отдельное слово, используя, например, команду 'Удали" \
-                         "hello'.\nПолный список команд для этого: -; Del; Удали."
+                         "hello'.\nПолный список команд для этого: -; Del; Удали; Очисть словарь."
         buttons, user_storage = get_suggests(
             {'suggests': ['Как добавлять слова?', 'Что делать?', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
