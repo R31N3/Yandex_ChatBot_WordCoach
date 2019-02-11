@@ -131,7 +131,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (input_message == 'наборы слов' and mode == '') or (input_message == 'назад' and mode == 'add_set 0'):
+    if (input_message == 'наборы слов' and mode == '') or (input_message == 'назад' and mode == 'add_set 1'):
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'\
                          + '\n1 / {}'.format((len(list(words.keys())) + 3) // 4)\
                          if (len(list(words.keys())) + 3) // 4 > 1 else ''
@@ -148,7 +148,7 @@ def handle_dialog(request, response, user_storage, database):
                          + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
         butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
-                             (['Дальше'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
+                             (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
         mode = 'add_set {}'.format(next_page)
@@ -161,7 +161,7 @@ def handle_dialog(request, response, user_storage, database):
                          + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
         butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
-                             (['Дальше'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
+                             (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
         mode = 'add_set {}'.format(next_page)
