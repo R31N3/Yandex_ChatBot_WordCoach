@@ -124,6 +124,7 @@ def handle_dialog(request, response, user_storage, database):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)
+        mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
