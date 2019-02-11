@@ -240,7 +240,7 @@ def handle_dialog(request, response, user_storage, database):
                 update_mode(user_id, '', database)
             buttons, user_storage = get_suggests(stor)
             mode = get_mode(user_id, database)
-        return message_return(response, user_storage, output_message, buttons, database, request,
+            return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
     buttons, user_storage = get_suggests(user_storage)
