@@ -35,10 +35,10 @@ def handle_dialog(request, response, user_storage, database):
     input_message = input_message.replace('ё', 'е')
     user_id = request.user_id
     user_storage['suggests'] = [
-        "Помощь",
         "Словарь",
         "Тренировка",
         "Наборы слов",
+        "Помощь",
         "Настройки"
     ]
     # первый запуск/перезапуск диалога
@@ -253,7 +253,8 @@ def handle_dialog(request, response, user_storage, database):
                                                     mode.endswith('_dict_n') or
                                                     mode == 'settings' or
                                                     mode == 'change_name' or
-                                                    mode == 'suggest_to_add'):
+                                                    mode == 'suggest_to_add' or
+                                                    mode.startswith('show_added')):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
@@ -261,10 +262,14 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     if (input_message in {'наборы слов', 'набор слов'} and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
-        output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'\
-                         + '\nСтраница 1 из {}'.format((len(list(words.keys())) + 3) // 4)\
-                         if (len(list(words.keys())) + 3) // 4 > 1 else ''
-        butts = {'suggests': list(words.keys())[0:4] + (['Ещё'] if len(list(words.keys())) > 4 else [])}
+        added = get_word_sets(user_id, database)
+        sets = sorted(list(set(list(words.keys())).difference(added)))
+        output_message = 'Вот наборы, которые ты еще не добавил.'\
+                         + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
+                         if (len(sets) + 3) // 4 > 1 else '')
+        butts = {'suggests': sets[0:4] + (['Ещё'] if len(sets) > 4 else [])}
+        if len(sets) != len(list(words.keys())) and mode == 'add_set 1':
+            butts['suggests'].append('Добавленные наборы')
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
         mode = 'add_set 1'
@@ -273,11 +278,13 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in {'еще', 'дальше'} and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) + 1
+        added = get_word_sets(user_id, database)
+        sets = sorted(list(set(list(words.keys())).difference(added)))
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
-        butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
+                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
-                             (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
+                             (['Ещё'] if len(sets) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
         mode = 'add_set {}'.format(next_page)
@@ -286,9 +293,11 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message == 'назад' and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) - 1
+        added = get_word_sets(user_id, database)
+        sets = sorted(list(set(list(words.keys())).difference(added)))
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
-        butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
+                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
@@ -296,6 +305,61 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'add_set {}'.format(next_page)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
+    if (mode == 'add_set 1' and input_message == 'добавленные наборы') or (mode == 'add_set 2' and input_message == 'назад'):
+        added = get_word_sets(user_id, database)
+        sets = list(added)
+        output_message = 'Выбор набора исклчит его из твоего словаря\nВот наборы, которые ты добавил.'\
+                         + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
+                         if (len(sets) + 3) // 4 > 1 else '')
+        butts = {'suggests': sets[0:4] + (['Ещё'] if len(sets) > 4 else [])}
+        butts['suggests'].append('В начало')
+        buttons, user_storage = get_suggests(butts)
+        mode = 'show_added 1'
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message in {'еще', 'дальше'} and mode.startswith('show_set'):
+        next_page = int(mode.split()[1]) + 1
+        added = get_word_sets(user_id, database)
+        sets = sorted(list(added))
+        output_message = 'Вот наборы, которые ты добавил.' \
+                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
+                             ['Назад'] + \
+                             (['Ещё'] if len(sets) - 4 * (next_page - 1) > 4 else [])}
+        butts['suggests'].append('В начало')
+        buttons, user_storage = get_suggests(butts)
+        mode = 'show_set {}'.format(next_page)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'назад' and mode.startswith('show_set'):
+        next_page = int(mode.split()[1]) - 1
+        added = get_word_sets(user_id, database)
+        sets = sorted(list(added))
+        output_message = 'Вот наборы, которые ты добавил.' \
+                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
+                             ['Назад'] + \
+                             (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
+        butts['suggests'].append('В начало')
+        buttons, user_storage = get_suggests(butts)
+        mode = 'show_set {}'.format(next_page)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message.capitalize() in words and mode.startswith('show_set'):
+        for word, translate in words[input_message.capitalize()].items():
+            dictionary = del_word(word, user_id, database)
+            if dictionary != 'no such word' and dictionary:
+                update_dictionary(user_id, dictionary, database)
+        buttons, user_storage = get_suggests(user_storage)
+        output_message = 'Удалил. Что будем делать?'
+        mode = ''
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
 
     if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message.capitalize()].items():
@@ -337,9 +401,9 @@ def handle_dialog(request, response, user_storage, database):
 
     elif handle == 'translate&suggest_to_add':
         if language_match('t', answer):
-            translation = translate_text(answer, 'ru-en')
+            translation = translate_text(answer, 'ru-en')[0]
         elif language_match('г', answer):
-            translation = translate_text(answer, 'en-ru')
+            translation = translate_text(answer, 'en-ru')[0]
         else:
             output_message = 'Не поняла, что вы хотите перевести'
             mode = ''
