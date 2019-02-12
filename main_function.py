@@ -281,8 +281,8 @@ def handle_dialog(request, response, user_storage, database):
         butts = {'suggests': sets[0:4]}
         if (len(sets) != len(list(words.keys())) or len(added) > 0) and (mode == '' or mode == 'add_set 2'):
             butts['suggests'].append('Добавленные наборы')
-        else:
-            output_message = 'Ты добавил все наборы! :)'
+        if len(sets) == 0:
+            output_message = 'Ты добавил все наборы!'
         if len(sets) > 4:
             butts['suggests'].append('Ещё')
         butts['suggests'].append('В начало')
