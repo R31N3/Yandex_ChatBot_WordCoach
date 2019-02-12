@@ -29,7 +29,7 @@ def get_buttons(q, id, database):
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
-        words = {'рыба', 'картошка', 'трава', 'макароны'}
+        words = {'Рыба', 'Картошка', 'Трава', 'Макароны'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
                 words = words.union(set(rus_words))
@@ -37,16 +37,20 @@ def get_buttons(q, id, database):
         output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         while len(set(output)) != 3:
             output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
-        output.insert(randint(0, 3), ans)
+        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()))])
         return output
     elif language_match('f', q):
-        words = {'fish', 'potato', 'grass', 'pasta'}
+        words = {'Fish', 'Potato', 'Grass', 'Pasta'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
         words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)
         words.remove(get_ans(q, id, database))
-        output = [words[0], words[randint(1, len(words) // 2 - 1)], words[randint(1, len(words) - 1)]]
-        output.insert(randint(0, 2), ans)
+        output = [words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)],
+                  words[randint(1, len(words) - 1)]]
+        while len(set(output)) != 3:
+            output = [words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)],
+                      words[randint(1, len(words) - 1)]]
+        output.insert(randint(0, 3), ans)
         return output
 
 def get_question(id, database):

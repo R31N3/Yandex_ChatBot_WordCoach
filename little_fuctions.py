@@ -58,6 +58,7 @@ def add_word(word, translate, id, database):
         return False # incorrect format
     elif language_match(word, translate) == 'miss':
         word, translate = translate, word
+    word, translate = word.capitalize(), translate.capitalize()
     dictionary = get_dictionary(id, database)
     dictionary['learned'].pop(word, None)
     if word in dictionary['to_learn']:
