@@ -44,7 +44,7 @@ def init_database(host, user, password, dbname):
                        "eng_words": "str DEFAULT ''", "rus_words": "str DEFAULT ''",
                        "learned_eng_words": "str DEFAULT ''", "learned_rus_words": "str DEFAULT ''",
                        "training_score": "str DEFAULT ''", "q_count": "int DEFAULT 0", "q_true": "int DEFAULT 0",
-                       "q": "str DEFAULT ''"
+                       "q": "str DEFAULT ''", "word_sets": "str DEFAULT ''"
                        })
     return psdb
 

@@ -280,3 +280,12 @@ def translate_text(text, lang):
                ")\n Саша, чини, твой косяк(наверное)"
     except:
         return "Запрос не удалось выполнить. Проверьте наличие сети Интернет."
+
+
+def get_word_sets(id, database):
+    return database.get_entry("users_info", ['word_sets'], {'request_id': id})[0][0]
+
+
+def update_word_sets(id, word_sets, database):
+    database.update_entries('users_info', id, {'word_sets': word_sets}, update_type='rewrite')
+    return True
