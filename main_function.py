@@ -196,8 +196,21 @@ def handle_dialog(request, response, user_storage, database):
         output_message = "Благодаря данному навыку ты можешь учить английский так, как тебе хочется! Ты можешь " \
                          "добавить слова, которые хочешь выучить, используя удобные тебе ассоциации, или же выбрать " \
                          "набор из доступных категорий, после чего испытать свои силы в тренировке!"
-        buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
+        buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Справка о тренировках', 'Что делать?',
                                                            'В начало']})
+        mode = 'help'
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message in {'справка', 'справка о тренировках'} and mode == 'help':
+        output_message = 'У каждого слова есть его прогресс, изачанально равный нулю' \
+                         '\nПосле каждого правильного ответа на вопрос прогресс соответствующего слова увеличивается на 1, ' \
+                         'после неправильного - уменьшается на 2, но не опускается ниже нуля.\n' \
+                         'Слово считается изученным, если его прогресс больше либо равен 4' \
+                         'Приятных тренировок!'
+        buttons, user_storage = get_suggests(
+            {'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
+                          'В начало']})
         mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
