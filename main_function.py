@@ -84,19 +84,18 @@ def handle_dialog(request, response, user_storage, database):
         elif input_message == 'назад':
             mode = '{}_dict'.format(page - 1)
             page -= 1
-        if fl:
-            output_message = envision_dictionary(user_id, database, False, page)
-            max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
-            if max_page == 0:
-                output_message = 'У тебя еще нет изученных слов.'
-            buttons = ['В начало']
-            if page < max_page:
-                buttons = ['Дальше'] + buttons
-            if page > 1:
-                buttons = ['Назад'] + buttons
-            buttons, user_storage = get_suggests({'suggests' : buttons})
-            return message_return(response, user_storage, output_message, buttons, database, request,
-                                  mode)
+        output_message = envision_dictionary(user_id, database, False, page)
+        max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
+        if max_page == 0:
+            output_message = 'У тебя еще нет изученных слов.'
+        buttons = ['В начало']
+        if page < max_page:
+            buttons = ['Дальше'] + buttons
+        if page > 1:
+            buttons = ['Назад'] + buttons
+        buttons, user_storage = get_suggests({'suggests' : buttons})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
 
     if (input_message in {'неизученные слова', 'неученные слова'} and mode == '0_dict')\
             or ((input_message in {'дальше', 'далее', 'еще'} or input_message == 'назад') and mode.endswith('_dict_n')):
