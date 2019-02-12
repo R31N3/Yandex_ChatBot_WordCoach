@@ -77,7 +77,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'настройки':
         mode = 'settings'
         output_message = 'Доступны следующие настройки:'
-        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'В начало']})
+        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'У человека нет имени', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -87,6 +87,15 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests({'suggests' : ['Отмена']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
+    if input_message == 'у человека нет имени' and mode == 'settings':
+        mode = ''
+        output_message = 'Есть, Сэр!'
+        database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
 
     if mode == 'change_name':
         mode = ''
