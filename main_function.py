@@ -15,11 +15,11 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
     update_mode(request.user_id, mode, database)
-    response.set_text(message.replace('\n', '. '))
+    response.set_text(message)
     if mode != 'training':
-        response.set_tts(message + "\n. Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
+        response.set_tts(message.replace('\n', '. ') + "\n. Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
     else:
-        response.set_tts(message + "\n. Варианты ответа: {}".format(", ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message.replace('\n', '. ') + "\n. Варианты ответа: {}".format(", ".join(user_storage['suggests'][:-1])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -186,7 +186,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if (input_message in {'наборы слов', 'набор слов'} and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'\
-                         + '\n1 / {}'.format((len(list(words.keys())) + 3) // 4)\
+                         + '\nСтраница 1 из {}'.format((len(list(words.keys())) + 3) // 4)\
                          if (len(list(words.keys())) + 3) // 4 > 1 else ''
         butts = {'suggests': list(words.keys())[0:4] + (['Ещё'] if len(list(words.keys())) > 4 else [])}
         butts['suggests'].append('В начало')
@@ -198,7 +198,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message in {'еще', 'дальше'} and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) + 1
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
-                         + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
+                         + '\nСтраница {} из {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
         butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
@@ -211,7 +211,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'назад' and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) - 1
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
-                         + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
+                         + '\nСтраница {} из {}'.format(next_page, (len(list(words.keys())) + 3) // 4)
         butts = {'suggests': list(words.keys())[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
