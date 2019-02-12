@@ -15,11 +15,11 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
     update_mode(request.user_id, mode, database)
-    response.set_text(message)
+    response.set_text(message.replace('\n', '. '))
     if mode != 'training':
-        response.set_tts(message + "\nДоступные команды: {}.".format(", ".join(user_storage['suggests'])))
+        response.set_tts(message + "\n. Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
     else:
-        response.set_tts(message + "\nВарианты ответа: {}".format(", ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + "\n. Варианты ответа: {}".format(", ".join(user_storage['suggests'][:-1])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -143,9 +143,6 @@ def handle_dialog(request, response, user_storage, database):
                          "набор из доступных категорий, после чего испытать свои силы в тренировке!"
         buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
                                                            'В начало']})
-        if mode == 'training':
-            output_message = training.main(get_q(user_id, database), 'end', 'revise&next', user_id, database) + '\n'\
-                                + output_message
         mode = 'help'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
