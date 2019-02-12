@@ -2,6 +2,7 @@ from little_fuctions import *
 from random import randint
 
 def get_ans(q, id, database):
+    q = q.split('#')[0]
     dictionary = get_dictionary(id, database)
     for k in ['to_learn', 'learned']:
         if q in dictionary[k]:
@@ -14,7 +15,7 @@ def get_ans(q, id, database):
 
 
 def revise(q, answer, q_type, id, database):
-    if answer == get_ans(q, id, database):
+    if answer == get_ans(q, id, database) or answer == q[-1]:
         return True
     else:
         return False
@@ -38,7 +39,9 @@ def get_buttons(q, id, database):
         while len(set(output)) != 3:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
-        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()) - 1)])
+        rand = randint(0, 3)
+        output.insert(rand, (ans.split())[randint(0, len(ans.split()) - 1)])
+        update_q(id, '{}#{}'.format(q, rand + 1))
         return output
     elif language_match('f', q):
         words = {'Fish', 'Potato', 'Grass', 'Pasta'}
@@ -51,7 +54,9 @@ def get_buttons(q, id, database):
         while len(set(output)) != 3:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
-        output.insert(randint(0, 3), ans)
+        rand = randint(0, 3)
+        output.insert(rand, ans)
+        update_q(id, '{}#{}'.format(q, rand + 1))
         return output
 
 def get_question(id, database):
@@ -101,7 +106,9 @@ def main(q, answer, q_type, id, database):
             return 'Словарь пуст. Для начала добавьте в него слова.'
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
-        return 'В этом режиме нужно переводить слова из вашего словаря :)\n Команда "Закончить тренировку" вернет тебя в главное меню\n' + get_question(id, database)
+        return 'В этом режиме нужно переводить слова из вашего словаря :)\n'\
+               'Команда "Закончить тренировку" вернет тебя в главное меню\n'\
+               'Ты можешь называть ответили номер варианта ответа. Поехали!\n'+ get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
