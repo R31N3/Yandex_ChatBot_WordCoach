@@ -278,13 +278,6 @@ def handle_dialog(request, response, user_storage, database):
 
     update_mode(user_id, mode, database)
 
-    if input_message in ['нет', 'не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
-        choice = random.choice(aliceAnswers["quitTextVariations"])
-        response.set_text(choice)
-        response.set_tts(choice, True)
-        response.end_session = True
-        return response, user_storage
-
     answer = classify(input_message, mode)
     handle = answer['class']
     warning = answer['warning']
@@ -339,6 +332,13 @@ def handle_dialog(request, response, user_storage, database):
             mode = get_mode(user_id, database)
             return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
+    if input_message in ['не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
+        choice = random.choice(aliceAnswers["quitTextVariations"])
+        response.set_text(choice)
+        response.set_tts(choice, True)
+        response.end_session = True
+        return response, user_storage
 
     buttons, user_storage = get_suggests(user_storage)
     mode = ''
