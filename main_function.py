@@ -79,7 +79,13 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'настройки':
         mode = 'settings'
         output_message = 'Доступны следующие настройки:'
-        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'Очистить словарь' 'В начало']})
+        dictionary = get_dictionary(user_id, database)
+        count = len(dictionary['to_learn']) + len(dictionary['learned'])
+        if count == 0:
+            buttons = ['Сменить имя', 'В начало']
+        else:
+            buttons = ['Сменить имя', 'Очистить словарь', 'В начало']
+        buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
