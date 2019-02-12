@@ -253,7 +253,7 @@ def handle_dialog(request, response, user_storage, database):
         elif not success:
             output_message = 'Пара должна состоять из русского и английского слова.'
         else:
-            output_message = "Слово {} добавлено с переводом {} добавлено в Ваш словарь.".format(answer[0], answer[1])
+            output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         if warning:
@@ -270,7 +270,7 @@ def handle_dialog(request, response, user_storage, database):
         elif not success:
             output_message = 'Слово должно быть русским или английским.'
         else:
-            output_message = 'Слово {} удалено из Вашего словаря.'.format(answer)
+            output_message = 'Слово "{}" удалено из Вашего словаря.'.format(answer)
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
         if warning:
