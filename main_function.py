@@ -422,8 +422,8 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
-            mode = ''
             update_mode(user_id, mode, database)
+        mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -453,8 +453,8 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
-            mode = ''
             update_mode(user_id, mode, database)
+        mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
