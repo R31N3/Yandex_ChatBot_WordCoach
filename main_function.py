@@ -279,7 +279,7 @@ def handle_dialog(request, response, user_storage, database):
                          + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                          if (len(sets) + 3) // 4 > 1 else '')
         butts = {'suggests': sets[0:4]}
-        if len(sets) != len(list(words.keys())) and (mode == 'add_set 1' or mode == 'add_set 2'):
+        if (len(sets) != len(list(words.keys())) or len(added) > 0) and (mode == 'add_set 1' or mode == 'add_set 2'):
             butts['suggests'].append('Добавленные наборы')
         else:
             output_message = 'Ты добавил все наборы! :)'
