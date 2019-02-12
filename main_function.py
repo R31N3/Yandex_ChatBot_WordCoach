@@ -393,6 +393,27 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
+    if mode[0] == '!' and input_message[0] != '+':
+        success = add_word(''.join(mode[1:]), input_message, user_id, database)
+        if success == 'already exists':
+            output_message = 'В Вашем словаре уже есть такой перевод.'
+        elif not success:
+            output_message = 'Пара должна состоять из русского и английского слова.'
+        else:
+            output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
+            update_dictionary(user_id, success, database)
+        buttons, user_storage = get_suggests(user_storage)
+        if mode == 'training':
+            output_message += '\nРежим тренировки автоматически завершен.'
+            stat = get_stat_session('training', user_id, database)
+            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
+            mode = ''
+            update_mode(user_id, mode, database)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+
+
     update_mode(user_id, mode, database)
 
     answer = classify(input_message, mode)
@@ -413,8 +434,10 @@ def handle_dialog(request, response, user_storage, database):
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
-        if warning:
+        if warning and mode == 'training':
             output_message += '\nРежим тренировки автоматически завершен.'
+            stat = get_stat_session('training', user_id, database)
+            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
             mode = ''
             update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -436,7 +459,7 @@ def handle_dialog(request, response, user_storage, database):
         else:
             output_message = 'Попробую перевести твое слово...'
         output_message += '\nВот что у меня получилось:\n{} - {}'.format(answer.capitalize(), translation.capitalize())
-        mode = 'suggest_to_add'
+        mode = '!' + answer
         output_message += '\nВы также можете сказать или написать свой перевод, он будет добавлен в словарь'
         buttons, user_storage = get_suggests({'suggests' : ['+ {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -456,6 +479,8 @@ def handle_dialog(request, response, user_storage, database):
         if warning:
             output_message += '\nРежим тренировки автоматически завершен.'
             mode = ''
+            stat = get_stat_session('training', user_id, database)
+            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
             update_mode(user_id, mode, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
