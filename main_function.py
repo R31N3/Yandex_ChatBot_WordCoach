@@ -120,9 +120,9 @@ def handle_dialog(request, response, user_storage, database):
         name = get_name(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if name != 'Noname':
-            output_message = '{}, в твоем словаре {} слов'.format(name, count)
+            output_message = '{}, в твоем словаре {} слов'.format(name, count) + ending(count)
         else:
-            output_message = 'В твоем словаре {} слов'.format(count)
+            output_message = 'В твоем словаре {} слов'.format(count) + ending(count)
         if count == 0:
             mode = ''
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
@@ -178,7 +178,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова', 'очистить словарь'}\
+    if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова', 'очистить словарь', 'очисти словарь'}\
             and (mode == '' or mode == '0_dict' or mode == 'settings'):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
@@ -303,6 +303,7 @@ def handle_dialog(request, response, user_storage, database):
     answer = answer['answer']
 
     if handle == "add":
+        answer = list(map(lambda x: x.capitalize(), answer))
         success = add_word(answer[0], answer[1], user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
@@ -344,6 +345,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     elif handle == 'del':
+        answer = answer.capitalize()
         success = del_word(answer.strip(), user_id, database)
         if success == 'no such word':
             output_message = 'В Вашем словаре нет такого слова.'

@@ -15,7 +15,7 @@ def get_ans(q, id, database):
 
 
 def revise(q, answer, q_type, id, database):
-    if answer == get_ans(q, id, database) or answer[0] == q[-1]:
+    if answer in get_ans(q, id, database) or answer[0] == q[-1]:
         return True
     else:
         return False
@@ -30,21 +30,23 @@ def get_buttons(q, id, database):
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
-        words = {'Рыба', 'Картошка', 'Трава', 'Макароны'}
+        words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Замок'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
                 words = words.union(set(rus_words))
         words = list(words)
         output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
-        while len(set(output)) != 3:
+        rand = randint(0, 3)
+        rands = randint(0, len(ans.split()) - 1)
+        while len(set(output)) != 3 or (ans.split())[rands] in output:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
-        rand = randint(0, 3)
-        output.insert(rand, (ans.split())[randint(0, len(ans.split()) - 1)])
+
+        output.insert(rand, (ans.split())[rands])
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
-        words = {'Fish', 'Potato', 'Grass', 'Pasta'}
+        words = {'Fish', 'Potato', 'Grass', 'Pasta', 'Castle'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
         words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)

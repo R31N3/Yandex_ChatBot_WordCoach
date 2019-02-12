@@ -178,18 +178,25 @@ def update_dictionary(id, words_to_add, database):
     database.update_entries('users_info', id, {'learned_eng_words': "#$".join(learned_eng_words),
                                                'learned_rus_words': "#$".join(learned_rus_words)})
 
+def ending(count):
+    if count == 1:
+        return 'о'
+    elif 2 <= (count % 10) <=4:
+        return 'а'
+    else:
+        return ''
 
 def envision_dictionary(id, database, to_learn, page):
     dictionary = get_dictionary(id, database)
     s = ''
     if to_learn:
-        if page == 1: s += 'Неизучено {} слов'.format(len(dictionary['to_learn']))
+        if page == 1: s += 'Неизучено {} слов'.format(len(dictionary['to_learn'])) + ending(len(dictionary['to_learn']))
         for eng, rus in list(dictionary['to_learn'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         max_page = (len(list(dictionary['to_learn'].items())) + 9) // 10
         s += '\nСтраница {} из {}'.format(page, max_page)
     else:
-        if page == 1: s += 'Изучено {} слов'.format(len(dictionary['learned']))
+        if page == 1: s += 'Изучено {} слов'.format(len(dictionary['learned'])) + ending(len(dictionary['learned']))
         for eng, rus in list(dictionary['learned'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         max_page = (len(list(dictionary['learned'].items())) + 9) // 10
@@ -289,3 +296,4 @@ def get_word_sets(id, database):
 def update_word_sets(id, word_sets, database):
     database.update_entries('users_info', id, {'word_sets': "#$".join(list(word_sets))}, update_type='rewrite')
     return True
+
