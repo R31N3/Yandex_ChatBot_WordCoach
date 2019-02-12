@@ -63,7 +63,7 @@ def handle_dialog(request, response, user_storage, database):
             if input_message != 'у человека нет имени':
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
-                database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
+                database.update_entries('users_info', user_id, {'Name': input_message.capitalize()}, update_type='rewrite')
             else:
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
