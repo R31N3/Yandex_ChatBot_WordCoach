@@ -202,7 +202,7 @@ def handle_dialog(request, response, user_storage, database):
                          'как удалять слова', 'как удалить слово', 'как удалить слова'}\
                         and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
-                         'свой словарь или же удалить из него отдельное слово, используя, например, команду "Удали' \
+                         'свой словарь или же удалить из него отдельное слово, используя, например, команду "Удали ' \
                          'hello".\nПолный список команд для этого: -; Del; Удали; Очисть словарь.'
         buttons, user_storage = get_suggests(
             {'suggests': ['Как добавлять слова?', 'Что делать?', 'В начало']})
@@ -326,7 +326,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database)
             if get_mode(user_id, database) == 'training':
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
-                stor = {'suggests': but + ['Закончить тренировку'] if get_q(user_id, database) != '###empty' else []}
+                stor = {'suggests': but + (['Закончить тренировку'] if get_q(user_id, database) != '###empty' else [])}
             else:
                 stor = {'suggests': user_storage['suggests']}
                 update_mode(user_id, '', database)
