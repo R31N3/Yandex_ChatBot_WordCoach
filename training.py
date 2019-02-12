@@ -36,8 +36,9 @@ def get_buttons(q, id, database):
         words = list(words)
         output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         while len(set(output)) != 3:
-            output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
-        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()))])
+            output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
+                      words[randint(0, len(words) - 1)]]
+        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()) - 1)])
         return output
     elif language_match('f', q):
         words = {'Fish', 'Potato', 'Grass', 'Pasta'}
@@ -48,9 +49,9 @@ def get_buttons(q, id, database):
         output = [words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)],
                   words[randint(1, len(words) - 1)]]
         while len(set(output)) != 3:
-            output = [words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)],
-                      words[randint(1, len(words) - 1)]]
-        output.insert(randint(0, 3), ans)
+            output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
+                      words[randint(0, len(words) - 1)]]
+        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()) - 1)])
         return output
 
 def get_question(id, database):
@@ -74,10 +75,10 @@ def get_question(id, database):
         return '\n' + (' '.join(dictionary[key][word])).upper()
 
 def random_true(id, database):
-    return ['Правильно', 'Верно', 'Так держать', 'Вперед'][randint(0, 3)] + (', ' + get_name(id, database)) * randint(0, 1) + '!'
+    return ['Правильно', 'Верно', 'Так держать', 'Вперед'][randint(0, 3)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
 
 def random_false(id, database):
-    return ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится'][randint(0, 3)] + (', ' + get_name(id, database)) * randint(0, 1) + '!'
+    return ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится'][randint(0, 3)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
 
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
