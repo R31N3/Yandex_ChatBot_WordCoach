@@ -184,13 +184,15 @@ def envision_dictionary(id, database, to_learn, page):
         if page == 1: s += 'Неизучено: {} слов'.format(len(dictionary['to_learn']))
         for eng, rus in list(dictionary['to_learn'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
-        s += '\nСтраница {} из {}'.format(page, (len(list(dictionary['to_learn'].items())) + 9) // 10)
+        max_page = (len(list(dictionary['to_learn'].items())) + 9) // 10
+        s += '\nСтраница {} из {}'.format(page, max_page)
     else:
         if page == 1: s += 'Изучено: {} слов'.format(len(dictionary['learned']))
         for eng, rus in list(dictionary['learned'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
-        s += '\nСтраница {} из {}'.format(page, (len(list(dictionary['learned'].items())) + 9) // 10)
-    return s
+        max_page = (len(list(dictionary['learned'].items())) + 9) // 10
+        s += '\nСтраница {} из {}'.format(page, max_page)
+    return s, max_page
 
 
 def get_stat_session(mode, id, database):
