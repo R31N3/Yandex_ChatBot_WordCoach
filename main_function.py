@@ -372,12 +372,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message.capitalize() in words and mode.startswith('show_added'):
         for word, translate in words[input_message.capitalize()].items():
-            dictionary = del_word(word, user_id, database)
-            if dictionary != 'no such word' and dictionary:
-                update_dictionary(user_id, dictionary, database)
-            else:
-                print("ДИМА ЛОХ")
-            dictionary = del_word(translate, user_id, database)
+            dictionary = del_word(word.capitalize(), user_id, database)
             if dictionary != 'no such word' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
