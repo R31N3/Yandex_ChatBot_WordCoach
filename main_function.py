@@ -407,6 +407,7 @@ def handle_dialog(request, response, user_storage, database):
     if mode != '' and mode[0] == '!' and input_message[0] != '+':
         success = add_word(''.join(mode[1:]), input_message, user_id, database)
         answer = ''.join(mode[1:]), input_message
+        answer = list(map(lambda x: x.capitalize(), answer))
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
         if success == 'already exists':
