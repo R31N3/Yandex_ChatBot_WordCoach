@@ -23,7 +23,7 @@ def classify(text, mode):
         return {'warning': True, 'class': 'use_mode', 'answer': text}
     if words[0].startswith('add') or words[0].startswith('добавь'):
         add_word = True
-        if len(words) >= 2 and ((words[0].startswith('add') and words[1].startswith('word')) or (words[0].startswith('добавь') and words[1].startswith('слово'))):
+        if len(words) >= 2 and ((words[0].startswith('add') and words[1].startswith('word')) or (words[0].startswith('добавь') and words[1].startswith('слов'))):
             words = words[2:]
         else:
             words = words[1:]

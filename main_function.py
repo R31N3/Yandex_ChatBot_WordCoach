@@ -23,10 +23,10 @@ def message_return(response, user_storage, message, button, database, request, m
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
     elif mode.startswith('add_set'):
-        if user_storage['suggests'][-3] == 'Назад':
+        if user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
             response.set_tts(message.replace('\n', '. ') + '. '.join(user_storage['suggests'][:-3]) + \
                              "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'][-3:])))
-        elif user_storage['suggests'][-2] in {'Ещё', 'Назад'}:
+        elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
             response.set_tts(message.replace('\n', '. ') + '. '.join(user_storage['suggests'][:-2]) + \
                              "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'][-2:])))
         else:
@@ -257,7 +257,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'в начало', 'начало', 'отмена', 'сначала'} and (mode == 'help' or
+    if (input_message == 'отмена' or 'начал' in input_message) and (mode == 'help' or
                                                     mode.startswith('add_set') or
                                                     mode == '' or
                                                     mode.endswith('_dict') or
@@ -278,11 +278,13 @@ def handle_dialog(request, response, user_storage, database):
         output_message = 'Вот наборы, которые ты еще не добавил'\
                          + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                          if (len(sets) + 3) // 4 > 1 else '')
-        butts = {'suggests': sets[0:4] + (['Ещё'] if len(sets) > 4 else [])}
+        butts = {'suggests': sets[0:4]}
         if len(sets) != len(list(words.keys())) and (mode == 'add_set 1' or mode == 'add_set 2'):
             butts['suggests'].append('Добавленные наборы')
         else:
             output_message = 'Ты добавил все наборы! :)'
+        if len(sets) > 4:
+            butts['suggests'].append('Ещё')
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
         mode = 'add_set 1'
@@ -420,9 +422,9 @@ def handle_dialog(request, response, user_storage, database):
 
     elif handle == 'translate&suggest_to_add':
         if language_match('t', answer):
-            translation = translate_text(answer, 'ru-en')[0]
+            translation = ''.join(translate_text(answer, 'ru-en'))
         elif language_match('г', answer):
-            translation = translate_text(answer, 'en-ru')[0]
+            translation = ''.join(translate_text(answer, 'en-ru'))
         else:
             output_message = 'Не поняла, что вы хотите перевести'
             mode = ''
