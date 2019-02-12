@@ -290,7 +290,13 @@ def handle_dialog(request, response, user_storage, database):
         mode = 'add_set 1'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
-
+    print(get_word_sets(user_id, database), sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
+    print(get_word_sets(user_id, database),
+          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
+    print(get_word_sets(user_id, database),
+          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
+    print(get_word_sets(user_id, database),
+          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
     if input_message in {'еще', 'дальше'} and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) + 1
         added = get_word_sets(user_id, database)
