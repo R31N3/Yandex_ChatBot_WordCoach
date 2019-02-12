@@ -321,7 +321,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (mode == 'add_set 1' and input_message.startswith('добавленные набор')) or (mode == 'add_added 2' and input_message == 'назад'):
+    if (mode == 'add_set 1' and input_message.startswith('добавленные набор')) or (mode == 'show_added 2' and input_message == 'назад'):
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
         output_message = 'Выбор набора исключит его из твоего словаря\nВот наборы, которые ты добавил'\
@@ -329,8 +329,8 @@ def handle_dialog(request, response, user_storage, database):
                          if (len(sets) + 3) // 4 > 1 else '')
         butts = {'suggests': sets[0:4] + (['Ещё'] if len(sets) > 4 else [])}
         butts['suggests'].append('В начало')
-        buttons, user_storage = get_suggests(butts)
         mode = 'show_added 1'
+        buttons, user_storage = get_suggests(butts)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 

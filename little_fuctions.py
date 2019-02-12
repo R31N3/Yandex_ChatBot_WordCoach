@@ -290,7 +290,8 @@ def translate_text(text, lang):
 
 
 def get_word_sets(id, database):
-    return set(database.get_entry("users_info", ['word_sets'], {'request_id': id})[0][0].split("#$"))
+    sets = set(database.get_entry("users_info", ['word_sets'], {'request_id': id})[0][0].split("#$"))
+    return sets if sets != {''} else set()
 
 
 def update_word_sets(id, word_sets, database):
