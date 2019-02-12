@@ -169,7 +169,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'что делать?' and mode == 'help':
+    if input_message in {'что делать?', 'что делать'} and mode == 'help':
         output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом. '\
                          'В итоге прочитал Н.Г. Чернышевского "Что делать?" и начал учить английский!'
         mode = ''
