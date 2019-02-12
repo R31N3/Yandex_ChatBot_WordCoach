@@ -36,7 +36,8 @@ def handle_dialog(request, response, user_storage, database):
         "Помощь",
         "Словарь",
         "Тренировка",
-        "Наборы слов"
+        "Наборы слов",
+        "Настройки"
     ]
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
@@ -66,6 +67,30 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
     mode = get_mode(user_id, database)
+
+    if input_message == 'настройки':
+        mode = 'settings'
+        output_message = 'Доступны следующие настройки:'
+        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'В начало']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message in {'сменить имя', 'поменять имя'} and mode == 'settings':
+        mode = 'change_name'
+        output_message = 'Введите новое имя'
+        buttons, user_storage = get_suggests({'suggests' : ['Отмена']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if mode == 'change_name':
+        mode = ''
+        output_message = 'Хорошо, буду называть тебя {}!'.format(input_message.capitalize())
+        input_message = input_message.capitalize()
+        database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
+        buttons, user_storage = get_suggests(user_storage)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
 
     if input_message in {'словарь', 'словарик'} and mode == '':
         dictionary = get_dictionary(user_id, database)
@@ -175,7 +200,13 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'в начало', 'начало'} and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict') or mode.endswith('_dict_n')):
+    if input_message in {'в начало', 'начало', 'отмена'} and (mode == 'help' or
+                                                    mode.startswith('add_set') or
+                                                    mode == '' or
+                                                    mode.endswith('_dict') or
+                                                    mode.endswith('_dict_n') or
+                                                    mode == 'settings' or
+                                                    mode == 'change_name'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
