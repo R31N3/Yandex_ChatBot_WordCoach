@@ -292,16 +292,6 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
 
-
-    print(get_word_sets(user_id, database), sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
-    print(get_word_sets(user_id, database),
-          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
-    print(get_word_sets(user_id, database),
-          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
-    print(get_word_sets(user_id, database),
-          sorted(list(set(list(words.keys())).difference(get_word_sets(user_id, database)))))
-
-
     if input_message in {'еще', 'дальше'} and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) + 1
         added = get_word_sets(user_id, database)
@@ -345,7 +335,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'еще', 'дальше'} and mode.startswith('show_set'):
+    if input_message in {'еще', 'дальше'} and mode.startswith('show_added'):
         next_page = int(mode.split()[1]) + 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
@@ -356,11 +346,11 @@ def handle_dialog(request, response, user_storage, database):
                              (['Ещё'] if len(sets) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
-        mode = 'show_set {}'.format(next_page)
+        mode = 'show_added {}'.format(next_page)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'назад' and mode.startswith('show_set'):
+    if input_message == 'назад' and mode.startswith('show_added'):
         next_page = int(mode.split()[1]) - 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
@@ -371,11 +361,11 @@ def handle_dialog(request, response, user_storage, database):
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
         butts['suggests'].append('В начало')
         buttons, user_storage = get_suggests(butts)
-        mode = 'show_set {}'.format(next_page)
+        mode = 'show_added {}'.format(next_page)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message.capitalize() in words and mode.startswith('show_set'):
+    if input_message.capitalize() in words and mode.startswith('show_added'):
         for word, translate in words[input_message.capitalize()].items():
             dictionary = del_word(word, user_id, database)
             if dictionary != 'no such word' and dictionary:
