@@ -51,7 +51,7 @@ def get_buttons(q, id, database):
         while len(set(output)) != 3:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
-        output.insert(randint(0, 3), (ans.split())[randint(0, len(ans.split()) - 1)])
+        output.insert(randint(0, 3), ans)
         return output
 
 def get_question(id, database):

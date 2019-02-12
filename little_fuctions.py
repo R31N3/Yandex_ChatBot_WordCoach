@@ -39,7 +39,7 @@ def error_protection(executable_function):
 
 
 def language_match(word, translate):
-    word, translate = word.lower(), translate.loser()
+    word, translate = word.lower(), translate.lower()
     if set(list(word)).intersection(set(list('abcdefghijklmnopqrstuvwxyz'))) \
         and set(list(translate)).intersection(set(list('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')))\
         and not set(list(translate)).intersection(set(list('abcdefghijklmnopqrstuvwxyz')))\
