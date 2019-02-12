@@ -105,9 +105,12 @@ def del_word(word, id, database):
         return False # word is neither eng nor rus
 
 
-def change_mode(mode, id, database):
-    pass
-
+def name(id, database):
+    name = get_name(id, database)
+    if name == 'Noname':
+        return False
+    else:
+        return name
 
 def get_dictionary(id, database):
     eng_words = database.get_entry("users_info", ['eng_words'], {'request_id': id})[0][0].split("#$")
