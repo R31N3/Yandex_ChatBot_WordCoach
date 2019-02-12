@@ -75,10 +75,12 @@ def get_question(id, database):
         return '\n' + (' '.join(dictionary[key][word])).upper()
 
 def random_true(id, database):
-    return ['Правильно', 'Верно', 'Так держать', 'Вперед'][randint(0, 3)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
+    true_list = ['Правильно', 'Верно', 'Так держать', 'Вперед']
+    return true_list[randint(0, len(true_list) - 1)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
 
 def random_false(id, database):
-    return ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится'][randint(0, 3)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
+    false_list = ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится']
+    return false_list[randint(0, len(false_list) - 1)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
 
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
