@@ -106,7 +106,6 @@ def handle_dialog(request, response, user_storage, database):
             mode = '{}_dict_n'.format(page - 1)
             page -= 1
         output_message, max_page = envision_dictionary(user_id, database, True, page)
-        max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
         if max_page == 0:
             output_message = 'У тебя еще нет неизученных слов.\nМожешь добавить готовые наборы слов.'
             buttons = ['В начало', 'Наборы слов']
