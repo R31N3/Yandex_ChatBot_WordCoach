@@ -98,10 +98,10 @@ def main(q, answer, q_type, id, database):
         dictionary = get_dictionary(id, database)
         if len(dictionary['to_learn'].keys()) + len(dictionary['learned'].keys()) == 0:
             update_q(id, '###empty', database)
-            return 'Словарь пуст. Для начала - добавьте в него слова.'
+            return 'Словарь пуст. Для начала добавьте в него слова.'
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
-        return 'В этом режиме нужно переводить слова из вашего словаря :)\n Команда "Закончить" завершит тренировку\n' + get_question(id, database)
+        return 'В этом режиме нужно переводить слова из вашего словаря :)\n Команда "Закончить тренировку" вернет тебя в главное меню\n' + get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
