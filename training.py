@@ -100,6 +100,7 @@ def main(q, answer, q_type, id, database):
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
+        answer = answer.capitalize()
         if revise(q, answer, q_type, id, database):
             if language_match(q, 'f'):
                 q = get_ans(q, id, database)
