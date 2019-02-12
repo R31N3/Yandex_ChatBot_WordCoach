@@ -15,7 +15,7 @@ def get_ans(q, id, database):
 
 
 def revise(q, answer, q_type, id, database):
-    if answer == get_ans(q, id, database) or answer == q[-1]:
+    if answer == get_ans(q, id, database) or answer[0] == q[-1]:
         return True
     else:
         return False
