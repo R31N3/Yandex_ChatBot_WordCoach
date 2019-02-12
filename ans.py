@@ -65,3 +65,5 @@ def classify(text, mode):
         warning = False
 
     return {'warning': warning, 'class': label, 'answer': answer}
+
+print(classify('Добавь слово слово', 2))

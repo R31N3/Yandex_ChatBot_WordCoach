@@ -357,6 +357,9 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Удалил. Что будем делать?'
         mode = ''
+        added = get_word_sets(user_id, database)
+        added.remove(input_message.capitalize())
+        update_word_sets(user_id, added, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -369,6 +372,9 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Добавил, теперь потренируемся?'
         mode = ''
+        added = get_word_sets(user_id, database)
+        added.add(input_message.capitalize())
+        update_word_sets(user_id, added, database)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
