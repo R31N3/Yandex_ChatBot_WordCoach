@@ -23,7 +23,7 @@ def message_return(response, user_storage, message, button, database, request, m
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
     elif mode.startswith('add_set') or mode.startswith('show_added'):
-        if user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
+        if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
             response.set_tts(message.replace('\n', '. ') + '. '.join(user_storage['suggests'][:-3]) + \
                              "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
