@@ -283,9 +283,9 @@ def translate_text(text, lang):
 
 
 def get_word_sets(id, database):
-    return database.get_entry("users_info", ['word_sets'], {'request_id': id})[0][0]
+    return set(database.get_entry("users_info", ['word_sets'], {'request_id': id})[0][0].split("#$"))
 
 
 def update_word_sets(id, word_sets, database):
-    database.update_entries('users_info', id, {'word_sets': word_sets}, update_type='rewrite')
+    database.update_entries('users_info', id, {'word_sets': "#$".join(list(word_sets))}, update_type='rewrite')
     return True
