@@ -393,7 +393,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if mode[0] == '!' and input_message[0] != '+':
+    if mode != '' and mode[0] == '!' and input_message[0] != '+':
         success = add_word(''.join(mode[1:]), input_message, user_id, database)
         if success == 'already exists':
             output_message = 'В Вашем словаре уже есть такой перевод.'
