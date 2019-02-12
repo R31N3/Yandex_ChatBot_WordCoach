@@ -375,6 +375,11 @@ def handle_dialog(request, response, user_storage, database):
             dictionary = del_word(word, user_id, database)
             if dictionary != 'no such word' and dictionary:
                 update_dictionary(user_id, dictionary, database)
+            else:
+                print("ДИМА ЛОХ")
+            dictionary = del_word(translate, user_id, database)
+            if dictionary != 'no such word' and dictionary:
+                update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Удалил. Что будем делать?'
         mode = ''
