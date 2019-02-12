@@ -80,7 +80,8 @@ def random_true(id, database):
 
 def random_false(id, database):
     false_list = ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится']
-    return false_list[randint(0, len(false_list) - 1)] + (', ' + get_name(id, database).capitalize()) * randint(0, 1) + '!'
+    name = ', ' + get_name(id, database).capitalize() if get_name(id, database).capitalize() != 'Noname' else False
+    return false_list[randint(0, len(false_list) - 1)] + (name if name else '') * randint(0, 1) + '!'
 
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':

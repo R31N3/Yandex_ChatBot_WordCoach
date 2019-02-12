@@ -54,12 +54,18 @@ def handle_dialog(request, response, user_storage, database):
             database.add_entries("users_info", {"request_id": user_id})
             mode = "-2"
             update_mode(user_id, mode, database)
-            return response, user_storage
+            buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени']})
+            return message_return(response, user_storage, output_message, buttons, database, request, mode)
         mode = database.get_entry("users_info", ['mode'], {'request_id': user_id})[0][0]
         if mode == "-2":
-            database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
-            user_storage["name"] = request.command
-            database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
+            if input_message != 'у человека нет имени':
+                database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+                user_storage["name"] = request.command
+                database.update_entries('users_info', user_id, {'Name': input_message}, update_type='rewrite')
+            else:
+                database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+                user_storage["name"] = request.command
+                database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
 
         output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()
         mode = ""
