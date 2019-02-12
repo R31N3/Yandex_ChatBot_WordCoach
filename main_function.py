@@ -16,13 +16,13 @@ def message_return(response, user_storage, message, button, database, request, m
     # ща будет магия
     update_mode(request.user_id, mode, database)
     response.set_text(message)
-    if mode != 'training' and mode != 'settings' and not mode.startswith('add_set'):
+    if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and not mode.startswith('show_added'):
         response.set_tts(message.replace('\n', '. ') + "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'])))
     elif mode == 'training':
         response.set_tts(message.replace('\n', '. ') + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
-    elif mode.startswith('add_set'):
+    elif mode.startswith('add_set') or mode.startswith('show_added'):
         if user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
             response.set_tts(message.replace('\n', '. ') + '. '.join(user_storage['suggests'][:-3]) + \
                              "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'][-3:])))
@@ -275,14 +275,19 @@ def handle_dialog(request, response, user_storage, database):
     if (input_message in {'наборы слов', 'набор слов'} and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
         added = get_word_sets(user_id, database)
         sets = sorted(list(set(list(words.keys())).difference(added)))
+        if len(sets) == 0:
+            output_message = 'Ты добавил все наборы!'
+            butts = {'suggests': ['Добавленные наборы', 'В начало']}
+            buttons, user_storage = get_suggests(butts)
+            mode = 'add_set 1'
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
         output_message = 'Вот наборы, которые ты еще не добавил'\
                          + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                          if (len(sets) + 3) // 4 > 1 else '')
         butts = {'suggests': sets[0:4]}
         if (len(sets) != len(list(words.keys())) or len(added) > 0) and (mode == '' or mode == 'add_set 2'):
             butts['suggests'].append('Добавленные наборы')
-        if len(sets) == 0:
-            output_message = 'Ты добавил все наборы!'
         if len(sets) > 4:
             butts['suggests'].append('Ещё')
         butts['suggests'].append('В начало')
