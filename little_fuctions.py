@@ -179,7 +179,7 @@ def update_dictionary(id, words_to_add, database):
                                                'learned_rus_words': "#$".join(learned_rus_words)})
 
 def ending(count):
-    if count == 1:
+    if count % 10 == 1:
         return 'о'
     elif 2 <= (count % 10) <=4:
         return 'а'
@@ -296,4 +296,5 @@ def get_word_sets(id, database):
 def update_word_sets(id, word_sets, database):
     database.update_entries('users_info', id, {'word_sets': "#$".join(list(word_sets))}, update_type='rewrite')
     return True
+
 
