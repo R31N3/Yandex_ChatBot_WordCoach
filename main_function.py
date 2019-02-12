@@ -17,9 +17,9 @@ def message_return(response, user_storage, message, button, database, request, m
     update_mode(request.user_id, mode, database)
     response.set_text(message)
     if mode != 'training':
-        response.set_tts(message + " Доступные команды: {}.".format(", ".join(user_storage['suggests'])))
+        response.set_tts(message + "\nДоступные команды: {}.".format(", ".join(user_storage['suggests'])))
     else:
-        response.set_tts(message + "Варианты: {}".format(", ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + "\nВарианты ответа: {}".format(", ".join(user_storage['suggests'][:-1])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -30,6 +30,7 @@ def handle_dialog(request, response, user_storage, database):
         user_storage = {"suggests": []}
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
+    input_message = input_message.replace('ё', 'е')
     user_id = request.user_id
     user_storage['suggests'] = [
         "Помощь",
@@ -66,7 +67,7 @@ def handle_dialog(request, response, user_storage, database):
 
     mode = get_mode(user_id, database)
 
-    if input_message == 'словарь' and mode == '':
+    if input_message in {'словарь', 'словарик'} and mode == '':
         dictionary = get_dictionary(user_id, database)
         output_message = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
         buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Очисть словарь', 'В начало']})
@@ -74,32 +75,33 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (input_message == 'изученные слова' and mode == '0_dict')\
-            or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict')):
+    if (input_message in {'изученные слова', 'ученные слова'} and mode == '0_dict')\
+            or ((input_message in {'дальше', 'далее', 'еще'} or input_message == 'назад') and mode.endswith('_dict')):
         page = int(mode.split('_')[0])
-        if input_message == 'дальше' or input_message == 'изученные слова':
+        if input_message in {'дальше', 'далее', 'еще'} or input_message in {'изученные слова', 'ученные слова'}:
             mode = '{}_dict'.format(page + 1)
             page += 1
-        else:
+        elif input_message == 'назад':
             mode = '{}_dict'.format(page - 1)
             page -= 1
-        output_message = envision_dictionary(user_id, database, False, page)
-        max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
-        if max_page == 0:
-            output_message = 'У тебя еще нет изученных слов.'
-        buttons = ['В начало']
-        if page < max_page:
-            buttons = ['Дальше'] + buttons
-        if page > 1:
-            buttons = ['Назад'] + buttons
-        buttons, user_storage = get_suggests({'suggests' : buttons})
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
+        if fl:
+            output_message = envision_dictionary(user_id, database, False, page)
+            max_page = int(output_message.split('\n')[-1].split(' / ')[-1])
+            if max_page == 0:
+                output_message = 'У тебя еще нет изученных слов.'
+            buttons = ['В начало']
+            if page < max_page:
+                buttons = ['Дальше'] + buttons
+            if page > 1:
+                buttons = ['Назад'] + buttons
+            buttons, user_storage = get_suggests({'suggests' : buttons})
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
 
-    if (input_message == 'неизученные слова' and mode == '0_dict')\
-            or ((input_message == 'дальше' or input_message == 'назад') and mode.endswith('_dict_n')):
+    if (input_message in {'неизученные слова', 'неученные слова'} and mode == '0_dict')\
+            or ((input_message in {'дальше', 'далее', 'еще'} or input_message == 'назад') and mode.endswith('_dict_n')):
         page = int(mode.split('_')[0])
-        if input_message == 'дальше' or input_message == 'неизученные слова':
+        if input_message in {'дальше', 'далее', 'еще'} or input_message in {'неизученные слова', 'неученные слова'}:
             mode = '{}_dict_n'.format(page + 1)
             page += 1
         else:
@@ -121,7 +123,8 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'очисть словарь' and (mode == '' or mode == '0_dict'):
+    if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова'}\
+            and (mode == '' or mode == '0_dict'):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)
@@ -136,7 +139,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if ("помощь" in input_message or "что ты умеешь" in input_message) and mode == '':
         output_message = "Благодаря данному навыку ты можешь учить английский так, как тебе хочется! Ты можешь " \
-                         "добавить слова, которые хочешь выучить, используя удобные тебе ассоциации, или же выбрать" \
+                         "добавить слова, которые хочешь выучить, используя удобные тебе ассоциации, или же выбрать " \
                          "набор из доступных категорий, после чего испытать свои силы в тренировке!"
         buttons, user_storage = get_suggests({'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
                                                            'В начало']})
@@ -147,7 +150,9 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'как добавлять слова?' and mode == 'help':
+    if input_message in {'как добавлять слова?', 'как добавить слова?', 'как добавить слово?',
+                         'как добавлять слова', 'как добавить слова', 'как добавить слово'} \
+                        and mode == 'help':
         output_message = "Для занесения" \
                          " слова в словарь используй команды, например, 'Добавь слово hello привет'.\nПолный список" \
                          " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные" \
@@ -157,7 +162,9 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'как удалять слова?' and mode == 'help':
+    if input_message in {'как удалять слова?', 'как удалить слово?', 'как удалить слова?',
+                         'как удалять слова', 'как удалить слово', 'как удалить слова'}\
+                        and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
                          "свой словарь или же удалить из него отдельное слово, используя, например, команду 'Удали" \
                          "hello'.\nПолный список команд для этого: -; Del; Удали; Очисть словарь."
@@ -174,14 +181,14 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'в начало' and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict') or mode.endswith('_dict_n')):
+    if input_message in {'в начало', 'начало'} and (mode == 'help' or mode.startswith('add_set') or mode == '' or mode.endswith('_dict') or mode.endswith('_dict_n')):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if (input_message == 'наборы слов' and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
+    if (input_message in {'наборы слов', 'набор слов'} and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.'\
                          + '\n1 / {}'.format((len(list(words.keys())) + 3) // 4)\
                          if (len(list(words.keys())) + 3) // 4 > 1 else ''
@@ -192,7 +199,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'ещё' and mode.startswith('add_set'):
+    if input_message in {'еще', 'дальше'} and mode.startswith('add_set'):
         next_page = int(mode.split()[1]) + 1
         output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
                          + '\n{} / {}'.format(next_page, (len(list(words.keys())) + 3) // 4)

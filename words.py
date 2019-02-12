@@ -18,7 +18,7 @@ words = {
     "cheetah": "гепард",
     "raccoon": "енот",
     "giraffe": "жираф",
-    "hedgehog": "ёж",
+    "hedgehog": "еж",
     "anteater": "муравьед",
     "domestic animals": "домашние животные",
     "cow": "корова",
