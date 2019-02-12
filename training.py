@@ -41,7 +41,7 @@ def get_buttons(q, id, database):
                       words[randint(0, len(words) - 1)]]
         rand = randint(0, 3)
         output.insert(rand, (ans.split())[randint(0, len(ans.split()) - 1)])
-        update_q(id, '{}#{}'.format(q, rand + 1))
+        update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
         words = {'Fish', 'Potato', 'Grass', 'Pasta'}
@@ -56,7 +56,7 @@ def get_buttons(q, id, database):
                       words[randint(0, len(words) - 1)]]
         rand = randint(0, 3)
         output.insert(rand, ans)
-        update_q(id, '{}#{}'.format(q, rand + 1))
+        update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
 
 def get_question(id, database):
