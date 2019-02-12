@@ -79,7 +79,7 @@ def handle_dialog(request, response, user_storage, database):
     if input_message == 'настройки':
         mode = 'settings'
         output_message = 'Доступны следующие настройки:'
-        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'В начало']})
+        buttons, user_storage = get_suggests({'suggests': ['Сменить имя', 'Очистить словарь' 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -112,12 +112,18 @@ def handle_dialog(request, response, user_storage, database):
     if input_message in {'словарь', 'словарик'} and mode == '':
         dictionary = get_dictionary(user_id, database)
         name = get_name(user_id, database)
+        count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if name != 'Noname':
-            output_message = '{}, в твоем словаре {} слов'.format(name, len(dictionary['to_learn']) + len(dictionary['learned']))
+            output_message = '{}, в твоем словаре {} слов'.format(name, count)
         else:
-            output_message = 'В твоем словаре {} слов'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
-        buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Очисть словарь', 'В начало']})
-        mode = '0_dict'
+            output_message = 'В твоем словаре {} слов'.format(count)
+        if count == 0:
+            mode = ''
+            output_message += '\nТы можешь добавить в словарь готовые наборы слов'
+            buttons, user_storage = get_suggests({'suggests': ['Наборы слов', 'В начало']})
+        else:
+            buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'В начало']})
+            mode = '0_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -167,7 +173,7 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова'}\
-            and (mode == '' or mode == '0_dict'):
+            and (mode == '' or mode == '0_dict' or mode == 'settings'):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
         buttons, user_storage = get_suggests(user_storage)
@@ -192,7 +198,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in {'как добавлять слова?', 'как добавить слова?', 'как добавить слово?',
                          'как добавлять слова', 'как добавить слова', 'как добавить слово'} \
-                        and mode == 'help':
+        and mode == 'help':
         output_message = "Для занесения" \
                          ' слова в словарь используй команды, например, "Добавь слово hello привет".\nПолный список' \
                          " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные" \
