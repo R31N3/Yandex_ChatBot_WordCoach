@@ -181,12 +181,12 @@ def envision_dictionary(id, database, to_learn, page):
     dictionary = get_dictionary(id, database)
     s = ''
     if to_learn:
-        if page == 1: s += 'Неизучено: {}'.format(len(dictionary['to_learn']))
+        if page == 1: s += 'Неизучено: {} слов'.format(len(dictionary['to_learn']))
         for eng, rus in list(dictionary['to_learn'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         s += '\nСтраница {} из {}'.format(page, (len(list(dictionary['to_learn'].items())) + 9) // 10)
     else:
-        if page == 1: s += 'Изучено: {}'.format(len(dictionary['learned']))
+        if page == 1: s += 'Изучено: {} слов'.format(len(dictionary['learned']))
         for eng, rus in list(dictionary['learned'].items())[page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         s += '\nСтраница {} из {}'.format(page, (len(list(dictionary['learned'].items())) + 9) // 10)
