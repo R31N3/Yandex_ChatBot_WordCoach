@@ -111,7 +111,11 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in {'словарь', 'словарик'} and mode == '':
         dictionary = get_dictionary(user_id, database)
-        output_message = 'Слов в словаре: {}'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
+        name = get_name(user_id, database)
+        if name != 'Noname':
+            output_message = '{}, в твоем словаре {} слов'.format(name, len(dictionary['to_learn']) + len(dictionary['learned']))
+        else:
+            output_message = 'В твоем словаре {} слов'.format(len(dictionary['to_learn']) + len(dictionary['learned']))
         buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Очисть словарь', 'В начало']})
         mode = '0_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
