@@ -1,4 +1,5 @@
 def classify(text, mode):
+    from little_fuctions import language_match
     if mode == '':
         mode = 0
     text = text.strip()
@@ -17,6 +18,13 @@ def classify(text, mode):
     else:
         del_word = False
     words = text.split()
+    for i in range(len(text)):
+        if text[i] == ' ':
+            words = [text[:i], text[i + 1:]]
+            if language_match(words[0], words[1]):
+                break
+    else:
+        return {'warning': True, 'class': 'use_mode', 'answer': text}
     if (words[0].startswith('алиса') or words[0].startswith('alice')) and len(words) > 1:
         words = words[1:]
     if not words:
@@ -66,4 +74,4 @@ def classify(text, mode):
 
     return {'warning': warning, 'class': label, 'answer': answer}
 
-print(classify('Добавь слово слово', 2))
+print(classify('+ слово ebat blyat', 2))
