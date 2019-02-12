@@ -69,7 +69,7 @@ def handle_dialog(request, response, user_storage, database):
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
 
-        output_message = random.choice(aliceAnswers["helloTextVariations"]).capitalize()
+        output_message = random.choice(aliceAnswers["helloTextVariations"])
         mode = ""
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
