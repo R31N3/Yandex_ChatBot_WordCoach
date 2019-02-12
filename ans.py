@@ -19,15 +19,21 @@ def classify(text, mode):
     words = text.split()
     if (words[0].startswith('алиса') or words[0].startswith('alice')) and len(words) > 1:
         words = words[1:]
+    if not words:
+        return {'warning': True, 'class': 'use_mode', 'answer': text}
     if words[0].startswith('add') or words[0].startswith('добавь'):
         add_word = True
         if (words[0].startswith('add') and words[1].startswith('word')) or (words[0].startswith('добавь') and words[1].startswith('слово')):
             words = words[2:]
         else:
             words = words[1:]
+    if not words:
+        return {'warning': True, 'class': 'use_mode', 'answer': text}
     if words[0].startswith('delete') or words[0].startswith('del') or words[0].startswith('удали'):
         del_word = True
         words = words[1:]
+    if not words:
+        return {'warning': True, 'class': 'use_mode', 'answer': text}
     if add_word:
         if mode != 0:
             warning = True
@@ -59,3 +65,4 @@ def classify(text, mode):
         warning = False
 
     return {'warning': warning, 'class': label, 'answer': answer}
+classify('add', 1)

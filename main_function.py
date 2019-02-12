@@ -379,7 +379,7 @@ def handle_dialog(request, response, user_storage, database):
     warning = answer['warning']
     answer = answer['answer']
 
-    if handle == "add":
+    if handle == "add" and answer:
         answer = list(map(lambda x: x.capitalize(), answer))
         success = add_word(answer[0], answer[1], user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
@@ -421,7 +421,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    elif handle == 'del':
+    elif handle == 'del' and answer != '' and answer:
         answer = answer.capitalize()
         success = del_word(answer.strip(), user_id, database)
         if success == 'no such word':
