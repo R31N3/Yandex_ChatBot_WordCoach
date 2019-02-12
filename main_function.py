@@ -178,7 +178,7 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова'}\
+    if input_message in {'очисть словарь', 'почисть словарь', 'очисть слова', 'почисть слова', 'очистить словарь'}\
             and (mode == '' or mode == '0_dict' or mode == 'settings'):
         update_dictionary(user_id, {'to_learn': {}, 'learned': {}}, database)
         output_message = 'Ваш словарь теперь пустой :)'
@@ -233,13 +233,14 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'в начало', 'начало', 'отмена'} and (mode == 'help' or
+    if input_message in {'в начало', 'начало', 'отмена', 'сначала'} and (mode == 'help' or
                                                     mode.startswith('add_set') or
                                                     mode == '' or
                                                     mode.endswith('_dict') or
                                                     mode.endswith('_dict_n') or
                                                     mode == 'settings' or
-                                                    mode == 'change_name'):
+                                                    mode == 'change_name' or
+                                                    mode == 'suggest_to_add'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
@@ -317,6 +318,28 @@ def handle_dialog(request, response, user_storage, database):
             output_message += '\nРежим тренировки автоматически завершен.'
             mode = ''
             update_mode(user_id, mode, database)
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    elif handle == 'translate&suggest_to_add':
+        if language_match('t', answer):
+            translation = translate_text(answer, 'ru-en')
+        elif language_match('г', answer):
+            translation = translate_text(answer, 'en-ru')
+        else:
+            output_message = 'Не поняла, что вы хотите перевести'
+            mode = ''
+            buttons, user_storage = get_suggests(user_storage)
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+        if answer.count(' ') > 0:
+            output_message = 'Попробую перевести твое предложение...'
+        else:
+            output_message = 'Попробую перевести твое слово...'
+        output_message += '\nВот что у меня получилось:\n{} - {}'.format(answer.capitalize(), translation.capitalize())
+        mode = 'suggest_to_add'
+        output_message += '\nВы также можете сказать или написать свой перевод, он будет добавлен в словарь'
+        buttons, user_storage = get_suggests({'suggests' : ['+ {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 

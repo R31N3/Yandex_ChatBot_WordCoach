@@ -38,8 +38,8 @@ def classify(text, mode):
             label = 'incorrect'
             warning = True
         elif len(words) == 1:
-            label = 'suggest_some_translation&suggest_to_add'
-            answer = words[:]
+            label = 'translate&suggest_to_add'
+            answer = words[0]
         elif len(words) == 2:
             label = 'add'
             answer = words[:]
