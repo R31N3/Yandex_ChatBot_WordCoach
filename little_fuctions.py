@@ -277,11 +277,11 @@ def translate_text(text, lang):
     try:
         key = "trnsl.1.1.20190206T150145Z.7764248d93f72476.2644ce5f93cfd028b00d8f8fe6f4f1855d7e7b10"
         request = "https://translate.yandex.net/api/v1.5/tr.json/translate?key={}&text={}&lang={}".format(key,
-                                                                                                          text, lang)[0]
+                                                                                                          text, lang)
         response = requests.get(request)
 
         if response:
-            return response.json()["text"]
+            return response.json()["text"][0]
 
         return "Ошибка выполнения запроса:\nHttp статус:", response.status_code, "(", response.reason, \
                ")\n Саша, чини, твой косяк(наверное)"
