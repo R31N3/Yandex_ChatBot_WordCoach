@@ -16,12 +16,15 @@ def message_return(response, user_storage, message, button, database, request, m
     # ща будет магия
     update_mode(request.user_id, mode, database)
     response.set_text(message)
-    if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and not mode.startswith('show_added'):
+    if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
+            not mode.startswith('show_added') and mode != 'translator':
         response.set_tts(message.replace('\n', '. ') + "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'])))
     elif mode == 'training':
         response.set_tts(message.replace('\n', '. ') + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
+    elif mode =='translator':
+        response.set_tts(message.replace('\n', '. '))
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
             response.set_tts(message.replace('\n', '. ') + '. '.join(user_storage['suggests'][:-3]) + \
@@ -109,8 +112,7 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in {'переводчик', 'режим перевода', 'режим переводчика'} and  mode == 'settings':
         mode = 'translator_inf'
-        output_message = 'В режиме переводчика я смогу только переводить и добавлять в словарь.' \
-                         ' Ты всегда можешь выключить этот режим'
+        output_message = 'В режиме переводчика я смогу только переводить и добавлять в словарь.'
         buttons, user_storage = get_suggests({'suggests' : ['Включить режим', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -119,7 +121,7 @@ def handle_dialog(request, response, user_storage, database):
             (input_message[0] != '+' and input_message not in {'в начало', 'начало', 'сначала'}):
         if mode == 'translator_inf':
             mode = 'translator'
-            output_message = 'Ок, включила режим переводчика.'
+            output_message = 'Ок, включила режим переводчика. Просто скажи "В начало", когда закончишь.'
             buttons, user_storage = get_suggests({'suggests': ['В начало']})
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
