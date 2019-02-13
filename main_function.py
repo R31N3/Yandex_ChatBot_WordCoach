@@ -20,7 +20,8 @@ def message_return(response, user_storage, message, button, database, request, m
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     message = message.replace('\n', ' - - - ').replace(' pause ', ' - ') + ' - - -'
-    button = list(map(lambda x: x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), button))
+    button, something = get_suggests({'suggests' : list(map(lambda x:\
+        x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
         response.set_tts(message + "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'])))
@@ -94,6 +95,12 @@ def handle_dialog(request, response, user_storage, database, morph):
                 buttons, user_storage = get_suggests({'suggests' : ['Оставь имя "Саша"', 'Зови меня Алекс',
                                                      'Зови меня Александр','Установить другое имя']})
                 return message_return(response, user_storage, output_message, buttons, database, request, mode)
+            ss = '''if input_message == 'женя':
+                output_message = 'Обрати внимание, имя "Женя" будет восприниматься как женское.' \
+                                 ' Если тебе это не нравится, могу звать тебя  или .'
+                mode = '-3'
+                buttons, user_storage = get_suggests({'suggests': ['Оставь имя "Женя"', 'Зови меня ',
+                                                                   'Зови меня ', 'Установить другое имя']})'''
             if input_message != 'у человека нет имени':
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
