@@ -117,7 +117,8 @@ def handle_dialog(request, response, user_storage, database):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if ((input_message.startswith('включить') and mode == 'translator_inf') or mode.startswith('translator')) and \
+    if ((input_message.startswith('включить') and mode == 'translator_inf') or
+            (mode.startswith('translator') and mode != 'translator_inf')) and \
             (input_message[0] != '+' and input_message not in {'в начало', 'начало', 'сначала'}):
         if mode == 'translator_inf':
             mode = 'translator'
