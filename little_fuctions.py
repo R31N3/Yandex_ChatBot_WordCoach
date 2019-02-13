@@ -312,5 +312,3 @@ def get_gender(id, database, morph):
 
 
     return gender
-
-print(language_match(*['стол сделан из дерева', 'the table is made of wood']))
