@@ -308,7 +308,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         sets = sorted(list(set(list(words.keys())).difference(added)))
         if len(sets) == 0:
             gender = get_gender(user_id, database, morph)
-            if gender == "masc" or gender == "Noname":
+            if not gender or gender == "masc" or gender == "Noname":
                 output_message = choice(['Ты добавил все наборы!', 'Тобой были добавлены все доступные наборы!',
                                          'Ты добавил все предлагаемые нами слова!'])
             else:
@@ -320,7 +320,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         gender = get_gender(user_id, database, morph)
-        if gender == "masc" or gender == "Noname":
+        if not gender or gender == "masc" or gender == "Noname":
             output_message = choice(['Вот наборы, которые ты еще не добавил.', "Посмотри ещё недобавленные наборы."])\
                              + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                              if (len(sets) + 3) // 4 > 1 else '')
@@ -379,7 +379,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
         gender = get_gender(user_id, database, morph)
-        if gender == "masc" or gender == "Noname":
+        if not gender or gender == "masc" or gender == "Noname":
             output_message = 'Выбор набора исключит его из твоего словаря\nВот наборы, которые ты добавил.'\
                              + ('\nСтраница 1 из {}.'.format((len(sets) + 3) // 4)
                              if (len(sets) + 3) // 4 > 1 else '')
@@ -399,7 +399,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
         gender = get_gender(user_id, database, morph)
-        if gender == "masc" or gender == "Noname":
+        if not gender or gender == "masc" or gender == "Noname":
             output_message = 'Вот наборы, которые ты добавил.' \
                              + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         else:
@@ -419,7 +419,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
         gender = get_gender(user_id, database, morph)
-        if gender == "masc" or gender == "Noname":
+        if not gender or gender == "masc" or gender == "Noname":
             output_message = 'Вот наборы, которые ты добавил.' \
                              + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         else:
