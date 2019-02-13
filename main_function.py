@@ -722,7 +722,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     if input_message in ['не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
         choice = choice(aliceAnswers["quitTextVariations"])
         response.set_text(choice)
-        response.set_tts(choice, True)
+        response.set_tts(choice)
         response.end_session = True
         return response, user_storage
 
