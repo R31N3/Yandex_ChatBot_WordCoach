@@ -21,23 +21,23 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_text(message)
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message.replace('\n', ' - - - - ') + "\n. Доступные команды: {}.".format(" - - - - ".join(user_storage['suggests'])))
+        response.set_tts(message.replace('\n', ' - - - ') + "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message.replace('\n', ' - - - - ') + "\n. Варианты ответа: {}".format(" - - - - ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message.replace('\n', ' - - - ') + "\n. Варианты ответа: {}".format(" - - - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message.replace('\n', ' - - - - ') + " - - - - ".join(user_storage['suggests']))
+        response.set_tts(message.replace('\n', ' - - - ') + " - - - ".join(user_storage['suggests']))
     elif mode =='translator':
-        response.set_tts(message.replace('\n', ' - - - - '))
+        response.set_tts(message.replace('\n', ' - - - '))
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
-            response.set_tts(message.replace('\n', ' - - - - ') + ' - - - - '.join(user_storage['suggests'][:-3]) + \
-                             "\n. Доступные команды: {}.".format(" - - - - ".join(user_storage['suggests'][-3:])))
+            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-3]) + \
+                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
-            response.set_tts(message.replace('\n', ' - - - - ') + ' - - - - '.join(user_storage['suggests'][:-2]) + \
-                             "\n. Доступные команды: {}.".format(" - - - - ".join(user_storage['suggests'][-2:])))
+            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-2]) + \
+                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-2:])))
         else:
-            response.set_tts(message.replace('\n', ' - - - - ') + ' - - - - '.join(user_storage['suggests'][:-1]) + \
-                             "\n. Доступные команды: {}.".format(" - - - - ".join(user_storage['suggests'][-1:])))
+            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-1]) + \
+                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
