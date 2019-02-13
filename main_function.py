@@ -372,8 +372,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'справка', 'справка о тренировках'} and mode == 'help':
-        output_message = 'У каждого слова есть его прогресс, изначально равный нулю. ' \
+    if input_message in {'справка', 'справка о тренировках', 'справка о тренировке'} and mode == 'help':
+        output_message = 'У каждого сл+ова есть его прогресс, изначально равный нулю. ' \
                          'После каждого правильного ответа на вопрос прогресс соответствующего сл+ова увеличивается на 1, ' \
                          'после неправильного - уменьшается на 2, но не опускается ниже нуля. ' \
                          'Сл+ово считается изученным, если его прогресс больше либо равен 4\n' \
@@ -590,6 +590,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         if success == 'already exists':
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
+        elif type(success) == type('ad') and success.startswith('В твоем словаре уже есть слово с переводом'):
+            output_message = success
         elif not success:
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
@@ -597,8 +599,11 @@ def handle_dialog(request, response, user_storage, database, morph):
             title = 'Слово' if len(answer[0]) == 1 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
-        buttons, user_storage = get_suggests(user_storage)
-        mode = ''
+        if mode != 'translator':
+            mode = ''
+            buttons, user_storage = get_suggests(user_storage)
+        else:
+            buttons, user_storage = get_suggests({'suggests': ['В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -620,6 +625,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         if success == 'already exists':
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
+        elif type(success) == type('ad') and success.startswith('В твоем словаре уже есть слово с переводом'):
+            output_message = success
         elif not success:
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
@@ -631,7 +638,6 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов.'.format(stat[1], stat[0])
-            update_mode(user_id, mode, database)
         if mode != 'translator':
             mode = ''
             buttons, user_storage = get_suggests(user_storage)
