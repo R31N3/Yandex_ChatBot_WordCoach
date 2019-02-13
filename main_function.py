@@ -321,7 +321,8 @@ def handle_dialog(request, response, user_storage, database, morph):
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         gender = get_gender(user_id, database, morph)
-        if not gender or gender == "masc" or gender == "Noname":
+        print(gender)
+        if gender == "masc" or gender == "Noname":
             output_message = choice(['Вот наборы, которые ты еще не добавил.', "Посмотри ещё недобавленные наборы."])\
                              + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                              if (len(sets) + 3) // 4 > 1 else '')
