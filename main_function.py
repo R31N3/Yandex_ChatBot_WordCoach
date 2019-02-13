@@ -238,7 +238,7 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if ((input_message.startswith('включи') and mode == 'translator_inf') or
             (mode.startswith('translator') and mode != 'translator_inf')) and \
-            (input_message[0] != '+' and input_message not in {'в начало', 'начало', 'сначала'}):
+            (not input_message.startswith('добавь') and input_message not in {'в начало', 'начало', 'сначала'}):
         if mode == 'translator_inf':
             mode = 'translator'
             output_message = 'Ок, включила режим переводчика. Просто скажи "В начало", когда закончишь.'
@@ -259,7 +259,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = '\nВот что я нашла:\n{} - {}'.format(input_message.capitalize(),
                                                                              translation.capitalize())
             buttons, user_storage = get_suggests(
-                {'suggests': ['+ {} {}'.format(input_message.capitalize(), translation.capitalize()), 'В начало']})
+                {'suggests': ['Добавь {} {}'.format(input_message.capitalize(), translation.capitalize()), 'В начало']})
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
 
