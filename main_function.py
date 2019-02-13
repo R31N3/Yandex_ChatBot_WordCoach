@@ -78,6 +78,13 @@ def handle_dialog(request, response, user_storage, database, morph):
 
         mode = database.get_entry("users_info", ['mode'], {'request_id': user_id})[0][0]
         if mode == "-2":
+            if input_message == 'саша':
+                output_message = 'Обрати внимание, имя "Саша" будет восприниматься как женское.' \
+                                 ' Если тебе это не нравится, могу звать тебя Алекс или Александр.'
+                mode = '-3'
+                buttons, user_storage = get_suggests({'suggests' : ['Оставь имя "Саша"', 'Зови меня Алекс',
+                                                     'Зови меня Александр','Установить другое имя']})
+                return message_return(response, user_storage, output_message, buttons, database, request, mode)
             if input_message != 'у человека нет имени':
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
@@ -87,6 +94,29 @@ def handle_dialog(request, response, user_storage, database, morph):
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
+
+        if mode == '-3':
+            if input_message == 'зови меня александр':
+                database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+                user_storage["name"] = request.command
+                database.update_entries('users_info', user_id, {'Name': 'Александр'},
+                                        update_type='rewrite')
+            elif input_message == 'зови меня алекс':
+                database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+                user_storage["name"] = request.command
+                database.update_entries('users_info', user_id, {'Name': 'Алекс'},
+                                        update_type='rewrite')
+            elif input_message == 'оставь имя "саша"':
+                database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+                user_storage["name"] = request.command
+                database.update_entries('users_info', user_id, {'Name': 'Саша'},
+                                        update_type='rewrite')
+            else:
+                output_message = 'Хорошо, назови свое имя.'
+                mode = "-2"
+                update_mode(user_id, mode, database)
+                buttons, user_storage = get_suggests({'suggests': ['У человека нет имени']})
+                return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
         output_message = choice(aliceAnswers["helloTextVariations"])
         mode = ""
@@ -108,10 +138,35 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'сменить имя', 'поменять имя'} and mode == 'settings':
+    if input_message in {'сменить имя', 'поменять имя', 'установить другое имя'} and mode == 'settings':
         mode = 'change_name'
-        output_message = 'Введите новое имя.'
+        output_message = 'Введи новое имя.'
         buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени', 'Отмена']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if input_message == 'саша' and mode == 'change_name':
+        output_message = 'Обрати внимание, имя "Саша" будет восприниматься как женское.' \
+                         ' Если тебе это не нравится, могу звать тебя Алекс или Александр.'
+        mode = 'sasha_name'
+        buttons, user_storage = get_suggests({'suggests': ['Оставь имя "Саша"', 'Зови меня Алекс',
+                                                           'Зови меня Александр', 'Установить другое имя', 'Отмена']})
+
+    if mode == 'sasha_name' and input_message != 'отмена' and 'начал' not in input_message:
+        if input_message == 'оставь имя "саша"':
+            output_message = 'Хорошо, буду звать тебя Саша.'
+        elif input_message == 'зови меня александр':
+            output_message = 'Хорошо, буду звать тебя Александр.'
+        elif input_message == 'зови меня алекс':
+            output_message = 'Хорошо, буду звать тебя Алекс.'
+        else:
+            mode = 'change_name'
+            output_message = 'Введи новое имя.'
+            buttons, user_storage = get_suggests({'suggests': ['У человека нет имени', 'Отмена']})
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+        mode = ''
+        buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
@@ -579,7 +634,8 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode == 'change_name' or
                                                     mode == 'suggest_to_add' or
                                                     mode.startswith('show_added') or
-                                                    mode.startswith('translator')):
+                                                    mode.startswith('translator') or
+                                                    mode == 'sasha_name'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
