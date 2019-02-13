@@ -20,7 +20,7 @@ def message_return(response, user_storage, message, button, database, request, m
             not mode.startswith('show_added') and mode != 'translator':
         response.set_tts(message.replace('\n', '. ') + "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message.replace('\n', '. ') + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message.replace('\n', '. ')[message.index(">")+1:] + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
     elif mode =='translator':

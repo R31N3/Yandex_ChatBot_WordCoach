@@ -1,5 +1,6 @@
 from little_fuctions import *
 from random import randint
+from random import choice
 
 def get_ans(q, id, database):
     q = q.split('#')[0]
@@ -82,14 +83,19 @@ def get_question(id, database):
         return '\n' + (' '.join(dictionary[key][word])).upper()
 
 def random_true(id, database):
-    true_list = ['Правильно', 'Верно', 'Так держать', 'Вперед']
+    true_list = ['Правильно', 'Верно, так держать', 'Вперед', 'Ты прав', "Всё верно"]
+    win_sound_list = ['<speaker audio="alice-sounds-game-win-1.opus"> ',
+                '<speaker audio="alice-sounds-game-win-2.opus"> ', '<speaker audio="alice-sounds-game-win-3.opus"> ']
     name = ', ' + get_name(id, database).capitalize() if get_name(id, database).capitalize() != 'Noname' else False
-    return true_list[randint(0, len(true_list) - 1)] + (name if name else '') * randint(0, 1) + '!'
+    return choice(win_sound_list) + choice(true_list) + (name if name else '') * randint(0, 1) + '!'
 
 def random_false(id, database):
-    false_list = ['Не совсем так, но ты точно справишься в следующий раз', 'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится']
+    false_list = ['Не совсем так, но ты точно справишься в следующий раз',
+                  'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится']
+    fail_sound_list = ['<speaker audio="alice-sounds-game-loss-1.opus"> ',
+                '<speaker audio="alice-sounds-game-loss-2.opus"> ', '<speaker audio="alice-sounds-game-loss-3.opus"> ']
     name = ', ' + get_name(id, database).capitalize() if get_name(id, database).capitalize() != 'Noname' else False
-    return false_list[randint(0, len(false_list) - 1)] + (name if name else '') * randint(0, 1) + '!'
+    return choice(fail_sound_list) + choice(false_list) + (name if name else '') * randint(0, 1) + '!'
 
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
