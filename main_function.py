@@ -7,6 +7,7 @@ import training
 from words import words
 
 
+
 aliceAnswers = read_answers_data("data/answers_dict_example")
 
 
@@ -679,7 +680,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if input_message in ['не хочется', 'в следующий раз', 'выход', "не хочу", 'выйти']:
-        choice = random.choice(aliceAnswers["quitTextVariations"])
+        choice = choice(aliceAnswers["quitTextVariations"])
         response.set_text(choice)
         response.set_tts(choice, True)
         response.end_session = True
