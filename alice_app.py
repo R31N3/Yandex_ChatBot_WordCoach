@@ -18,7 +18,6 @@ import postgresql_database
 from flask import Flask, request
 app = Flask(__name__)
 
-import pymorphy2
 
 # Хранилище данных о сессиях.
 session_storage = {}
@@ -58,7 +57,6 @@ def mainn():
 # Задаем параметры приложения Flask.
 @app.route("/alice_hackaton/", methods=['POST'])
 def main():
-    morph = pymorphy2.MorphAnalyzer()
     database = init_database(host='localhost', user='postgres3', password='1488',
                              dbname='programmer_simulator')
 
@@ -73,7 +71,7 @@ def main():
     print(session_storage.get(user_id))
     print(len(session_storage))
     alice_response, session_storage[user_id] = handle_dialog(
-        alice_request, alice_response, session_storage.get(user_id), database, morph
+        alice_request, alice_response, session_storage.get(user_id), database
     )
 
     logging.info('Response: {}'.format(alice_response))

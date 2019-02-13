@@ -166,10 +166,10 @@ def handle_dialog(request, response, user_storage, database):
         name = get_name(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if name != 'Noname':
-            output_message = '{}, в твоем словаре {} {}.'.format(name, count, wrd.make_agree_with_number(count).word)\
-                             + ending(count)
+            output_message = '{}, в твоем словаре {} слов'.format(name, count)\
+                             + ending(count)+"."
         else:
-            output_message = 'В твоем словаре {} {}.'.format(count, wrd.make_agree_with_number(count).word) + ending(count)
+            output_message = 'В твоем словаре {} слов'.format(count) + ending(count)+"."
         if count == 0:
             mode = ''
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
