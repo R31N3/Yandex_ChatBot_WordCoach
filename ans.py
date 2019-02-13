@@ -4,74 +4,93 @@ def classify(text, mode):
         mode = 0
     text = text.strip()
     text = text.lower()
-    warning = True
     if text[0] == '+':
         add_word = True
         text = text[1:]
         text = text.strip()
+        if not text:
+            return {'class': 'use_mode', 'answer': '+'}
     else:
         add_word = False
     if text[0] == '-':
         del_word = True
         text = text[1:]
         text = text.strip()
+        if not text:
+            return {'class': 'use_mode', 'answer': '-'}
     else:
         del_word = False
-    words = text.split()
-    for i in range(len(text)):
-        if text[i] == ' ':
-            words = [text[:i], text[i + 1:]]
-            if language_match(words[0], words[1]):
-                break
-    else:
-        return {'warning': True, 'class': 'use_mode', 'answer': text}
-    if (words[0].startswith('алиса') or words[0].startswith('alice')) and len(words) > 1:
-        words = words[1:]
-    if not words:
-        return {'warning': True, 'class': 'use_mode', 'answer': text}
-    if words[0].startswith('add') or words[0].startswith('добавь'):
-        add_word = True
-        if len(words) >= 2 and ((words[0].startswith('add') and words[1].startswith('word')) or (words[0].startswith('добавь') and words[1].startswith('слов'))):
-            words = words[2:]
+
+    if text.startswith('alice, add word') or text.startswith('алиса, добавь слово') or \
+            text.startswith('alice add word') or text.startswith('алиса добавь слово') or \
+            text.startswith('алиса добавить слово') or text.startswith('алиса, добавить слово'):
+        if text.count(' ') >= 3:
+            text = ' '.join(text.split()[3:])
+            add_word = True
         else:
-            words = words[1:]
-    if not words:
-        return {'warning': True, 'class': 'use_mode', 'answer': text}
-    if words[0].startswith('delete') or words[0].startswith('del') or words[0].startswith('удали'):
-        del_word = True
-        words = words[1:]
-    if not words:
-        return {'warning': True, 'class': 'use_mode', 'answer': text}
+            return {'class': 'use_mode', 'answer': text}
+
+    elif text.startswith('alice, add') or text.startswith('алиса, добавь') or \
+            text.startswith('add word') or text.startswith('добавь слово') or \
+            text.startswith('alice add') or text.startswith('алиса добавь') or \
+            text.startswith('алиса, добавить') or text.startswith('добавить слово') or \
+            text.startswith('алиса, добавить'):
+        if text.count(' ') >= 2:
+            text = ' '.join(text.split()[2:])
+            add_word = True
+        else:
+            return {'class': 'use_mode', 'answer': text}
+
+    elif text.startswith('alice') or text.startswith('алиса') or \
+            text.startswith('add') or text.startswith('добавь') or \
+            text.startswith('word') or text.startswith('слов'):
+        if ' ' in text:
+            if not (text.startswith('alice') or text.startswith('алиса')):
+                add_word = True
+            text = text[text.index(' ') + 1:]
+        else:
+            if (text.startswith('alice') or text.startswith('алиса')):
+                return {'class': 'its me', 'answer': text}
+            else:
+                return {'class': 'use_mode', 'answer': text}
+
     if add_word:
-        if mode != 0:
-            warning = True
+        for i in range(len(text)):
+            if text[i] == ' ':
+                words = [text[:i], text[i + 1:]]
+                if language_match(words[0], words[1]):
+                    return {'class': 'add', 'answer': words}
         else:
-            warning = False
-        if del_word:
-            answer = ''
-            label = 'incorrect'
-            warning = True
-        elif len(words) == 1:
-            label = 'translate&suggest_to_add'
-            answer = words[0]
-        elif len(words) == 2:
-            label = 'add'
-            answer = words[:]
-        else:
-            label = 'translate&suggest_to_add'
-            answer = ' '.join(words)
-    elif del_word:
-        if mode != 0:
-            warning = True
-        else:
-            warning = False
-        label = 'del'
-        answer = ' '.join(words)
-    else:
-        label = 'use_mode'
-        answer = text
-        warning = False
+            return {'class': 'translate&suggest_to_add', 'answer': text}
 
-    return {'warning': warning, 'class': label, 'answer': answer}
+    if text.startswith('alice, del word') or text.startswith('алиса, удали слово') or \
+            text.startswith('alice del word') or text.startswith('алиса удали слово') or \
+            text.startswith('алиса удалить слово') or text.startswith('alice delete word') or \
+            text.startswith('alice, delete word') or text.startswith('алиса, удалить слово'):
+        if text.count(' ') >= 3:
+            text = ' '.join(text.split()[3:])
+            return  {'class': 'del', 'answer': text}
+        else:
+            return {'class': 'use_mode', 'answer': text}
 
-print(classify('+ слово ebat blyat', 2))
+    elif text.startswith('alice, del') or text.startswith('алиса, удали') or \
+            text.startswith('del word') or text.startswith('удали слово') or \
+            text.startswith('alice del') or text.startswith('алиса удали') or \
+            text.startswith('alice, delete') or text.startswith('алиса, удалить') or \
+            text.startswith('delete word') or text.startswith('удалить слово') or \
+            text.startswith('alice delete') or text.startswith('алиса удалить'):
+        if text.count(' ') >= 2:
+            text = ' '.join(text.split()[2:])
+            return {'class': 'del', 'answer': text}
+        else:
+            return {'class': 'use_mode', 'answer': text}
+
+    elif text.startswith('delete') or text.startswith('del') or \
+            text.startswith('удали') or text.startswith('удалить'):
+        if text.count(' ') >= 1:
+            text = ' '.join(text.split()[1:])
+            return  {'class': 'del', 'answer': text}
+        else:
+            return {'class': 'use_mode', 'answer': text}
+
+    return {'class': 'use_mode', 'answer': text}

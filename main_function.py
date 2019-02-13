@@ -428,7 +428,6 @@ def handle_dialog(request, response, user_storage, database):
 
     answer = classify(input_message, mode)
     handle = answer['class']
-    warning = answer['warning']
     answer = answer['answer']
 
     if handle == "add" and answer:
@@ -444,12 +443,19 @@ def handle_dialog(request, response, user_storage, database):
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
-        if warning and mode == 'training':
+        if mode == 'training':
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
             update_mode(user_id, mode, database)
         mode = ''
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    elif handle == 'its me':
+        output_message = 'Это я!'
+        mode = ''
+        buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
