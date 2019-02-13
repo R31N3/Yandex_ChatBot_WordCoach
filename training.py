@@ -110,7 +110,7 @@ def main(q, answer, q_type, id, database):
         update_stat_session('training', stat_session, id, database)
         return 'В этом режиме нужно переводить слова из вашего словаря :)\n'\
                'Команда "Закончить тренировку" вернет тебя в главное меню\n'\
-               'Ты можешь называть ответили номер варианта ответа. Поехали!\n'+ get_question(id, database)
+               'Для удобства, ты можешь называть только номер верного варианта. Поехали!\n'+ get_question(id, database)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
