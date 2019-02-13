@@ -308,7 +308,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         sets = sorted(list(set(list(words.keys())).difference(added)))
         if len(sets) == 0:
             gender = get_gender(user_id, database, morph)
-            if not gender or gender == "masc" or gender == "Noname":
+            print(gender)
+            if gender == "masc" or gender == "Noname":
                 output_message = choice(['Ты добавил все наборы!', 'Тобой были добавлены все доступные наборы!',
                                          'Ты добавил все предлагаемые нами слова!'])
             else:
