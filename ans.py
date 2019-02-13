@@ -4,6 +4,7 @@ def classify(text, mode):
         mode = 0
     text = text.strip()
     text = text.lower()
+    text.replace(' - ', ' ')
     if text[0] == '+':
         add_word = True
         text = text[1:]
@@ -21,9 +22,9 @@ def classify(text, mode):
     else:
         del_word = False
 
-    if text.startswith('alice, add word') or text.startswith('алиса, добавь слово') or \
-            text.startswith('alice add word') or text.startswith('алиса добавь слово') or \
-            text.startswith('алиса добавить слово') or text.startswith('алиса, добавить слово'):
+    if text.startswith('alice, add word') or text.startswith('алиса, добавь слов') or \
+            text.startswith('alice add word') or text.startswith('алиса добавь слов') or \
+            text.startswith('алиса добавить слов') or text.startswith('алиса, добавить слов'):
         if text.count(' ') >= 3:
             text = ' '.join(text.split()[3:])
             add_word = True
@@ -31,9 +32,9 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': text}
 
     elif text.startswith('alice, add') or text.startswith('алиса, добавь') or \
-            text.startswith('add word') or text.startswith('добавь слово') or \
+            text.startswith('add word') or text.startswith('добавь слов') or \
             text.startswith('alice add') or text.startswith('алиса добавь') or \
-            text.startswith('алиса, добавить') or text.startswith('добавить слово') or \
+            text.startswith('алиса, добавить') or text.startswith('добавить слов') or \
             text.startswith('алиса, добавить'):
         if text.count(' ') >= 2:
             text = ' '.join(text.split()[2:])
@@ -63,10 +64,10 @@ def classify(text, mode):
         else:
             return {'class': 'translate&suggest_to_add', 'answer': text}
 
-    if text.startswith('alice, del word') or text.startswith('алиса, удали слово') or \
-            text.startswith('alice del word') or text.startswith('алиса удали слово') or \
-            text.startswith('алиса удалить слово') or text.startswith('alice delete word') or \
-            text.startswith('alice, delete word') or text.startswith('алиса, удалить слово'):
+    if text.startswith('alice, del word') or text.startswith('алиса, удали слов') or \
+            text.startswith('alice del word') or text.startswith('алиса удали слов') or \
+            text.startswith('алиса удалить слов') or text.startswith('alice delete word') or \
+            text.startswith('alice, delete word') or text.startswith('алиса, удалить слов'):
         if text.count(' ') >= 3:
             text = ' '.join(text.split()[3:])
             return  {'class': 'del', 'answer': text}
@@ -74,10 +75,10 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': text}
 
     elif text.startswith('alice, del') or text.startswith('алиса, удали') or \
-            text.startswith('del word') or text.startswith('удали слово') or \
+            text.startswith('del word') or text.startswith('удали слов') or \
             text.startswith('alice del') or text.startswith('алиса удали') or \
             text.startswith('alice, delete') or text.startswith('алиса, удалить') or \
-            text.startswith('delete word') or text.startswith('удалить слово') or \
+            text.startswith('delete word') or text.startswith('удалить слов') or \
             text.startswith('alice delete') or text.startswith('алиса удалить'):
         if text.count(' ') >= 2:
             text = ' '.join(text.split()[2:])

@@ -92,9 +92,9 @@ def handle_dialog(request, response, user_storage, database):
         dictionary = get_dictionary(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if count == 0:
-            buttons = ['Сменить имя', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'В начало']
         else:
-            buttons = ['Сменить имя', 'Очистить словарь', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'В начало']
         buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -105,6 +105,40 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени', 'Отмена']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
+
+    if input_message in {'переводчик', 'режим перевода', 'режим переводчика'} and  mode == 'settings':
+        mode = 'translator_inf'
+        output_message = 'В режиме переводчика я смогу только переводить и добавлять в словарь.' \
+                         ' Ты всегда можешь выключить этот режим'
+        buttons = ['Включить режим', 'В начало']
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
+
+    if ((input_message.startswith('включить') and mode == 'translator_inf') or mode.startswith('translator')) and \
+            input_message[0] != '+':
+        if mode == 'translator_inf':
+            mode = 'translator'
+            output_message = 'Ок, включила режим переводчика.'
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+        else:
+            if language_match('t', input_message):
+                translation = ''.join(translate_text(input_message, 'ru-en'))
+            elif language_match('г', input_message):
+                translation = ''.join(translate_text(input_message, 'en-ru'))
+            else:
+                output_message = 'Не поняла, что вы хотите перевести'
+                buttons, user_storage = get_suggests({'suggests' : ['В начало']})
+                return message_return(response, user_storage, output_message, buttons, database, request,
+                                      mode)
+
+            output_message = '\nВот что я нашла:\n{} - {}'.format(input_message.capitalize(),
+                                                                             translation.capitalize())
+            buttons, user_storage = get_suggests(
+                {'suggests': ['+ {} {}'.format(input_message.capitalize(), translation.capitalize()), 'В начало']})
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+
 
     if input_message == 'у человека нет имени' and mode == 'change_name':
         mode = ''
@@ -265,7 +299,8 @@ def handle_dialog(request, response, user_storage, database):
                                                     mode == 'settings' or
                                                     mode == 'change_name' or
                                                     mode == 'suggest_to_add' or
-                                                    mode.startswith('show_added')):
+                                                    mode.startswith('show_added') or
+                                                    mode.startswith('translator')):
         buttons, user_storage = get_suggests(user_storage)
         output_message = 'Ок, начнем с начала ;)'
         mode = ''
@@ -413,11 +448,6 @@ def handle_dialog(request, response, user_storage, database):
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
-        if mode == 'training':
-            output_message += '\nРежим тренировки автоматически завершен.'
-            stat = get_stat_session('training', user_id, database)
-            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
-            update_mode(user_id, mode, database)
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -448,7 +478,8 @@ def handle_dialog(request, response, user_storage, database):
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
             update_mode(user_id, mode, database)
-        mode = ''
+        if mode != 'translator':
+            mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
