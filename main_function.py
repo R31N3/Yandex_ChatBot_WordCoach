@@ -151,6 +151,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         mode = 'sasha_name'
         buttons, user_storage = get_suggests({'suggests': ['Оставь имя "Саша"', 'Зови меня Алекс',
                                                            'Зови меня Александр', 'Установить другое имя', 'Отмена']})
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
 
     if mode == 'sasha_name' and input_message != 'отмена' and 'начал' not in input_message:
         if input_message == 'оставь имя "саша"':
