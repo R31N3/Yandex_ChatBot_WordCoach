@@ -581,6 +581,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if mode != '' and mode[0] == '!' and input_message[0] != '+':
+        print("???? ", input_message, mode)
         success = add_word(''.join(mode[1:]), input_message, user_id, database)
         answer = ''.join(mode[1:]), input_message
         answer = list(map(lambda x: x.capitalize(), answer))
