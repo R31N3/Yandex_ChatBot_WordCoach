@@ -288,7 +288,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         name = get_name(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if name != 'Noname':
-            output_message = '{}, в твоем словаре {} слов'.format(name, count)\
+            output_message = '{}, в твоем словаре {} сл+ов'.format(name, count)\
                              + ending(count)+"."
         else:
             output_message = 'В твоем словаре {} сл+ов'.format(count) + ending(count)+"."
