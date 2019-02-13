@@ -37,7 +37,7 @@ def message_return(response, user_storage, message, button, database, request, m
     return response, user_storage
 
 
-def handle_dialog(request, response, user_storage, database, morph):
+def handle_dialog(request, response, user_storage, database):
     if not user_storage:
         user_storage = {"suggests": []}
     input_message = request.command.lower()
@@ -85,7 +85,6 @@ def handle_dialog(request, response, user_storage, database, morph):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
-    wrd = morph.parse('слово')[0]
     mode = get_mode(user_id, database)
 
     if input_message == 'настройки':
@@ -112,7 +111,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         mode = 'translator_inf'
         output_message = 'В режиме переводчика я смогу только переводить и добавлять в словарь.' \
                          ' Ты всегда можешь выключить этот режим'
-        buttons = ['Включить режим', 'В начало']
+        buttons, user_storage = get_suggests({'suggests' : ['Включить режим', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
