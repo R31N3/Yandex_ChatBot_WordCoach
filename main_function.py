@@ -51,11 +51,9 @@ def handle_dialog(request, response, user_storage, database, morph):
     from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
-    print('ЭТО ПОКАЖИ', request.command)
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
-    print('ЭТО ПОКАЖИ', input_message)
     while input_message and input_message[-1] == '.':
           input_message = input_message[:-1]
     if not input_message:
@@ -582,7 +580,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if mode != '' and mode[0] == '!' and input_message[0] != '+':
+    if mode != '' and mode[0] == '!' and not input_message.startswith('добавь'):
         print("???? ", input_message, mode)
         success = add_word(''.join(mode[1:]), input_message, user_id, database)
         answer = ''.join(mode[1:]), input_message
@@ -665,7 +663,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         output_message += '\nВот что у меня получилось:\n{} - {}'.format(answer.capitalize(), translation.capitalize())
         mode = '!' + answer
         output_message += '\nТы также можешь сказать или написать свой перевод, он будет добавлен в словарь.'
-        buttons, user_storage = get_suggests({'suggests' : ['+ {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
+        buttons, user_storage = get_suggests({'suggests' : ['Добавь {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
