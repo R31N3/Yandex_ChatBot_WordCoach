@@ -18,6 +18,8 @@ import postgresql_database
 from flask import Flask, request
 app = Flask(__name__)
 
+import pymorphy2
+
 
 # Хранилище данных о сессиях.
 session_storage = {}
@@ -63,7 +65,7 @@ def main():
     # Функция получает тело запроса и возвращает ответ.
     alice_request = AliceRequest(request.json)
     logging.info('Request: {}'.format(alice_request))
-
+    morph = pymorphy2.MorphAnalyzer()
     alice_response = AliceResponse(alice_request)
 
     user_id = alice_request.user_id
@@ -71,7 +73,7 @@ def main():
     print(session_storage.get(user_id))
     print(len(session_storage))
     alice_response, session_storage[user_id] = handle_dialog(
-        alice_request, alice_response, session_storage.get(user_id), database
+        alice_request, alice_response, session_storage.get(user_id), database, morph
     )
 
     logging.info('Response: {}'.format(alice_response))

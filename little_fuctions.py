@@ -302,3 +302,12 @@ def update_word_sets(id, word_sets, database):
     return True
 
 
+def get_gender(id, database, morph):
+    name = database.get_entry("users_info", ['Name'], {'request_id': id})[0][0]
+    if name != "Noname":
+        gender = morph.parse(name)[0].tag.gender
+        gender = gender if gender != "None" else "masc"
+    else:
+        gender = "Noname"
+
+    return gender

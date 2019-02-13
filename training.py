@@ -2,6 +2,8 @@ from little_fuctions import *
 from random import randint
 from random import choice
 
+aliceAnswers = read_answers_data("data/answers_dict_example")
+
 def get_ans(q, id, database):
     q = q.split('#')[0]
     dictionary = get_dictionary(id, database)
@@ -82,20 +84,20 @@ def get_question(id, database):
         update_q(id, ' '.join(dictionary[key][word]), database)
         return '\n' + (' '.join(dictionary[key][word])).upper()
 
+
 def random_true(id, database):
-    true_list = ['Правильно', 'Верно, так держать', 'Вперед', 'Ты прав', "Всё верно"]
-    win_sound_list = ['<speaker audio="alice-sounds-game-win-1.opus"> ',
-                '<speaker audio="alice-sounds-game-win-2.opus"> ', '<speaker audio="alice-sounds-game-win-3.opus"> ']
-    name = ', ' + get_name(id, database).capitalize() if get_name(id, database).capitalize() != 'Noname' else False
-    return choice(win_sound_list) + choice(true_list) + (name if name else '') * randint(0, 1) + '!'
+    name = get_name(id, database)
+    if name != "Noname":
+        return choice(aliceAnswers["random_true"]["gender"]).format(name)
+    return choice(aliceAnswers["random_true"]["no_gender"])
+
 
 def random_false(id, database):
-    false_list = ['Не совсем так, но ты точно справишься в следующий раз',
-                  'Неверно, но я в тебя верю', 'Попробуй еще', 'У тебя получится']
-    fail_sound_list = ['<speaker audio="alice-sounds-game-loss-1.opus"> ',
-                '<speaker audio="alice-sounds-game-loss-2.opus"> ', '<speaker audio="alice-sounds-game-loss-3.opus"> ']
-    name = ', ' + get_name(id, database).capitalize() if get_name(id, database).capitalize() != 'Noname' else False
-    return choice(fail_sound_list) + choice(false_list) + (name if name else '') * randint(0, 1) + '!'
+    name = get_name(id, database)
+    if name != "Noname":
+        return choice(aliceAnswers["random_false"]["gender"]).format(name)
+    return choice(aliceAnswers["random_false"]["no_gender"])
+
 
 def main(q, answer, q_type, id, database):
     if answer == 'help' or answer == 'помощь':
@@ -105,7 +107,8 @@ def main(q, answer, q_type, id, database):
         q_count, q_true = get_stat_session('training', id, database)
         if q_count != 0:
             q_count -= 1
-        return 'Хорошо поиграли! Вы ответили на {} из {} моих вопросов.'.format(q_true, q_count)
+        return choice['Хорошо поиграли! ', 'Хорошая игра!', "Неплохо потренеровались!"] + \
+               ' Вы ответили на {} из {} моих вопросов.'.format(q_true, q_count)
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         dictionary = get_dictionary(id, database)
