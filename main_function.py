@@ -5,7 +5,7 @@ from ans import *
 from little_fuctions import *
 import training
 from words import words
-from random import choice
+
 
 aliceAnswers = read_answers_data("data/answers_dict_example")
 
@@ -13,6 +13,7 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
+
     update_mode(request.user_id, mode, database)
     if ">" in message:
         response.set_text(message[message.index(">")+1:])
@@ -43,6 +44,7 @@ def message_return(response, user_storage, message, button, database, request, m
 
 
 def handle_dialog(request, response, user_storage, database, morph):
+    from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
     input_message = request.command.lower()
