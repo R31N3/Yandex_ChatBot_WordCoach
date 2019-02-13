@@ -51,9 +51,11 @@ def handle_dialog(request, response, user_storage, database, morph):
     from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
+    print('ЭТО ПОКАЖИ', request.command)
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
+    print('ЭТО ПОКАЖИ', input_message)
     while input_message and input_message[-1] == '.':
           input_message = input_message[:-1]
     if not input_message:
