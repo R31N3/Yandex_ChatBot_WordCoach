@@ -590,8 +590,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         if success == 'already exists':
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
-        elif type(success) == type('ad') and success.startswith('В твоем словаре уже есть слово с переводом'):
-            output_message = success
+        elif success == 'rus_exist':
+            output_message = 'В твоем словаре уже есть слово с переводом {}'.format(answer[1])
         elif not success:
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
@@ -625,8 +625,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         if success == 'already exists':
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
-        elif type(success) == type('ad') and success.startswith('В твоем словаре уже есть слово с переводом'):
-            output_message = success
+        elif success == 'rus_exist':
+            output_message = 'В твоем словаре уже есть слово с переводом {}'.format(answer[1])
         elif not success:
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'

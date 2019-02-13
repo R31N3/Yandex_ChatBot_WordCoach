@@ -68,7 +68,8 @@ def add_word(word, translate, id, database):
             if translate in words:
                 ans += 1
     if ans > 1:
-        return 'В твоем словаре уже есть слово с переводом {}'.format(translate)
+        return 'rus_exist'
+    print('ПОКАЖИ ЭТУ СТРОКУ', ans)
     if word in dictionary['to_learn']:
         if translate not in dictionary['to_learn'][word]:
             dictionary['to_learn'][word].append(translate)
