@@ -19,28 +19,28 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
-    message = message.replace('\n', ' - - - ').replace(' pause ', ' - ') + ' - - -'
+    message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - - '
     button, something = get_suggests({'suggests' : list(map(lambda x:\
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message + "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'])))
+        response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message + "\n. Варианты ответа: {}".format(" - - ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message + " - - ".join(user_storage['suggests']))
+        response.set_tts(message + " - ".join(user_storage['suggests']))
     elif mode =='translator':
         response.set_tts(message)
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
-            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-3]) + \
-                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-3:])))
+            response.set_tts(message + ' - '.join(user_storage['suggests'][:-3]) + \
+                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
-            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-2]) + \
-                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-2:])))
+            response.set_tts(message + ' - '.join(user_storage['suggests'][:-2]) + \
+                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-2:])))
         else:
-            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-1]) + \
-                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-1:])))
+            response.set_tts(message + ' - '.join(user_storage['suggests'][:-1]) + \
+                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -529,7 +529,7 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message.capitalize()].items():
-            dictionary = add_word(word.replace('+', ''), translate('+', ''), user_id, database)
+            dictionary = add_word(word.replace('+', ''), translate.replace('+', ''), user_id, database)
             if dictionary != 'already exists' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
