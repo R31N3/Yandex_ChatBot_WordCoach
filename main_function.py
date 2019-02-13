@@ -476,7 +476,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
-        if mode == 'training':
+        if mode == 'training' :
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
