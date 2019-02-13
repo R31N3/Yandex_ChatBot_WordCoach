@@ -410,7 +410,7 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message in {'что делать?', 'что делать'} and mode == 'help':
         output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом. '\
-                         'В итоге прочитал Н.Г. Чернышевского "Что делать?" и начал учить английский!'
+                         'В итоге прочитала книгу Н.Г. Чернышевского "Что делать?" и начала учить английский!'
         mode = ''
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
