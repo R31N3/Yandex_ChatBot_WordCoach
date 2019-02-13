@@ -590,7 +590,8 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
         elif not success:
-            output_message = 'Пара должна состоять из русского и английского слова.'
+            print(success, answer[0], answer[1], language_match(*answer))
+            output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)
@@ -616,7 +617,8 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = choice(['В Вашем словаре уже есть такой перевод.', 'Словарь уже содержит такой перевод.',
                                      'Такой перевод уже есть в Вашем словаре.'])
         elif not success:
-            output_message = 'Пара должна состоять из русского и английского слова.'
+            print(success, answer[0], answer[1], language_match(*answer))
+            output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
             output_message = 'Слово "{}" с переводом "{}" добавлено в Ваш словарь.'.format(answer[0], answer[1])
             update_dictionary(user_id, success, database)

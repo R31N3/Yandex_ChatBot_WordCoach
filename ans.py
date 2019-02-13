@@ -94,3 +94,6 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': text}
 
     return {'class': 'use_mode', 'answer': text}
+
+print(classify('+Стол сделан из дерева The table is made of wood', 1))
+print(classify('добавь, катя играет в мяч', 1))
