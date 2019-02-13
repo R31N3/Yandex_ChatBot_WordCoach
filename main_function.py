@@ -37,7 +37,7 @@ def message_return(response, user_storage, message, button, database, request, m
     return response, user_storage
 
 
-def handle_dialog(request, response, user_storage, database):
+def handle_dialog(request, response, user_storage, database, morph):
     if not user_storage:
         user_storage = {"suggests": []}
     input_message = request.command.lower()
@@ -60,7 +60,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = "Тебя приветствует Word Coach, благодаря мне ты сможешь потренироваться в знании" \
                              " английского, а также ты можешь использовать меня в качестве словаря со своими" \
                              " собственными формулировками и ассоциациями для простого запоминания!\n"\
-                             "Введите ваше имя"
+                             "Введите ваше имя."
             response.set_text(output_message)
             response.set_tts(output_message)
             database.add_entries("users_info", {"request_id": user_id})
@@ -73,7 +73,8 @@ def handle_dialog(request, response, user_storage, database):
             if input_message != 'у человека нет имени':
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
-                database.update_entries('users_info', user_id, {'Name': input_message.capitalize()}, update_type='rewrite')
+                database.update_entries('users_info', user_id, {'Name': input_message.capitalize()},
+                                        update_type='rewrite')
             else:
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
@@ -84,6 +85,7 @@ def handle_dialog(request, response, user_storage, database):
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
+    wrd = morph.parse('слово')[0]
     mode = get_mode(user_id, database)
 
     if input_message == 'настройки':
@@ -101,14 +103,14 @@ def handle_dialog(request, response, user_storage, database):
 
     if input_message in {'сменить имя', 'поменять имя'} and mode == 'settings':
         mode = 'change_name'
-        output_message = 'Введите новое имя'
+        output_message = 'Введите новое имя.'
         buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени', 'Отмена']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
     if input_message == 'у человека нет имени' and mode == 'change_name':
         mode = ''
-        output_message = 'Понял вас, Сэр!'
+        output_message = 'Поняла вас, Сэр!'
         database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -130,9 +132,10 @@ def handle_dialog(request, response, user_storage, database):
         name = get_name(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if name != 'Noname':
-            output_message = '{}, в твоем словаре {} слов'.format(name, count) + ending(count)
+            output_message = '{}, в твоем словаре {} {}.'.format(name, count, wrd.make_agree_with_number(count).word)\
+                             + ending(count)
         else:
-            output_message = 'В твоем словаре {} слов'.format(count) + ending(count)
+            output_message = 'В твоем словаре {} {}.'.format(count, wrd.make_agree_with_number(count).word) + ending(count)
         if count == 0:
             mode = ''
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
@@ -214,8 +217,8 @@ def handle_dialog(request, response, user_storage, database):
                               mode)
 
     if input_message in {'справка', 'справка о тренировках'} and mode == 'help':
-        output_message = 'У каждого слова есть его прогресс, изначально равный нулю.' \
-                         ' После каждого правильного ответа на вопрос прогресс соответствующего слова увеличивается на 1, ' \
+        output_message = 'У каждого слова есть его прогресс, изначально равный нулю. ' \
+                         'После каждого правильного ответа на вопрос прогресс соответствующего слова увеличивается на 1, ' \
                          'после неправильного - уменьшается на 2, но не опускается ниже нуля. ' \
                          'Слово считается изученным, если его прогресс больше либо равен 4\n' \
                          'Приятных тренировок!'
@@ -231,7 +234,7 @@ def handle_dialog(request, response, user_storage, database):
         and mode == 'help':
         output_message = "Для занесения" \
                          ' слова в словарь используй команды, например, "Добавь слово hello привет".\nПолный список' \
-                         " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные " \
+                         " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные "\
                          "наборы слов из доступных категорий."
         buttons, user_storage = get_suggests(
             {'suggests': ['Как удалять слова?', 'Что делать?', 'В начало']})
@@ -282,7 +285,7 @@ def handle_dialog(request, response, user_storage, database):
             mode = 'add_set 1'
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
-        output_message = 'Вот наборы, которые ты еще не добавил'\
+        output_message = 'Вот наборы, которые ты еще не добавил.'\
                          + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                          if (len(sets) + 3) // 4 > 1 else '')
         butts = {'suggests': sets[0:4]}
@@ -301,8 +304,8 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) + 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(set(list(words.keys())).difference(added)))
-        output_message = 'Ты можешь добавить наборы слов по следующим тематикам' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
+                         + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(sets) - 4 * (next_page - 1) > 4 else [])}
@@ -316,8 +319,8 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) - 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(set(list(words.keys())).difference(added)))
-        output_message = 'Ты можешь добавить наборы слов по следующим тематикам' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        output_message = 'Ты можешь добавить наборы слов по следующим тематикам.' \
+                         + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
@@ -330,8 +333,8 @@ def handle_dialog(request, response, user_storage, database):
     if (mode == 'add_set 1' and input_message.startswith('добавленные набор')) or (mode == 'show_added 2' and input_message == 'назад'):
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
-        output_message = 'Выбор набора исключит его из твоего словаря\nВот наборы, которые ты добавил'\
-                         + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
+        output_message = 'Выбор набора исключит его из твоего словаря\nВот наборы, которые ты добавил.'\
+                         + ('\nСтраница 1 из {}.'.format((len(sets) + 3) // 4)
                          if (len(sets) + 3) // 4 > 1 else '')
         butts = {'suggests': sets[0:4] + (['Ещё'] if len(sets) > 4 else [])}
         butts['suggests'].append('В начало')
@@ -344,8 +347,8 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) + 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
-        output_message = 'Вот наборы, которые ты добавил' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        output_message = 'Вот наборы, которые ты добавил.' \
+                         + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(sets) - 4 * (next_page - 1) > 4 else [])}
@@ -359,8 +362,8 @@ def handle_dialog(request, response, user_storage, database):
         next_page = int(mode.split()[1]) - 1
         added = get_word_sets(user_id, database)
         sets = sorted(list(added))
-        output_message = 'Вот наборы, которые ты добавил' \
-                         + '\nСтраница {} из {}'.format(next_page, (len(sets) + 3) // 4)
+        output_message = 'Вот наборы, которые ты добавил.' \
+                         + '\nСтраница {} из {}.'.format(next_page, (len(sets) + 3) // 4)
         butts = {'suggests': sets[next_page * 4 - 4:next_page * 4] + \
                              ['Назад'] + \
                              (['Ещё'] if len(list(words.keys())) - 4 * (next_page - 1) > 4 else [])}
@@ -376,7 +379,7 @@ def handle_dialog(request, response, user_storage, database):
             if dictionary != 'no such word' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Удалил. Что будем делать?'
+        output_message = 'Удалила. Что будем делать?'
         mode = ''
         added = get_word_sets(user_id, database)
         added.remove(input_message.capitalize())
@@ -391,7 +394,7 @@ def handle_dialog(request, response, user_storage, database):
             if dictionary != 'already exists' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Добавил, теперь потренируемся?'
+        output_message = 'Добавила, теперь потренируемся?'
         mode = ''
         added = get_word_sets(user_id, database)
         added.add(input_message.capitalize())
@@ -416,7 +419,7 @@ def handle_dialog(request, response, user_storage, database):
         if mode == 'training':
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
-            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
+            output_message += '\nТы ответил на {} из {} моих вопросов.'.format(stat[1], stat[0])
             update_mode(user_id, mode, database)
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -465,7 +468,7 @@ def handle_dialog(request, response, user_storage, database):
         elif language_match('г', answer):
             translation = ''.join(translate_text(answer, 'en-ru'))
         else:
-            output_message = 'Не поняла, что вы хотите перевести'
+            output_message = 'Не поняла, что вы хотите перевести.'
             mode = ''
             buttons, user_storage = get_suggests(user_storage)
             return message_return(response, user_storage, output_message, buttons, database, request,
@@ -476,7 +479,7 @@ def handle_dialog(request, response, user_storage, database):
             output_message = 'Попробую перевести твое слово...'
         output_message += '\nВот что у меня получилось:\n{} - {}'.format(answer.capitalize(), translation.capitalize())
         mode = '!' + answer
-        output_message += '\nВы также можете сказать или написать свой перевод, он будет добавлен в словарь'
+        output_message += '\nВы также можете сказать или написать свой перевод, он будет добавлен в словарь.'
         buttons, user_storage = get_suggests({'suggests' : ['+ {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -495,7 +498,7 @@ def handle_dialog(request, response, user_storage, database):
         if mode == 'training':
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
-            output_message += '\nТы ответил на {} из {} моих вопросов'.format(stat[1], stat[0])
+            output_message += '\nТы ответил на {} из {} моих вопросов.'.format(stat[1], stat[0])
             update_mode(user_id, mode, database)
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
