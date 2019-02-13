@@ -121,6 +121,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         if mode == 'translator_inf':
             mode = 'translator'
             output_message = 'Ок, включила режим переводчика.'
+            buttons, user_storage = get_suggests({'suggests': ['В начало']})
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         else:
