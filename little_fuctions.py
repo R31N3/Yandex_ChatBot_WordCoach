@@ -67,7 +67,7 @@ def add_word(word, translate, id, database):
         for words in dictionary[k].values():
             if translate in words:
                 ans += 1
-    if ans > 1:
+    if ans > 0:
         return 'rus_exist'
     print('ПОКАЖИ ЭТУ СТРОКУ', ans)
     if word in dictionary['to_learn']:
