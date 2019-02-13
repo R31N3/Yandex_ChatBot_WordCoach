@@ -4,7 +4,6 @@ def classify(text, mode):
         mode = 0
     text = text.strip()
     text = text.lower()
-    text.replace(' - ', ' ')
     if text[0] == '+':
         add_word = True
         text = text[1:]
@@ -57,9 +56,9 @@ def classify(text, mode):
 
     if add_word:
         for i in range(len(text)):
-            if text[i] == ' ':
+            if text[i] == ' ' or text[i] == '-':
                 words = [text[:i], text[i + 1:]]
-                if language_match(words[0], words[1]):
+                if language_match(words[0].strip(), words[1].strip()):
                     return {'class': 'add', 'answer': words}
         else:
             return {'class': 'translate&suggest_to_add', 'answer': text}
