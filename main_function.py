@@ -155,12 +155,15 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if mode == 'sasha_name' and input_message != 'отмена' and 'начал' not in input_message:
-        if input_message == 'оставь имя "саша"':
+        if input_message == 'оставь имя саша':
             output_message = 'Хорошо, буду звать тебя Саша.'
+            database.update_entries('users_info', user_id, {'Name': 'Саша'}, update_type='rewrite')
         elif input_message == 'зови меня александр':
             output_message = 'Хорошо, буду звать тебя Александр.'
+            database.update_entries('users_info', user_id, {'Name': 'Александр'}, update_type='rewrite')
         elif input_message == 'зови меня алекс':
             output_message = 'Хорошо, буду звать тебя Алекс.'
+            database.update_entries('users_info', user_id, {'Name': 'Алекс'}, update_type='rewrite')
         else:
             mode = 'change_name'
             output_message = 'Введи новое имя.'
