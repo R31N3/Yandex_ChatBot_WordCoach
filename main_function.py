@@ -56,7 +56,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     input_message = input_message.replace('ё', 'е')
     while input_message and input_message[-1] == '.':
           input_message = input_message[:-1]
-    if not input_message:
+    if not input_message and not request.is_new_session:
         buttons, user_storage = get_suggests(user_storage)
         mode = ''
         update_mode(request.user_id, mode, database)
