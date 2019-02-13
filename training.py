@@ -117,7 +117,7 @@ def main(q, answer, q_type, id, database):
             return 'Словарь пуст. Для начала добавьте в него слова.'
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
-        return 'В этом режиме нужно переводить слова из в+ашего словаря :)\n'\
+        return 'В этом режиме нужно переводить слова из твоего словаря :)\n'\
                'Команда "Закончить тренировку" вернет тебя в главное меню.\n'\
                'Для удобства, ты можешь называть только номер верного варианта. Поехали!\n'+ get_question(id, database)
     elif q_type == 'revise&next':
