@@ -106,7 +106,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Алекс'},
                                         update_type='rewrite')
-            elif input_message == 'оставь имя "саша"':
+            elif input_message == 'оставь имя саша':
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Саша'},
@@ -219,7 +219,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
 
-    if mode == 'change_name':
+    if mode == 'change_name' and input_message != 'отмена':
         mode = ''
         output_message = 'Хорошо, буду называть тебя {}!'.format(input_message.capitalize())
         input_message = input_message.capitalize()
