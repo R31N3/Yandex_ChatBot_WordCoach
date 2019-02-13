@@ -78,11 +78,11 @@ def get_question(id, database):
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
     if randint(0, 1) == 0:
         update_q(id, list(dictionary[key].keys())[index_word], database)
-        return '\n' + (list(dictionary[key].keys())[index_word]).upper()
+        return '\n pause ' + (list(dictionary[key].keys())[index_word]).upper()
     else:
         word = list(dictionary[key].keys())[index_word]
         update_q(id, ' '.join(dictionary[key][word]), database)
-        return '\n' + (' '.join(dictionary[key][word])).upper()
+        return '\n pause ' + (' '.join(dictionary[key][word])).upper()
 
 
 def random_true(id, database):
@@ -108,7 +108,7 @@ def main(q, answer, q_type, id, database):
         if q_count != 0:
             q_count -= 1
         return choice(['Хорошо поиграли! ', 'Хорошая игра!', "Неплохо потренеровались!"]) + \
-               ' Вы ответили на {} из {} моих вопросов.'.format(q_true, q_count)
+               ' Вы ответили на {} из {} моих вопросов.'.format(q_true, q_count) * (q_count > 0)
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
         dictionary = get_dictionary(id, database)
@@ -168,6 +168,6 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return random_false(id, database) + '\nПравильный ответ: "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database)
+            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database)
     else:
         return False

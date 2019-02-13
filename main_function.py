@@ -19,26 +19,27 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
-    message = message.replace('\n', ' - - - ').replace(' pause ', ' - ') + ' - - - - '
+    message = message.replace('\n', ' - - - ').replace(' pause ', ' - ') + ' - - -'
+    button = list(map(lambda x: x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), button))
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message + "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'])))
+        response.set_tts(message + "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message + "\n. Варианты ответа: {}".format(" - - - ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + "\n. Варианты ответа: {}".format(" - - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message + " - - - ".join(user_storage['suggests']))
+        response.set_tts(message + " - - ".join(user_storage['suggests']))
     elif mode =='translator':
         response.set_tts(message)
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
-            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-3]) + \
-                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-3:])))
+            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-3]) + \
+                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
-            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-2]) + \
-                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-2:])))
+            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-2]) + \
+                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-2:])))
         else:
-            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-1]) + \
-                             "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-1:])))
+            response.set_tts(message + ' - - '.join(user_storage['suggests'][:-1]) + \
+                             "\n. Доступные команды: {}.".format(" - - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -148,7 +149,7 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message in {'сменить имя', 'поменять имя', 'установить другое имя'} and mode == 'settings':
         mode = 'change_name'
-        output_message = 'Введи новое имя.'
+        output_message = 'Введи или назови новое имя.'
         buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени', 'Отмена']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -174,7 +175,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             database.update_entries('users_info', user_id, {'Name': 'Алекс'}, update_type='rewrite')
         else:
             mode = 'change_name'
-            output_message = 'Введи новое имя.'
+            output_message = 'Введи или назови новое имя.'
             buttons, user_storage = get_suggests({'suggests': ['У человека нет имени', 'Отмена']})
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
@@ -311,7 +312,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message == 'тренировка' and mode == '':
+    if input_message in {'тренировка', 'тонировка'} and mode == '':
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
@@ -328,9 +329,9 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message in {'справка', 'справка о тренировках'} and mode == 'help':
         output_message = 'У каждого слова есть его прогресс, изначально равный нулю. ' \
-                         'После каждого правильного ответа на вопрос прогресс соответствующего слова увеличивается на 1, ' \
+                         'После каждого правильного ответа на вопрос прогресс соответствующего сл+ова увеличивается на 1, ' \
                          'после неправильного - уменьшается на 2, но не опускается ниже нуля. ' \
-                         'Слово считается изученным, если его прогресс больше либо равен 4\n' \
+                         'Сл+ово считается изученным, если его прогресс больше либо равен 4\n' \
                          'Приятных тренировок!'
         buttons, user_storage = get_suggests(
             {'suggests': ['Как добавлять слова?', 'Как удалять слова?', 'Что делать?',
@@ -343,7 +344,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                          'как добавлять слова', 'как добавить слова', 'как добавить слово'} \
         and mode == 'help':
         output_message = "Для занесения" \
-                         ' слова в словарь используй команды, например, "Добавь слово hello привет".\nПолный список' \
+                         ' слов в словарь используй команды, например, "Добавь слово hello привет".\nПолный список' \
                          " команд для этого: +; Аdd; Добавь слово; Добавь. \n А также ты можешь добавлять стандартные "\
                          "наборы слов из доступных категорий."
         buttons, user_storage = get_suggests(
@@ -356,7 +357,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                         and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
                          'свой словарь или же удалить из него отдельное слово, используя, например, команду "Удали ' \
-                         'hello".\nПолный список команд для этого: -; Del; Удали; Очисть словарь.'
+                         'hello".\nПолный список команд для этого: -; Del; Удали; Удали сл+ово; Очисть словарь.'
         buttons, user_storage = get_suggests(
             {'suggests': ['Как добавлять слова?', 'Что делать?', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
@@ -506,11 +507,11 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message.capitalize() in words and mode.startswith('show_added'):
         for word, translate in words[input_message.capitalize()].items():
-            dictionary = del_word(word.capitalize(), user_id, database)
+            dictionary = del_word(word.capitalize().replace('+', ''), user_id, database)
             if dictionary != 'no such word' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Удалила. Что будем делать?'
+        output_message = choice(['Удалила. Что будем делать?', 'Готово. Что делаем дальше?'])
         mode = ''
         added = get_word_sets(user_id, database)
         added.remove(input_message.capitalize())
@@ -521,11 +522,12 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message.capitalize()].items():
-            dictionary = add_word(word, translate, user_id, database)
+            dictionary = add_word(word.replace('+', ''), translate('+', ''), user_id, database)
             if dictionary != 'already exists' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Добавила, теперь потренируемся?'
+        output_message = choice(['Добавила. Загляни в словарь.', 'Готово! Предлагаю тренировочку.',
+                                 'Успешно! Я бы пошла тренировать новые слова :)', 'Сделано. Что будем делать теперь?'])
         mode = ''
         added = get_word_sets(user_id, database)
         added.add(input_message.capitalize())
@@ -605,12 +607,12 @@ def handle_dialog(request, response, user_storage, database, morph):
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         if answer.count(' ') > 0:
-            output_message = 'Попробую перевести Ваше предложение...'
+            output_message = 'Попробую перевести твое предложение...'
         else:
-            output_message = 'Попробую перевести Ваще слово...'
+            output_message = 'Попробую перевести твое слово...'
         output_message += '\nВот что у меня получилось:\n{} - {}'.format(answer.capitalize(), translation.capitalize())
         mode = '!' + answer
-        output_message += '\nВы также можете сказать или написать свой перевод, он будет добавлен в словарь.'
+        output_message += '\nТы также можешь сказать или написать свой перевод, он будет добавлен в словарь.'
         buttons, user_storage = get_suggests({'suggests' : ['+ {} {}'.format(answer.capitalize(), translation.capitalize()), 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -650,7 +652,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode.startswith('translator') or
                                                     mode == 'sasha_name'):
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Ок, начнем pause с начала ;)'
+        output_message = 'Ок, начнем с начала ;)'
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
