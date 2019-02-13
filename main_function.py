@@ -15,12 +15,15 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
     update_mode(request.user_id, mode, database)
-    response.set_text(message)
+    if ">" in message:
+        response.set_text(message[message.index(">")+1:])
+    else:
+        response.set_text(message)
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
         response.set_tts(message.replace('\n', '. ') + "\n. Доступные команды: {}.".format(". ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message.replace('\n', '. ')[message.index(">")+1:] + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message.replace('\n', '. ') + "\n. Варианты ответа: {}".format(". ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
         response.set_tts(message.replace('\n', '. ') + ": ".join(user_storage['suggests']))
     elif mode =='translator':
