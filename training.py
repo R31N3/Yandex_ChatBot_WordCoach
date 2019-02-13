@@ -107,7 +107,7 @@ def main(q, answer, q_type, id, database):
         q_count, q_true = get_stat_session('training', id, database)
         if q_count != 0:
             q_count -= 1
-        return choice['Хорошо поиграли! ', 'Хорошая игра!', "Неплохо потренеровались!"] + \
+        return choice(['Хорошо поиграли! ', 'Хорошая игра!', "Неплохо потренеровались!"]) + \
                ' Вы ответили на {} из {} моих вопросов.'.format(q_true, q_count)
     elif get_stat_session('training', id, database) == [0, 0]:
         stat_session = get_stat_session('training', id, database)
