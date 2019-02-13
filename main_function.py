@@ -568,7 +568,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message.capitalize()].items():
             dictionary = add_word(word.replace('+', ''), translate.replace('+', ''), user_id, database)
-            if dictionary != 'already exists' and dictionary:
+            if dictionary != 'already exists' and dictionary != 'rus_exist' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
         output_message = choice(['Добавила. Загляни в словарь.', 'Готово! Предлагаю тренировочку.',
