@@ -291,7 +291,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = '{}, в твоем словаре {} слов'.format(name, count)\
                              + ending(count)+"."
         else:
-            output_message = 'В твоем словаре {} слов'.format(count) + ending(count)+"."
+            output_message = 'В твоем словаре {} сл+ов'.format(count) + ending(count)+"."
         if count == 0:
             mode = ''
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
