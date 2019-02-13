@@ -16,27 +16,28 @@ def message_return(response, user_storage, message, button, database, request, m
 
     update_mode(request.user_id, mode, database)
     if ">" in message:
-        response.set_text(message[message.index(">")+1:])
+        response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     else:
-        response.set_text(message)
+        response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
+    message = message.replace('\n', ' - - - ').replace(' pause ', ' - ') + ' - - - - '
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message.replace('\n', ' - - - ') + "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'])))
+        response.set_tts(message + "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message.replace('\n', ' - - - ') + "\n. Варианты ответа: {}".format(" - - - ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + "\n. Варианты ответа: {}".format(" - - - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message.replace('\n', ' - - - ') + " - - - ".join(user_storage['suggests']))
+        response.set_tts(message + " - - - ".join(user_storage['suggests']))
     elif mode =='translator':
-        response.set_tts(message.replace('\n', ' - - - '))
+        response.set_tts(message)
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
-            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-3]) + \
+            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-3]) + \
                              "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
-            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-2]) + \
+            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-2]) + \
                              "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-2:])))
         else:
-            response.set_tts(message.replace('\n', ' - - - ') + ' - - - '.join(user_storage['suggests'][:-1]) + \
+            response.set_tts(message + ' - - - '.join(user_storage['suggests'][:-1]) + \
                              "\n. Доступные команды: {}.".format(" - - - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
@@ -50,6 +51,13 @@ def handle_dialog(request, response, user_storage, database, morph):
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
+    while input_message and input_message[-1] == '.':
+          input_message = input_message[:-1]
+    if not input_message:
+        buttons, user_storage = get_suggests(user_storage)
+        mode = ''
+        update_mode(request.user_id, mode, database)
+        return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
     user_id = request.user_id
     user_storage['suggests'] = [
         "Словарь",
@@ -383,11 +391,11 @@ def handle_dialog(request, response, user_storage, database, morph):
         gender = get_gender(user_id, database, morph)
         print(gender)
         if gender == "masc" or str(gender) == "Noname":
-            output_message = choice(['Вот наборы, которые ты еще не добавил.', "Посмотри ещё недобавленные наборы."])\
+            output_message = choice(['Вот наборы, которые ты ещ+е не добавил.', "Посмотри ещё недобавленные наборы."])\
                              + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                              if (len(sets) + 3) // 4 > 1 else '')
         else:
-            output_message = choice(['Вот наборы, которые ты еще не добавила.', "Посмотри ещё недобавленные наборы."]) \
+            output_message = choice(['Вот наборы, которые ты ещ+е не добавила.', "Посмотри ещё недобавленные наборы."]) \
                              + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
                                 if (len(sets) + 3) // 4 > 1 else '')
 
@@ -642,7 +650,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode.startswith('translator') or
                                                     mode == 'sasha_name'):
         buttons, user_storage = get_suggests(user_storage)
-        output_message = 'Ок, начнем с начала ;)'
+        output_message = 'Ок, начнем pause с начала ;)'
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
