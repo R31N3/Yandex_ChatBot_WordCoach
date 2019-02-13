@@ -1,7 +1,5 @@
 def classify(text, mode):
     from little_fuctions import language_match
-    if mode == '':
-        mode = 0
     text = text.strip()
     text = text.lower()
     if text[0] == '+':

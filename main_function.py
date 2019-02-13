@@ -607,9 +607,11 @@ def handle_dialog(request, response, user_storage, database, morph):
     answer = classify(input_message, mode)
     handle = answer['class']
     answer = answer['answer']
+    print(answer)
 
     if handle == "add" and answer:
         answer = list(map(lambda x: x.capitalize(), answer))
+        print("!!!! ", input_message, answer, language_match(*answer))
         success = add_word(answer[0], answer[1], user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
