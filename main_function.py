@@ -14,11 +14,12 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
+    update_mode(request.user_id, mode, database)
     if "card" in user_storage.keys():
         buttons, user_storage = get_suggests(user_storage)
         response.set_buttons(button)
         response.set_card(user_storage["card"])
-    update_mode(request.user_id, mode, database)
+        return response, user_storage
     if ">" in message:
         response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     else:
