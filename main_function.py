@@ -92,6 +92,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             database.add_entries("users_info", {"request_id": user_id})
             mode = "-2"
             update_mode(user_id, mode, database)
+            buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени']})
 
             return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
@@ -757,7 +758,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode == 'jen_name'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?',
-                                'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для душа)',
+                                'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для душа")',
                                 'Не важно, насколько тяжело прошлое, вы всегда можете начать сначала. (c) Ариана Гранде',
                                 'Главная удача в жизни — умение начинать всё сначала. (c) Мария Фариса',
                                 'Доброе начало — уже полдела. (c) Александр Парвус',
