@@ -30,6 +30,7 @@ def message_return(response, user_storage, message, button, database, request, m
     message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - - '
     message = message.replace('(c)', ' - ').replace('(с)', ' - ')
     message = message.replace('(Английская пословица)', ' - Английская пословица.')
+    message = message.replace('Гранде', 'Грандэ')
     button, something = get_suggests({'suggests' : list(map(lambda x:\
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
@@ -186,9 +187,11 @@ def handle_dialog(request, response, user_storage, database, morph):
         dictionary = get_dictionary(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if count == 0:
-            buttons = ['Режим перевода', 'Сменить имя', 'Оценить навык', 'В начало']
+            # buttons = ['Режим перевода', 'Сменить имя', 'Оценить навык', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'В начало']
         else:
-            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
+            # buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'В начало']
         buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -767,7 +770,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode == 'jen_name'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?',
-                                'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для душа")',
+                                'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для души")',
                                 'Не важно, насколько тяжело прошлое, вы всегда можете начать сначала. (c) Ариана Гранде',
                                 'Главная удача в жизни — умение начинать всё сначала. (c) Мария Фариса',
                                 'Доброе начало — уже полдела. (c) Александр Парвус',
