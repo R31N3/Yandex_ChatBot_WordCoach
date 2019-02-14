@@ -120,12 +120,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                     "type": "BigImage",
                     "image_id": "1030494/7c51755386214beff775",
                     "title": "У человека нет имени",
-                    "description": "Описание изображения.",
-                    "button": {
-                        "text": "Надпись на кнопке",
-                        "url": "http://example.com/",
-                        "payload": {}
-                    }
+                    "description": "Поняла вас, Сэр!",
                 }
                 mode = ''
                 update_mode(user_id, mode, database)
@@ -294,13 +289,8 @@ def handle_dialog(request, response, user_storage, database, morph):
         user_storage["card"] = {
             "type": "BigImage",
             "image_id": "1030494/7c51755386214beff775",
-            "title": "У человека нет имени",
-            "description": "Описание изображения.",
-            "button": {
-                "text": "Надпись на кнопке",
-                "url": "http://example.com/",
-                "payload": {}
-            }
+            "title": "У человека нет имени.",
+            "description": "Поняла вас, Сэр!",
         }
         mode = ''
         database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
