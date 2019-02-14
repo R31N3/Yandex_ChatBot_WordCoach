@@ -597,7 +597,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
-            title = 'Слово' if len(answer[0]) == 1 else 'Предложение'
+            title = 'Слово' if answer[0].strip.count(' ') == 0 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
         if mode != 'translator':
@@ -632,7 +632,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
-            title = 'Слово' if len(answer[0]) == 1 else 'Предложение'
+            title = 'Слово' if answer[0].strip.count(' ') == 0 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
         if mode == 'training' :
