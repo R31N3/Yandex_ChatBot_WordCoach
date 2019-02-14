@@ -780,7 +780,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         if output_message.startswith('Первый шаг'):
             user_storage["card"] = {
                 "type": "BigImage",
-                "image_id": "1652229/4805549cd58afeac8981",
+                "image_id": "1030494/75719cad434da1dac774",
                 "title": "Мотивация.",
                 "description": output_message,
             }
