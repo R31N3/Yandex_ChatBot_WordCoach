@@ -186,9 +186,11 @@ def handle_dialog(request, response, user_storage, database, morph):
         dictionary = get_dictionary(user_id, database)
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if count == 0:
-            buttons = ['Режим перевода', 'Сменить имя', 'Оценить навык', 'В начало']
+            # buttons = ['Режим перевода', 'Сменить имя', 'Оценить навык', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'В начало']
         else:
-            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
+            # buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'В начало']
         buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
