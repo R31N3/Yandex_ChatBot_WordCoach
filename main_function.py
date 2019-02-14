@@ -784,7 +784,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             user_storage["card"] = {
                 "type": "BigImage",
                 "image_id": "1030494/75719cad434da1dac774",
-                "title": "Немного мотивации.",
+                "title": "У тебя все получится!",
                 "description": output_message,
             }
         return message_return(response, user_storage, output_message, buttons, database, request,
