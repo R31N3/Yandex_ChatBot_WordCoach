@@ -22,7 +22,10 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_card(user_storage["card"])
         return response, user_storage
     if ">" in message:
-        response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
+        message = message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' ')
+        message = message.replace('(c)', ' - ').replace('сdwa', ' - ')
+        message = message.replace('(Английская пословица)', ' - Английская пословица.')
+        response.set_text(message)
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - - '
@@ -753,7 +756,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode == 'sasha_name' or
                                                     mode == 'jen_name'):
         buttons, user_storage = get_suggests(user_storage)
-        output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?', 'Место встречи изменить нельзя.',
+        output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?',
                                 'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для душа)',
                                 'Не важно, насколько тяжело прошлое, вы всегда можете начать сначала. (c) Ариана Гранде',
                                 'Главная удача в жизни — умение начинать всё сначала. (c) Мария Фариса',
