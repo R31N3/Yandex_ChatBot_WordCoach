@@ -641,7 +641,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
-            title = 'Слово' if answer[0].strip.count(' ') == 0 else 'Предложение'
+            title = 'Слово' if answer[0].strip().count(' ') == 0 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
         if mode != 'translator':
@@ -676,7 +676,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
-            title = 'Слово' if answer[0].strip.count(' ') == 0 else 'Предложение'
+            title = 'Слово' if answer[0].strip().count(' ') == 0 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
         if mode == 'training' :
@@ -765,7 +765,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                                 'Хорошее начало – половина сражения. (Английская пословица)',
                                 'Хорошее начало обеспечивает хороший конец. (Английская пословица)',
                                 'Конец одного пути, всегда начало другого. (c) Мадам Ворна',
-                                'Первый шаг — всегда самый трудный. Мы начали имея книгу по Python, А сейчас вы видите 4000 строк нашего кода:)'])
+                                'Первый шаг — всегда самый трудный. Мы начали с книги по Python, а сейчас вы видите 4000 строк нашего кода:)'])
         mode = ''
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
