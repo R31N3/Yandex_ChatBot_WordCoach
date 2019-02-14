@@ -18,6 +18,8 @@ def message_return(response, user_storage, message, button, database, request, m
     if "card" in user_storage.keys():
         buttons, user_storage = get_suggests(user_storage)
         response.set_buttons(buttons)
+        message = "Поняла вас, Сэр!"
+        response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
         response.set_card(user_storage["card"])
         return response, user_storage
     if ">" in message:
