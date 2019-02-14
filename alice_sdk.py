@@ -55,5 +55,8 @@ class AliceResponse(object):
     def set_buttons(self, buttons):
         self._response_dict['response']['buttons'] = buttons
 
+    def set_card(self, card):
+        self._response_dict["response"]['card'] = card
+
     def __str__(self):
         return self.dumps()
