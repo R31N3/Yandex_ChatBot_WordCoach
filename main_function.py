@@ -17,7 +17,7 @@ def message_return(response, user_storage, message, button, database, request, m
     update_mode(request.user_id, mode, database)
     if "card" in user_storage.keys():
         buttons, user_storage = get_suggests(user_storage)
-        response.set_buttons(button)
+        response.set_buttons(buttons)
         response.set_card(user_storage["card"])
         return response, user_storage
     if ">" in message:
@@ -113,10 +113,13 @@ def handle_dialog(request, response, user_storage, database, morph):
                 database.update_entries('users_info', user_id, {'Name': input_message.capitalize()},
                                         update_type='rewrite')
             else:
-                user_storage["suggests"] = {
-                    "titles": ['У человека нет имени'],
-                    "urls": ['https://pp.userapi.com/c845016/v845016145/19d9cc/dMHs2yR76mk.jpg']
-                }
+                user_storage['suggests'] = [
+                    "Словарь",
+                    "Тренировка",
+                    "Наборы слов",
+                    "Помощь",
+                    "Настройки"
+                ]
                 user_storage["card"] = {
                     "type": "BigImage",
                     "image_id": "1030494/7c51755386214beff775",
@@ -283,6 +286,13 @@ def handle_dialog(request, response, user_storage, database, morph):
 
 
     if input_message == 'у человека нет имени' and mode == 'change_name':
+        user_storage['suggests'] = [
+            "Словарь",
+            "Тренировка",
+            "Наборы слов",
+            "Помощь",
+            "Настройки"
+        ]
         user_storage["card"] = {
             "type": "BigImage",
             "image_id": "1030494/7c51755386214beff775",
