@@ -10,18 +10,26 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': '+'}
     else:
         add_word = False
+
     if text[0] == '-':
-        del_word = True
         text = text[1:]
         text = text.strip()
         if not text:
             return {'class': 'use_mode', 'answer': '-'}
-    else:
-        del_word = False
+        else:
+            return {'class': 'del', 'answer': text}
 
-    if text.startswith('alice, add word') or text.startswith('алиса, добавь слов') or \
+    if text.startswith('алиса, добавь в слова') or text.startswith('алиса, добавь в словарь'):
+        if text.count(' ') >= 4:
+            text = ' '.join(text.split()[4:])
+            add_word = True
+        else:
+            return {'class': 'use_mode', 'answer': text}
+
+    elif text.startswith('alice, add word') or text.startswith('алиса, добавь слов') or \
             text.startswith('alice add word') or text.startswith('алиса добавь слов') or \
-            text.startswith('алиса добавить слов') or text.startswith('алиса, добавить слов'):
+            text.startswith('алиса добавить слов') or text.startswith('алиса, добавить слов') or\
+            text.startswith('добавить в слова') or text.startswith('добавить, в слова'):
         if text.count(' ') >= 3:
             text = ' '.join(text.split()[3:])
             add_word = True
