@@ -233,6 +233,7 @@ def update_stat_session(mode, data, id, database):
 
 def get_suggests(user_storage):
     if "suggests" in user_storage.keys():
+        print(user_storage["suggests"])
         if type(user_storage["suggests"]) != dict:
             suggests = [
                 {'title': suggest, 'hide': True}
