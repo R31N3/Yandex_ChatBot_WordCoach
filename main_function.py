@@ -767,8 +767,15 @@ def handle_dialog(request, response, user_storage, database, morph):
                                 'Хорошее начало – половина сражения. (Английская пословица)',
                                 'Хорошее начало обеспечивает хороший конец. (Английская пословица)',
                                 'Конец одного пути, всегда начало другого. (c) Мадам Ворна',
-                                'Первый шаг — всегда самый трудный. Мы начали с книги по Python, а сейчас вы видите 4000 строк нашего кода:)'])
+                                'Первый шаг — всегда самый трудный. Мы начали с книги по Python, а сейчас вы видите работу 4000 строк нашего кода:)'])
         mode = ''
+        if output_message.startswith('Первый шаг'):
+            user_storage["card"] = {
+                "type": "BigImage",
+                "image_id": "1652229/4805549cd58afeac8981",
+                "title": "Мотивация.",
+                "description": output_message,
+            }
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
