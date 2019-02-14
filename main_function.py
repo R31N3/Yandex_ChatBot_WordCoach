@@ -448,7 +448,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         mode = ''
         user_storage["card"] = {
             "type": "BigImage",
-            "image_id": "937455/6d08d58ea6f8c10b219c",
+            "image_id": "965417/71f69697771ec2f09ff5",
             "title": "Что делать?",
             "description": "'Учить английский!\nОднажды я тоже задавалась таким вопросом. "
                            "В итоге прочитала книгу Н.Г. Чернышевского 'Что делать?' и начала учить английский!",
