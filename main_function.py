@@ -14,7 +14,10 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
-
+    if "card" in user_storage.keys():
+        buttons, user_storage = get_suggests(user_storage)
+        response.set_buttons(button)
+        response.set_card(user_storage["card"])
     update_mode(request.user_id, mode, database)
     if ">" in message:
         response.set_text(message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
@@ -84,7 +87,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             database.add_entries("users_info", {"request_id": user_id})
             mode = "-2"
             update_mode(user_id, mode, database)
-            buttons, user_storage = get_suggests({'suggests' : ['У человека нет имени']})
+
             return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
         mode = database.get_entry("users_info", ['mode'], {'request_id': user_id})[0][0]
@@ -109,9 +112,28 @@ def handle_dialog(request, response, user_storage, database, morph):
                 database.update_entries('users_info', user_id, {'Name': input_message.capitalize()},
                                         update_type='rewrite')
             else:
+                user_storage["suggests"] = {
+                    "titles": ['У человека нет имени'],
+                    "urls": ['https://pp.userapi.com/c845016/v845016145/19d9cc/dMHs2yR76mk.jpg']
+                }
+                user_storage["card"] = {
+                    "type": "BigImage",
+                    "image_id": "1030494/7c51755386214beff775",
+                    "title": "У человека нет имени",
+                    "description": "Описание изображения.",
+                    "button": {
+                        "text": "Надпись на кнопке",
+                        "url": "http://example.com/",
+                        "payload": {}
+                    }
+                }
+                mode = ''
+                update_mode(user_id, mode, database)
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
+                return message_return(response, user_storage, "", [], database, request, mode)
+
 
         if mode == '-3':
             if input_message == 'зови меня александр':
@@ -265,12 +287,26 @@ def handle_dialog(request, response, user_storage, database, morph):
 
 
     if input_message == 'у человека нет имени' and mode == 'change_name':
+        user_storage["suggests"] = {
+            "titles": ['У человека нет имени'],
+            "urls": ['https://pp.userapi.com/c845016/v845016145/19d9cc/dMHs2yR76mk.jpg']
+        }
+        user_storage["card"] = {
+            "type": "BigImage",
+            "image_id": "1030494/7c51755386214beff775",
+            "title": "У человека нет имени",
+            "description": "Описание изображения.",
+            "button": {
+                "text": "Надпись на кнопке",
+                "url": "http://example.com/",
+                "payload": {}
+            }
+        }
         mode = ''
-        output_message = 'Поняла вас, Сэр!'
+        database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
+        user_storage["name"] = request.command
         database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
-        buttons, user_storage = get_suggests(user_storage)
-        return message_return(response, user_storage, output_message, buttons, database, request,
-                              mode)
+        return message_return(response, user_storage, "", [], database, request, mode)
 
 
     if mode == 'change_name' and input_message != 'отмена':
