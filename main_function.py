@@ -443,14 +443,14 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if input_message in {'что делать?', 'что делать'} and mode == 'help':
-        output_message = 'Учить английский!\nОднажды я тоже задавался таким вопросом.' \
+        output_message = 'Учить английский!\nОднажды я тоже задавалась таким вопросом.' \
                          ' В итоге прочитала книгу Н.Г. Чернышевского "Что делать?" и начала учить английский!'
         mode = ''
         user_storage["card"] = {
             "type": "BigImage",
-            "image_id": "1652229/ca18bca89a4594e54f77",
+            "image_id": "937455/6d08d58ea6f8c10b219c",
             "title": "Что делать?",
-            "description": "'Учить английский!\nОднажды я тоже задавался таким вопросом. "
+            "description": "'Учить английский!\nОднажды я тоже задавалась таким вопросом. "
                            "В итоге прочитала книгу Н.Г. Чернышевского 'Что делать?' и начала учить английский!",
         }
         buttons, user_storage = get_suggests(user_storage)
