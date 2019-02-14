@@ -283,10 +283,6 @@ def handle_dialog(request, response, user_storage, database, morph):
 
 
     if input_message == 'у человека нет имени' and mode == 'change_name':
-        user_storage["suggests"] = {
-            "titles": ['У человека нет имени'],
-            "urls": ['https://pp.userapi.com/c845016/v845016145/19d9cc/dMHs2yR76mk.jpg']
-        }
         user_storage["card"] = {
             "type": "BigImage",
             "image_id": "1030494/7c51755386214beff775",
