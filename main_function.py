@@ -18,7 +18,6 @@ def message_return(response, user_storage, message, button, database, request, m
     if "card" in user_storage.keys():
         buttons, user_storage = get_suggests(user_storage)
         response.set_buttons(buttons)
-        message = "Поняла вас, Сэр!"
         response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
         response.set_card(user_storage["card"])
         return response, user_storage
@@ -133,7 +132,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                 database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
                 user_storage["name"] = request.command
                 database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
-                return message_return(response, user_storage, "", [], database, request, mode)
+                return message_return(response, user_storage, "Поняла вас, Сэр!", [], database, request, mode)
 
 
         if mode == '-3':
@@ -305,7 +304,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         database.update_entries('users_info', user_id, {'Named': True}, update_type='rewrite')
         user_storage["name"] = request.command
         database.update_entries('users_info', user_id, {'Name': 'Noname'}, update_type='rewrite')
-        return message_return(response, user_storage, "", [], database, request, mode)
+        return message_return(response, user_storage, "Поняла вас, Сэр!", [], database, request, mode)
 
 
     if mode == 'change_name' and input_message != 'отмена':
