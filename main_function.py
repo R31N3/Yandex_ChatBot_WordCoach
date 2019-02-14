@@ -23,12 +23,13 @@ def message_return(response, user_storage, message, button, database, request, m
         return response, user_storage
     if ">" in message:
         message = message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' ')
-        message = message.replace('(c)', ' - ').replace('сdwa', ' - ')
-        message = message.replace('(Английская пословица)', ' - Английская пословица.')
         response.set_text(message)
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
+
     message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - - '
+    message = message.replace('(c)', ' - ').replace('(с)', ' - ')
+    message = message.replace('(Английская пословица)', ' - Английская пословица.')
     button, something = get_suggests({'suggests' : list(map(lambda x:\
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
