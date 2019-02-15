@@ -55,6 +55,7 @@ def get_buttons(q, id, database):
         words = words.union(set(list(dictionary['learned'].keys())))
         print("!! ", words)
         words = list(words)
+        print("!! ", words, q, get_ans(q, id, database))
         words.remove(get_ans(q, id, database))
         output = [words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)],
                   words[randint(1, len(words) - 1)]]
