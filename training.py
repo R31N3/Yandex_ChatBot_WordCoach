@@ -9,17 +9,17 @@ def get_ans(q, id, database):
     dictionary = get_dictionary(id, database)
     for k in ['to_learn', 'learned']:
         if q in dictionary[k]:
-            return ' '.join(dictionary[k][q])
+            return ', '.join(dictionary[k][q])
         else:
             for key in dictionary[k].keys():
-                if q in ' '.join(dictionary[k][key]):
+                if q in ', '.join(dictionary[k][key]):
                     return key
     return False
 
 
 def revise(q, answer, q_type, id, database):
     print("!!!!  ", q, get_ans(q, id, database))
-    if answer == get_ans(q, id, database) or answer[0] == q[-1]:
+    if answer.lower() == get_ans(q, id, database).lower() or answer[0] == q[-1]:
         return True
     else:
         return False
@@ -38,7 +38,7 @@ def get_buttons(q, id, database):
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
                 print("????", words)
-                words.add(' '.join(rus_words))
+                words.add(', '.join(rus_words))
         print(words)
         words = list(words)
         output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
@@ -86,7 +86,7 @@ def get_question(id, database):
     else:
         word = list(dictionary[key].keys())[index_word]
         update_q(id, ' '.join(dictionary[key][word]), database)
-        return '\n pause ' + (' '.join(dictionary[key][word])).upper()
+        return '\n pause ' + (', '.join(dictionary[key][word])).upper()
 
 
 def random_true(id, database):
