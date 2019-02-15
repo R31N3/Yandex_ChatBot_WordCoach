@@ -294,15 +294,23 @@ def handle_dialog(request, response, user_storage, database, morph):
                                   mode)
         else:
             if language_match('t', input_message):
-                translation = ''.join(translate_text(input_message, 'ru-en'))
+                t = translate_text(input_message, 'ru-en')
+                if t:
+                    translation = ''.join(t)
             elif language_match('г', input_message):
-                translation = ''.join(translate_text(input_message, 'en-ru'))
+                t = translate_text(input_message, 'en-ru')
+                if t:
+                    translation = ''.join(t)
             else:
                 output_message = 'Не поняла, что вы хотите перевести'
                 buttons, user_storage = get_suggests({'suggests' : ['В начало']})
                 return message_return(response, user_storage, output_message, buttons, database, request,
                                       mode)
-
+            if not t:
+                output_message = choice(['Кажется, это нельзя перевести.', 'Затрудняюсь пеевести.'])
+                buttons, user_storage = get_suggests({'suggests': ['В начало']})
+                return message_return(response, user_storage, output_message, buttons, database, request,
+                                      mode)
             output_message = '\nВот что я нашла:\n{} - {}'.format(input_message.capitalize(),
                                                                              translation.capitalize())
             buttons, user_storage = get_suggests(
@@ -722,13 +730,24 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     elif handle == 'translate&suggest_to_add':
         if language_match('t', answer):
-            translation = ''.join(translate_text(answer, 'ru-en'))
+            t = translate_text(answer, 'ru-en')
+            if t:
+                translation = ''.join(t)
         elif language_match('г', answer):
-            translation = ''.join(translate_text(answer, 'en-ru'))
+            t = translate_text(answer, 'en-ru')
+            if t:
+                translation = ''.join(t)
         else:
             output_message = 'Не поняла, что вы хотите перевести.'
             mode = ''
             buttons, user_storage = get_suggests(user_storage)
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+        if not t:
+            output_message = choice(['Кажется, это нельзя перевести', 'Затрудняюсь пеевести']) + \
+                             '\nТы можешь сказать или написать свой перевод, он будет добавлен в словарь.'
+            buttons, user_storage = get_suggests({'suggests' : ['В начало']})
+            mode = '!' + answer
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         if answer.count(' ') > 0:
@@ -776,7 +795,8 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode.startswith('show_added') or
                                                     mode.startswith('translator') or
                                                     mode == 'sasha_name' or
-                                                    mode == 'jen_name'):
+                                                    mode == 'jen_name' or
+                                                    mode[0] == '!'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?',
                                 'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для души")',

@@ -299,13 +299,16 @@ def translate_text(text, lang):
                                                                                                           text, lang)
         response = requests.get(request)
 
+        if response.json()["text"][0] == text:
+            return False
+
         if response:
             return response.json()["text"][0]
 
         return "Ошибка выполнения запроса:\nHttp статус:", response.status_code, "(", response.reason, \
                ")\n Саша, чини, твой косяк(наверное)"
     except:
-        return "Запрос не удалось выполнить. Проверьте наличие сети Интернет."
+        return False
 
 
 def get_word_sets(id, database):
