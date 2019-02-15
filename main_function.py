@@ -15,7 +15,7 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
     update_mode(request.user_id, mode, database)
-    if "card" in user_storage.keys():
+    if "card" in user_storage.keys() and message not in aliceAnswers["helloTextVariations"]:
         buttons, user_storage = get_suggests(user_storage)
         response.set_buttons(buttons)
         response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
