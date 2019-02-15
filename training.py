@@ -36,6 +36,7 @@ def get_buttons(q, id, database):
         words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Замок'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
+                print("????", words)
                 words = words.add(' '.join(rus_words))
         print(words)
         words = list(words)
