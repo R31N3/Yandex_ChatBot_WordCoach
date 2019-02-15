@@ -178,6 +178,6 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database)
+            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)[q.split('#')[1] - 1]) + get_question(id, database)
     else:
         return False
