@@ -73,13 +73,13 @@ def handle_dialog(request, response, user_storage, database, morph):
         update_mode(request.user_id, mode, database)
         return IDontUnderstand(response, user_storage, aliceAnswers["cantTranslate"])
     user_id = request.user_id
-    user_storage['suggests'] = [
+    user_storage = {'suggests': [
         "Словарь",
         "Тренировка",
         "Наборы слов",
         "Помощь",
         "Настройки"
-    ]
+    ]}
     # первый запуск/перезапуск диалога
     if request.is_new_session or not database.get_entry("users_info",  ['Named'],
                                                         {'request_id': user_id})[0][0]:
