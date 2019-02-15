@@ -22,8 +22,8 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_card(user_storage["card"])
         return response, user_storage
     if ">" in message:
-        message = message[message.index(">")+1:].replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' ')
-        response.set_text(message)
+        message = message[message.index(">")+1:]
+        response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
 
