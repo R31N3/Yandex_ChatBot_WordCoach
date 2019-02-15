@@ -9,7 +9,7 @@ def get_ans(q, id, database):
     dictionary = get_dictionary(id, database)
     for k in ['to_learn', 'learned']:
         if q in dictionary[k]:
-            return dictionary[k][q]
+            return ' '.join(dictionary[k][q])
         else:
             for key in dictionary[k].keys():
                 if q in dictionary[k][key]:
@@ -40,12 +40,11 @@ def get_buttons(q, id, database):
         words = list(words)
         output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         rand = randint(0, 3)
-        rands = randint(0, len(ans) - 1)
-        while len(set(output)) != 3 or ans[rands] in output:
+        while len(set(output)) != 3 or ans in output:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
 
-        output.insert(rand, ans[rands])
+        output.insert(rand, ans)
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
@@ -178,6 +177,6 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)[q.split('#')[1] - 1]) + get_question(id, database)
+            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database)
     else:
         return False
