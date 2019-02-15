@@ -18,7 +18,7 @@ def get_ans(q, id, database):
 
 
 def revise(q, answer, q_type, id, database):
-    if answer in get_ans(q, id, database) or answer[0] == q[-1]:
+    if answer == get_ans(q, id, database) or answer[0] == q[-1]:
         return True
     else:
         return False
@@ -36,7 +36,7 @@ def get_buttons(q, id, database):
         words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Замок'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
-                words = words.union(set(rus_words))
+                words = words.add(rus_words)
         words = list(words)
         output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         rand = randint(0, 3)
