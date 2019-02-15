@@ -12,7 +12,7 @@ def get_ans(q, id, database):
             return ' '.join(dictionary[k][q])
         else:
             for key in dictionary[k].keys():
-                if q in dictionary[k][key]:
+                if q in ' '.join(dictionary[k][key]):
                     return key
     return False
 
