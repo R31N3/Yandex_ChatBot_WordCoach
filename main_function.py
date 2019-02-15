@@ -461,7 +461,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                         and mode == 'help':
         output_message = "Ты можешь полностью очистить " \
                          'свой словарь или же удалить из него отдельное слово, используя, например, команду "Удали ' \
-                         'hello".\nПолный список команд для этого: -; Del; Удали; Удали сл+ово; Очисть словарь.'
+                         'hello".\nПолный список команд для этого: -; Del; Удали; Удали сл+ово;'
         buttons, user_storage = get_suggests(
             {'suggests': ['Как добавлять слова?', 'Что делать?', 'В начало']})
         return message_return(response, user_storage, output_message, buttons, database, request,
