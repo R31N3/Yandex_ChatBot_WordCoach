@@ -37,7 +37,7 @@ def get_buttons(q, id, database):
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
                 print("????", words)
-                words = words.add(' '.join(rus_words))
+                words.add(' '.join(rus_words))
         print(words)
         words = list(words)
         output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
