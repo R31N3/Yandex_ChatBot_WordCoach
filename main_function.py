@@ -17,7 +17,13 @@ def message_return(response, user_storage, message, button, database, request, m
     update_mode(request.user_id, mode, database)
     if "card" in user_storage.keys() and message not in aliceAnswers["helloTextVariations"]:
         buttons, user_storage = get_suggests(user_storage)
-        response.set_buttons(user_storage['suggests'])
+        response.set_buttons([
+            "Словарь",
+            "Тренировка",
+            "Наборы слов",
+            "Помощь",
+            "Настройки"
+        ])
         message = message.replace('4000 строк', 'четырех тысяч строк')
         message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - '
         response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
