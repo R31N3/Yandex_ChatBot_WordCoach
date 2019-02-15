@@ -36,7 +36,7 @@ def get_buttons(q, id, database):
         words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Замок'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
-                words = words.add(rus_words)
+                words = words.add(' '.join(rus_words))
         words = list(words)
         output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         rand = randint(0, 3)
