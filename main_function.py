@@ -30,7 +30,7 @@ def message_return(response, user_storage, message, button, database, request, m
     message = message.replace('(c)', ' - ').replace('(с)', ' - ')
     message = message.replace('(Английская пословица)', ' - Английская пословица.')
     message = message.replace('Гранде', 'Грандэ')
-    message.replace('4000 строк', 'четырех тысяч строк')
+    message = message.replace('4000 строк', 'четырех тысяч строк')
     button, something = get_suggests({'suggests' : list(map(lambda x:\
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
