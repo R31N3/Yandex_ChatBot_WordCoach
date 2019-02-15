@@ -9,7 +9,7 @@ def get_ans(q, id, database):
     dictionary = get_dictionary(id, database)
     for k in ['to_learn', 'learned']:
         if q in dictionary[k]:
-            return ' '.join(dictionary[k][q])
+            return dictionary[k][q]
         else:
             for key in dictionary[k].keys():
                 if q in dictionary[k][key]:
@@ -38,14 +38,14 @@ def get_buttons(q, id, database):
             for rus_words in dictionary[k].values():
                 words = words.union(set(rus_words))
         words = list(words)
-        output = [words[0], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
+        output = [words[randint(0, len(words) - 1)], words[randint(1, len(words) - 1)], words[randint(1, len(words) - 1)]]
         rand = randint(0, 3)
-        rands = randint(0, len(ans.split()) - 1)
-        while len(set(output)) != 3 or (ans.split())[rands] in output:
+        rands = randint(0, len(ans) - 1)
+        while len(set(output)) != 3 or ans[rands] in output:
             output = [words[randint(0, len(words) - 1)], words[randint(0, len(words) - 1)],
                       words[randint(0, len(words) - 1)]]
 
-        output.insert(rand, (ans.split())[rands])
+        output.insert(rand, ans[rands])
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
