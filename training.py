@@ -49,7 +49,7 @@ def get_buttons(q, id, database):
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
-        words = {'Fish', 'Potato', 'Grass', 'Pasta', 'Castle'}
+        words = {'Fish', 'Pot+ato', 'Grass', 'Pasta', 'Castle'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
         words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)
