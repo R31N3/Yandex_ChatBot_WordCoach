@@ -82,7 +82,7 @@ def get_question(id, database):
         return '\n pause ' + (list(dictionary[key].keys())[index_word]).upper()
     else:
         word = list(dictionary[key].keys())[index_word]
-        update_q(id, ' '.join(dictionary[key][word]), database)
+        update_q(id, ', '.join(dictionary[key][word]), database)
         return '\n pause ' + (', '.join(dictionary[key][word])).upper()
 
 
