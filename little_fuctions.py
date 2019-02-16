@@ -69,7 +69,6 @@ def add_word(word, translate, id, database):
                 ans += 1
     if ans > 0:
         return 'rus_exist'
-    print('ПОКАЖИ ЭТУ СТРОКУ', ans)
     if word in dictionary['to_learn']:
         if translate not in dictionary['to_learn'][word]:
             dictionary['to_learn'][word].append(translate)
@@ -145,7 +144,6 @@ def get_progress_mode(mode, id, database):
     if mode == "training":
         dct = {}
         score = database.get_entry("users_info", ['training_score'], {'request_id': id})[0][0].split("#$")
-        print(score)
         if score[0]:
             for i in score:
                 lst = i.split(":")
@@ -233,7 +231,6 @@ def update_stat_session(mode, data, id, database):
 
 def get_suggests(user_storage):
     if "suggests" in user_storage.keys():
-        print(user_storage["suggests"])
         if type(user_storage["suggests"]) != dict:
             suggests = [
                 {'title': suggest, 'hide': True}

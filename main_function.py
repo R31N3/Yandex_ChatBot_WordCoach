@@ -496,7 +496,6 @@ def handle_dialog(request, response, user_storage, database, morph):
         sets = sorted(list(set(list(words.keys())).difference(added)))
         if len(sets) == 0:
             gender = get_gender(user_id, database, morph)
-            print(gender)
             if gender == "masc" or str(gender) == "Noname":
                 output_message = choice(['Ты добавил все наборы!', 'Тобой были добавлены все доступные наборы!',
                                          'Ты добавил все предлагаемые нами слова!'])
@@ -509,7 +508,6 @@ def handle_dialog(request, response, user_storage, database, morph):
             return message_return(response, user_storage, output_message, buttons, database, request,
                                   mode)
         gender = get_gender(user_id, database, morph)
-        print(gender)
         if gender == "masc" or str(gender) == "Noname":
             output_message = choice(['Вот наборы, которые ты ещ+е не добавил.', "Посмотри ещё недобавленные наборы."])\
                              + ('\nСтраница 1 из {}'.format((len(sets) + 3) // 4)
@@ -642,7 +640,6 @@ def handle_dialog(request, response, user_storage, database, morph):
     if input_message.capitalize() in words and mode.startswith('add_set'):
         for word, translate in words[input_message.capitalize()].items():
             dictionary = add_word(word.replace('+', ''), translate.replace('+', ''), user_id, database)
-            print("!!!!! ", dictionary)
             if dictionary != 'already exists' and dictionary != 'rus_exist' and dictionary:
                 update_dictionary(user_id, dictionary, database)
         buttons, user_storage = get_suggests(user_storage)
@@ -656,7 +653,6 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if mode != '' and mode[0] == '!' and not input_message.startswith('добавь'):
-        print("???? ", input_message, mode)
         success = add_word(''.join(mode[1:]), input_message, user_id, database)
         answer = ''.join(mode[1:]), input_message
         answer = list(map(lambda x: x.capitalize(), answer))
@@ -668,7 +664,6 @@ def handle_dialog(request, response, user_storage, database, morph):
         elif success == 'rus_exist':
             output_message = 'В твоем словаре уже есть слово с переводом {}'.format(answer[1])
         elif not success:
-            print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
             title = 'Слово' if answer[0].strip().count(' ') == 0 else 'Предложение'
@@ -689,11 +684,9 @@ def handle_dialog(request, response, user_storage, database, morph):
     answer = classify(input_message, mode)
     handle = answer['class']
     answer = answer['answer']
-    print(answer)
 
     if handle == "add" and answer:
         answer = list(map(lambda x: x.capitalize(), answer))
-        print("!!!! ", input_message, answer, language_match(*answer))
         success = add_word(answer[0], answer[1], user_id, database)
         if language_match(answer[0], answer[1]) == 'miss':
             answer = answer[::-1]
@@ -703,7 +696,6 @@ def handle_dialog(request, response, user_storage, database, morph):
         elif success == 'rus_exist':
             output_message = 'В твоем словаре уже есть слово с переводом {}'.format(answer[1])
         elif not success:
-            print(success, input_message, answer, language_match(*answer))
             output_message = 'Пара должна состоять из русского и английского сл+ова.'
         else:
             title = 'Слово' if answer[0].strip().count(' ') == 0 else 'Предложение'
