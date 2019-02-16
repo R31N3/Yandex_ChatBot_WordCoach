@@ -110,9 +110,9 @@ def main(q, answer, q_type, id, database):
             q_count -= 1
         if q_count > 1:
             if q_true / q_count > 0.85:
-                sound = '<speaker audio="alice-sounds-game-win-3.opus">'
+                sound = ' - <speaker audio="alice-sounds-game-win-3.opus">'
             elif q_true /  q_count > 0.7:
-                sound = '<speaker audio="alice-sounds-game-win-1.opus">'
+                sound = ' - <speaker audio="alice-sounds-game-win-1.opus">'
             else:
                 sound = ''
         else:
