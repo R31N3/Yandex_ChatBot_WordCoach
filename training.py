@@ -19,7 +19,7 @@ def get_ans(q, id, database):
 
 def revise(q, answer, q_type, id, database):
     print("q, answer, get_ans  ", q, answer, get_ans(q, id, database), answer.lower() == get_ans(q, id, database).lower(), sep = ' : ')
-    if answer.lower().strip() == get_ans(q, id, database).lower().strip() or answer[0] == q[-1]:
+    if answer.lower().strip().replace(',', '') == get_ans(q, id, database).lower().strip().replace(',', '') or answer[0] == q[-1]:
         return True
     else:
         return False
