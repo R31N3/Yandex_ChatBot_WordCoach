@@ -40,6 +40,16 @@ def message_return(response, user_storage, message, button, database, request, m
     message = message.replace('(Английская пословица)', ' - Английская пословица.')
     message = message.replace('Гранде', 'Грандэ')
     message = message.replace('4000 строк', 'четырех тысяч строк')
+    if 'Неизучено' in message or 'Изучено' in message:
+        for i in range(1, 1002, 10):
+            if 'Изучено {} слово'.format(i) in message:
+                message = message.replace('Изучено {} слово'.format(i),
+                                          'Изучено {} одно слово'.format(i//10*10 if i != 1 else ''))
+                break
+            if 'Неизучено {} слово' in message:
+                message = message.replace('Неизучено {} слово'.format(i),
+                                          'Неизучено {} одно слово'.format(i // 10 * 10 if i != 1 else ''))
+                break
     button, something = get_suggests({'suggests' : list(map(lambda x:\
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
