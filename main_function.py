@@ -240,7 +240,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
     if mode == 'jen_name' and input_message != 'отмена' and 'начал' not in input_message:
-        if input_message == 'оставь имя женя':
+        if input_message.startswith('оставь имя '):
             output_message = 'Хорошо, буду звать тебя Женя.'
             database.update_entries('users_info', user_id, {'Name': 'Женя'}, update_type='rewrite')
         elif input_message == 'зови меня евгений':
@@ -267,7 +267,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if mode == 'sasha_name' and input_message != 'отмена' and 'начал' not in input_message:
-        if input_message == 'оставь имя саша':
+        if input_message.startswith('оставь имя '):
             output_message = 'Хорошо, буду звать тебя Саша.'
             database.update_entries('users_info', user_id, {'Name': 'Саша'}, update_type='rewrite')
         elif input_message == 'зови меня александр':
