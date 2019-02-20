@@ -36,7 +36,7 @@ def message_return(response, user_storage, message, button, database, request, m
     else:
         response.set_text(message.replace('+;', '##!').replace('+', '').replace('##!', '+').replace(' pause ', ' '))
 
-    message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - '
+    message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + noScreen * ' - '
     message = message.replace('(c)', ' - ').replace('(с)', ' - ')
     message = message.replace('(Английская пословица)', ' - Английская пословица.')
     message = message.replace('Гранде', 'Грандэ')
@@ -81,7 +81,6 @@ def handle_dialog(request, response, user_storage, database, morph):
     from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
-    noScreen = False
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
