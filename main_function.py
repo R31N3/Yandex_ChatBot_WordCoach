@@ -14,6 +14,7 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
+    noScreen = True
     update_mode(request.user_id, mode, database)
     if "card" in user_storage.keys() and message not in aliceAnswers["helloTextVariations"]:
         buttons, user_storage = get_suggests(user_storage)
@@ -27,7 +28,7 @@ def message_return(response, user_storage, message, button, database, request, m
         response.set_buttons(button)
         message = message.replace('4000 строк', 'четырех тысяч строк')
         message = message.replace('\n', ' - - ').replace(' pause ', ' - ') + ' - '
-        response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
+        response.set_tts(message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
         response.set_card(user_storage["card"])
         return response, user_storage
     if ">" in message:
@@ -54,23 +55,23 @@ def message_return(response, user_storage, message, button, database, request, m
         x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message + "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
+        response.set_tts(message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
     elif mode == 'training':
-        response.set_tts(message + "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
+        response.set_tts(message + noScreen * "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message + " - ".join(user_storage['suggests']))
+        response.set_tts(message + noScreen * " - ".join(user_storage['suggests']))
     elif mode =='translator':
         response.set_tts(message)
     elif mode.startswith('add_set') or mode.startswith('show_added'):
         if len(user_storage['suggests']) >= 3 and user_storage['suggests'][-3] in {'Назад', 'Добавленные наборы'}:
             response.set_tts(message + ' - '.join(user_storage['suggests'][:-3]) + \
-                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-3:])))
+                             noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-3:])))
         elif user_storage['suggests'][-2] in {'Ещё', 'Назад', 'Добавленные наборы'}:
             response.set_tts(message + ' - '.join(user_storage['suggests'][:-2]) + \
-                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-2:])))
+                             noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-2:])))
         else:
             response.set_tts(message + ' - '.join(user_storage['suggests'][:-1]) + \
-                             "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-1:])))
+                             noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
     response.set_buttons(button)
     return response, user_storage
@@ -80,6 +81,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
+    noScreen = True
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
@@ -374,7 +376,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
             buttons, user_storage = get_suggests({'suggests': ['Наборы слов', 'В начало']})
         else:
-            buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'В начало']})
+            buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Наборы слов', 'Тренировка', 'В начало']})
             mode = '0_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -434,7 +436,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'тренировка', 'тонировка'} and mode == '':
+    if input_message in {'тренировка', 'тонировка'} and mode in {'', '0_dict'}:
         update_mode(user_id, 'training', database)
         mode = 'training'
         update_stat_session('training', [0, 0], user_id, database)
@@ -501,7 +503,7 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
 
-    if (input_message in {'наборы слов', 'набор слов'} and mode == '') or (input_message == 'назад' and mode == 'add_set 2'):
+    if (input_message in {'наборы слов', 'набор слов'} and mode in {'', '0_dict'}) or (input_message == 'назад' and mode == 'add_set 2'):
         added = get_word_sets(user_id, database)
         sets = sorted(list(set(list(words.keys())).difference(added)))
         if len(sets) == 0:
