@@ -34,7 +34,7 @@ def get_buttons(q, id, database):
     ans = get_ans(q, id, database)
     dictionary = get_dictionary(id, database)
     if language_match(q, 'г'):
-        words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Замок'}
+        words = {'Рыба', 'Картошка', 'Трава', 'Макароны', 'Синяк', 'Ломоть', 'Машина', 'Фура', 'Тушь', 'Музыкальная труба'}
         for k in ('to_learn', 'learned'):
             for rus_words in dictionary[k].values():
                 words.add(', '.join(rus_words))
@@ -49,7 +49,7 @@ def get_buttons(q, id, database):
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
     elif language_match('f', q):
-        words = {'Fish', 'Pot+ato', 'Grass', 'Pasta', 'Castle'}
+        words = {'Fish', 'Pot+ato', 'Grass', 'Pasta', 'Bruise', 'Hunk', 'Car', 'Trunk', 'Mascara', 'Bugle'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
         words = words.union(set(list(dictionary['learned'].keys())))
         words = list(words)
