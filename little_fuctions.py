@@ -265,6 +265,9 @@ def read_answers_data(name):
         return data
 
 
+aliceAnswers = read_answers_data("data/answers_dict_example")
+
+
 def get_mode(id, database):
     return database.get_entry("users_info", ['mode'], {'request_id': id})[0][0]
 
@@ -325,6 +328,11 @@ def get_gender(id, database, morph):
         gender = gender if gender else "masc"
     else:
         gender = "Noname"
-
-
     return gender
+
+def hello(id, database):
+    from random import choice
+    name = get_name(id, database)
+    if name != "Noname":
+        return choice(aliceAnswers["helloTextVariations"]["gender"]).format(name)
+    return choice(aliceAnswers["helloTextVariations"]["no_gender"])

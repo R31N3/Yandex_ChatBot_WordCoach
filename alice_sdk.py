@@ -25,6 +25,10 @@ class AliceRequest(object):
     def command(self):
         return self._request_dict['request']['command']
 
+    @property
+    def interfaces(self):
+        return self._request_dict['meta']["interfaces"]
+
     def __str__(self):
         return str(self._request_dict)
     

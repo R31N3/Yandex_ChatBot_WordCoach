@@ -14,7 +14,7 @@ aliceAnswers = read_answers_data("data/answers_dict_example")
 # Ну вот эта функция всем функциям функция, ага. Замена постоянному формированию ответа, ага, экономит 4 строчки!!
 def message_return(response, user_storage, message, button, database, request, mode):
     # ща будет магия
-    noScreen = False
+    noScreen = False if "screen" in request.interfaces.keys() else True
     update_mode(request.user_id, mode, database)
     if "card" in user_storage.keys() and message not in aliceAnswers["helloTextVariations"]:
         buttons, user_storage = get_suggests(user_storage)
@@ -194,7 +194,8 @@ def handle_dialog(request, response, user_storage, database, morph):
                 buttons, user_storage = get_suggests({'suggests': ['У человека нет имени']})
                 return message_return(response, user_storage, output_message, buttons, database, request, mode)
 
-        output_message = choice(aliceAnswers["helloTextVariations"])
+        output_message = hello(user_id, database)
+
         mode = ""
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request, mode)
