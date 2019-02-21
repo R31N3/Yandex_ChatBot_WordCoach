@@ -237,11 +237,13 @@ def get_suggests(user_storage):
                 for suggest in user_storage['suggests']
             ]
         else:
+            print(user_storage["suggests"])
             suggests = [
                 {'title': user_storage['suggests']["titles"][i], "payload": {},
                  "url": user_storage['suggests']["urls"][i], 'hide': True}
                 for i in range(len(user_storage['suggests']["titles"]))
             ]
+            print(suggests)
     else:
         suggests = []
 
