@@ -197,18 +197,16 @@ def ending(count):
 
 def envision_dictionary(id, database, to_learn, page):
     dictionary = get_dictionary(id, database)
-    dictionary['to_learn'] = dictionary['to_learn'][::-1]
-    dictionary['learned'] = dictionary['learned'][::-1]
     s = ''
     if to_learn:
         if page == 1: s += 'Неизучено {} сл+ов'.format(len(dictionary['to_learn'])) + ending(len(dictionary['to_learn']))
-        for eng, rus in list(dictionary['to_learn'].items())[page*10 - 10:page*10]:
+        for eng, rus in list(dictionary['to_learn'].items())[::-1][page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         max_page = (len(list(dictionary['to_learn'].items())) + 9) // 10
         s += '\nСтраница {} из {}'.format(page, max_page)
     else:
         if page == 1: s += 'Изучено {} сл+ов'.format(len(dictionary['learned'])) + ending(len(dictionary['learned']))
-        for eng, rus in list(dictionary['learned'].items())[page*10 - 10:page*10]:
+        for eng, rus in list(dictionary['learned'].items())[::-1][page*10 - 10:page*10]:
             s += '\n{} - {}'.format(eng, ', '.join(rus))
         max_page = (len(list(dictionary['learned'].items())) + 9) // 10
         s += '\nСтраница {} из {}'.format(page, max_page)

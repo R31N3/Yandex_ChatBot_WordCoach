@@ -100,5 +100,3 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': text}
 
     return {'class': 'use_mode', 'answer': text}
-
-print(classify('add I Я', 1))
