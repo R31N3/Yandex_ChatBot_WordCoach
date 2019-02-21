@@ -57,6 +57,7 @@ class AliceResponse(object):
         self._response_dict["response"]['tts'] = text[:1024]
 
     def set_buttons(self, buttons):
+        print("BUTTONS", buttons)
         self._response_dict['response']['buttons'] = buttons
 
     def set_card(self, card):
