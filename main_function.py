@@ -212,14 +212,20 @@ def handle_dialog(request, response, user_storage, database, morph):
             buttons = ['Режим перевода', 'Сменить имя', 'В начало']
         else:
             # buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
-            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'В начало']
+            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
         buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
     if input_message.startswith('оценить') and mode == 'settings':
-        output_message = 'Дима, прикрути редирект'
+        output_message = 'Держи ссылку!'
         mode = ''
+        user_storage["suggest"] = {
+            "title": "Оценить!",
+            "payload": {},
+            "url": "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov",
+            "hide": True
+        }
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
