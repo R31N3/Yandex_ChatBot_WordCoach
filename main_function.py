@@ -51,15 +51,22 @@ def message_return(response, user_storage, message, button, database, request, m
                 message = message.replace('Неизучено {} слово'.format(i),
                                           'Неизучено {} одно слово'.format(i // 10 * 10 if i != 1 else ''))
                 break
-    button, something = get_suggests({'suggests' : list(map(lambda x:\
-        x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
+    if type(user_storage["suggests"][0]) != list:
+        button, something = get_suggests({'suggests': list(map(lambda x:\
+            x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests']))})
+    else:
+        button, something = get_suggests({'suggests': list(map(lambda x: \
+            x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests'][0]))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
         response.set_tts(message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
     elif mode == 'training':
         response.set_tts(message + noScreen * "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
-        response.set_tts(message + noScreen * " - ".join(user_storage['suggests']))
+        if type(user_storage["suggests"][0]) != list:
+            response.set_tts(message + noScreen * " - ".join(user_storage['suggests']))
+        else:
+            response.set_tts(message + noScreen * " - ".join(user_storage['suggests'][0]))
     elif mode =='translator':
         response.set_tts(message)
     elif mode.startswith('add_set') or mode.startswith('show_added'):
