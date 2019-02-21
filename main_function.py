@@ -223,7 +223,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         user_storage["suggest"] = [
                 ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"],
         ]
-        print(user_storage["seggests"])
+        print(user_storage["suggests"])
         buttons, user_storage = get_suggests(user_storage)
         print(buttons)
         return message_return(response, user_storage, output_message, buttons, database, request,
