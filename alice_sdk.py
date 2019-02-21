@@ -57,8 +57,8 @@ class AliceResponse(object):
         self._response_dict["response"]['tts'] = text[:1024]
 
     def set_buttons(self, buttons):
-        if "Оценить!" in buttons[0].keys():
-            buttons = [{'title': "Оценить",
+        if buttons[0]["title"] == "Оценить!":
+            buttons = [{'title': "Оценить!",
                         "url": "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov", 'hide': False}]
         print("BUTTONS ", buttons)
         self._response_dict['response']['buttons'] = buttons
