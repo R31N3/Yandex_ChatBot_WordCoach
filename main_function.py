@@ -243,6 +243,12 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
+    if input_message.startswith('оценить') and mode == '':
+        output_message = 'Спасибо за ваш отзыв. Я очень ценю каждое мнение!'
+        buttons, user_storage = get_suggests(user_storage)
+        mode = ''
+        return message_return(response, user_storage, output_message, buttons, database, request,
+                              mode)
 
     if input_message in {'сменить имя', 'поменять имя', 'установить другое имя'} and mode == 'settings':
         mode = 'change_name'
