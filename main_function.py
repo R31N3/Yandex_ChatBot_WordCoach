@@ -220,7 +220,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     if input_message.startswith('оценить') and mode == 'settings':
         output_message = 'Держи ссылку!'
         mode = ''
-        user_storage["suggest"] = [
+        user_storage["suggests"] = [
                 ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"],
         ]
         print(user_storage["suggests"])
