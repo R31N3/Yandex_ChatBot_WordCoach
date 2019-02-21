@@ -222,10 +222,13 @@ def handle_dialog(request, response, user_storage, database, morph):
         mode = ''
         user_storage["suggests"] = [
                 ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"],
+                "Словарь",
+                "Тренировка",
+                "Наборы слов",
+                "Помощь",
+                "Настройки"
         ]
-        print(user_storage["suggests"])
         buttons, user_storage = get_suggests(user_storage)
-        print(buttons)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
