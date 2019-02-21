@@ -197,6 +197,8 @@ def ending(count):
 
 def envision_dictionary(id, database, to_learn, page):
     dictionary = get_dictionary(id, database)
+    dictionary['to_learn'] = dictionary['to_learn'][::-1]
+    dictionary['learned'] = dictionary['learned'][::-1]
     s = ''
     if to_learn:
         if page == 1: s += 'Неизучено {} сл+ов'.format(len(dictionary['to_learn'])) + ending(len(dictionary['to_learn']))
