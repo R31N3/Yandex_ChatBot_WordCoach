@@ -59,7 +59,11 @@ def message_return(response, user_storage, message, button, database, request, m
             x.replace(' pause ', ' ').replace('+ ', '##!').replace('+', '').replace('##!', '+'), user_storage['suggests'][0]))})
     if mode != 'training' and mode != 'settings' and not mode.startswith('add_set') and \
             not mode.startswith('show_added') and mode != 'translator':
-        response.set_tts(message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
+        if type(user_storage["suggests"][0]) != list:
+            response.set_tts(message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'])))
+        else:
+            response.set_tts(
+                message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][0])))
     elif mode == 'training':
         response.set_tts(message + noScreen * "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
