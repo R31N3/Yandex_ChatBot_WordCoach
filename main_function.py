@@ -93,6 +93,7 @@ def handle_dialog(request, response, user_storage, database, morph):
     from random import choice
     if not user_storage:
         user_storage = {"suggests": []}
+    noScreen = False if "screen" in request.interfaces.keys() else True
     input_message = request.command.lower()
     input_message = input_message.replace("'", "`")
     input_message = input_message.replace('ё', 'е')
@@ -230,11 +231,14 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if input_message.startswith('оценить') and mode == 'settings':
-        output_message = 'Держи ссылку!'
         mode = ''
-        user_storage["suggests"] = [
-                ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"]
-        ]
+        if not noScreen:
+            output_message = 'Держи ссылку!'
+            user_storage["suggests"] = [
+                    ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"]
+            ]
+        else:
+            output_message = 'Ты можешь оценить навык на устройстве с экраном, мы будем рады любой твоей объективной оценке и комментарию.'
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
