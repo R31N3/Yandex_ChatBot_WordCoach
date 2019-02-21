@@ -237,8 +237,7 @@ def get_suggests(user_storage):
                 suggests.append({'title': suggest, 'hide': True})
             else:
                 print(suggest)
-                suggests.append({'title': suggest[0],
-                                 "payload": {}, "url": suggest[1], 'hide': True})
+                suggests.append({'title': suggest[0], "url": suggest[1], 'hide': False})
                 print(suggests)
     else:
         suggests = []
