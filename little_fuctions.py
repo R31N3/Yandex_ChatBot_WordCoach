@@ -231,19 +231,13 @@ def update_stat_session(mode, data, id, database):
 
 def get_suggests(user_storage):
     if "suggests" in user_storage.keys():
-        if type(user_storage["suggests"]) != dict:
-            suggests = [
-                {'title': suggest, 'hide': True}
-                for suggest in user_storage['suggests']
-            ]
-        else:
-            print(user_storage["suggests"])
-            suggests = [
-                {'title': user_storage['suggests']["titles"][i], "payload": {},
-                 "url": user_storage['suggests']["urls"][i], 'hide': True}
-                for i in range(len(user_storage['suggests']["titles"]))
-            ]
-            print(suggests)
+        suggests = []
+        for suggest in user_storage['suggests']:
+            if type(suggest) != list:
+                suggests.append({'title': suggest, 'hide': True})
+            else:
+                suggests.append({'title': suggest[0],
+                                 "payload": {}, "url": suggest[1], 'hide': True})
     else:
         suggests = []
 
