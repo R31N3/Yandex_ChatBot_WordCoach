@@ -228,12 +228,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         output_message = 'Держи ссылку!'
         mode = ''
         user_storage["suggests"] = [
-                ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"],
-                "Словарь",
-                "Тренировка",
-                "Наборы слов",
-                "Помощь",
-                "Настройки"
+                ["Оценить!", "https://dialogs.yandex.ru/store/skills/b7c4a595-word-coach-trener-slov"]
         ]
         buttons, user_storage = get_suggests(user_storage)
         return message_return(response, user_storage, output_message, buttons, database, request,
