@@ -84,6 +84,7 @@ def message_return(response, user_storage, message, button, database, request, m
             response.set_tts(message + ' - '.join(user_storage['suggests'][:-1]) + \
                              noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][-1:])))
     buttons, user_storage = get_suggests(user_storage)
+    print(buttons)
     response.set_buttons(button)
     return response, user_storage
 
