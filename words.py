@@ -498,5 +498,30 @@ words = {
     'bass': 'окунь',
     'seahorse': 'морской конек',
     'mermaid': 'русалка'
+  },
+  'Психология': {
+    'psyche': 'психика',
+    'intercourse': 'взаимоотношение',
+    'interaction': 'взаимнодействие',
+    'hostility': 'враждебность',
+    'amity': 'дружеские отношения',
+    'habit': 'привычка',
+    'idiosyncrasy': 'черта характера',
+    'prejudice': 'предубеждение',
+    'psychology': 'психология',
+    'soul': 'душа',
+    'psychic': 'психический',
+    'mind': 'разум',
+    'character': 'характер',
+    'deviation': 'отклонение',
+    'loony': 'сумасшедший',
+    'adaptive behavior': 'адаптивное поведение',
+    'abnormal personality': 'психопатия',
+    'adjustment': 'приспособленность',
+    'associative thinking': 'ассоциативное мышление',
+    'conscience': 'совесть',
+    'conditional reflex': 'условный рефлекс',
+    'elicited behavior': 'реактивное поведение',
+    'hysteria': 'истерия'
   }
 }
