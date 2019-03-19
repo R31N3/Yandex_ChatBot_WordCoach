@@ -102,6 +102,7 @@ def random_false(id, database):
 
 
 def main(q, answer, q_type, id, database, request):
+    print("!!!!! ! ! ! ! ! " + get_mode(id, database))
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif answer == 'end' or answer == 'закончить' or answer == 'закончить тренировку':
