@@ -469,7 +469,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             update_mode(user_id, 'training_choice', database)
             mode = 'training_choice'
             update_stat_session('training', [0, 0], user_id, database)
-            output_message = "В этом режиме нужно переводить слова из твоего словаря :)\n" + 'Я еще не научилась как следует воспринимать английскую речь, поэтому мы не будем переводить русские слова.' + choice(['Выбери режим.', 'Осталось только выбрать режим.'])
+            output_message = "В этом режиме нужно переводить слова из твоего словаря :)\n" + 'Я еще не научилась как следует воспринимать английскую речь, поэтому мы не будем переводить русские слова.' * noScreen + choice([' Выбери режим.', ' Осталось только выбрать режим.'])
             buttons, user_storage = get_suggests(
                 {'suggests': ['Русский -> Английский', 'Английский -> Русский', 'Совместный', 'В начало']})
             return message_return(response, user_storage, output_message, buttons, database, request,
