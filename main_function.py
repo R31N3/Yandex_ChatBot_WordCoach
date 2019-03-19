@@ -64,7 +64,7 @@ def message_return(response, user_storage, message, button, database, request, m
         else:
             response.set_tts(
                 message + noScreen * "\n. Доступные команды: {}.".format(" - ".join(user_storage['suggests'][0])))
-    elif mode == 'training':
+    elif mode.startswith('training'):
         response.set_tts(message + noScreen * "\n. Варианты ответа: {}".format(" - ".join(user_storage['suggests'][:-1])))
     elif mode == 'settings':
         if type(user_storage["suggests"][0]) != list:
@@ -765,7 +765,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             title = 'Слово' if answer[0].strip().count(' ') == 0 else 'Предложение'
             output_message = '{} "{}" с переводом "{}" добавлено в Ваш словарь.'.format(title, answer[0], answer[1])
             update_dictionary(user_id, success, database)
-        if mode == 'training' :
+        if mode.startswith('training') :
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов.'.format(stat[1], stat[0])
@@ -831,7 +831,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             update_dictionary(user_id, success, database)
         buttons, user_storage = get_suggests(user_storage)
 
-        if mode == 'training':
+        if mode.startswith('training'):
             output_message += '\nРежим тренировки автоматически завершен.'
             stat = get_stat_session('training', user_id, database)
             output_message += '\nТы ответил на {} из {} моих вопросов.'.format(stat[1], stat[0])
