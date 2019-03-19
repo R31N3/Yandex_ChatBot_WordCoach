@@ -222,10 +222,10 @@ def handle_dialog(request, response, user_storage, database, morph):
         count = len(dictionary['to_learn']) + len(dictionary['learned'])
         if count == 0:
             # buttons = ['Режим перевода', 'Сменить имя', 'Оценить навык', 'В начало']
-            buttons = ['Режим перевода', 'Сменить имя', 'В начало']
+            buttons = ['Сменить имя', 'В начало']
         else:
             # buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
-            buttons = ['Режим перевода', 'Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
+            buttons = ['Сменить имя', 'Очистить словарь', 'Оценить навык', 'В начало']
         buttons, user_storage = get_suggests({'suggests': buttons})
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
@@ -313,7 +313,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'переводчик', 'режим перевода', 'режим переводчика'} and  mode == 'settings':
+    if input_message in {'переводчик', 'режим перевода', 'режим переводчика'} and  mode.endswith('dict'):
         mode = 'translator_inf'
         output_message = 'В режиме переводчика я смогу только переводить и добавлять в словарь.'
         buttons, user_storage = get_suggests({'suggests' : ['Включить режим', 'В начало']})
@@ -399,9 +399,9 @@ def handle_dialog(request, response, user_storage, database, morph):
         if count == 0:
             mode = ''
             output_message += '\nТы можешь добавить в словарь готовые наборы слов'
-            buttons, user_storage = get_suggests({'suggests': ['Наборы слов', 'В начало']})
+            buttons, user_storage = get_suggests({'suggests': ['Наборы слов', 'Режим переводчика', 'В начало']})
         else:
-            buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Наборы слов', 'Тренировка', 'В начало']})
+            buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Наборы слов', 'Тренировка', 'Режим переводчика', 'В начало']})
             mode = '0_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
