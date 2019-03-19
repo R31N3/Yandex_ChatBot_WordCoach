@@ -479,7 +479,7 @@ def handle_dialog(request, response, user_storage, database, morph):
             update_mode(user_id, mode, database)
             update_stat_session('training', [0, 0], user_id, database)
 
-    if mode == 'training_choice' and input_message in {['русский -> английский', 'английский -> русский', 'совместный']}:
+    if mode == 'training_choice' and input_message in {'русский -> английский', 'английский -> русский', 'совместный'}:
         mode = 'training'
         if input_message == 'русский -> английский':
             mode += 'ru'
