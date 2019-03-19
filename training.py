@@ -78,7 +78,7 @@ def get_question(id, database, request):
         key = 'to_learn'
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
     noScreen = False if "screen" in request.interfaces.keys() else True
-    if randint(0, 1) == 0 or noScreen:
+    if (randint(0, 1) == 0 or noScreen or get_mode(id, database) == 'trainingen') and (get_mode(id, database) != 'trainingru'):
         update_q(id, list(dictionary[key].keys())[index_word], database)
         return '\n pause ' + (list(dictionary[key].keys())[index_word]).upper()
     else:

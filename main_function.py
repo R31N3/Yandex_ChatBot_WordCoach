@@ -462,8 +462,30 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     if input_message in {'тренировка', 'тонировка'} and mode in {'', '0_dict'}:
-        update_mode(user_id, 'training', database)
+        noScreen = False if "screen" in request.interfaces.keys() else True
+        if not noScreen:
+            update_mode(user_id, 'training_choice', database)
+            mode = 'training_choice'
+            update_stat_session('training', [0, 0], user_id, database)
+            output_message = choice(['Выбери режим', 'Осталось только выбрать режим'])
+            buttons, user_storage = get_suggests(
+                {'suggests': ['Русский -> Английский', 'Английский -> Русский', 'Совместный', 'В начало']})
+            return message_return(response, user_storage, output_message, buttons, database, request,
+                                  mode)
+        else:
+            mode = 'trainingen'
+            update_mode(user_id, mode, database)
+            update_stat_session('training', [0, 0], user_id, database)
+
+    if mode == 'training_choice' and input_message in {['русский -> английский', 'английский -> русский', 'совместный']}:
         mode = 'training'
+        if input_message == 'русский -> английский':
+            mode += 'ru'
+        elif input_message == 'английский -> русский':
+            mode += 'en'
+        else:
+            mode += 't'
+        update_mode(user_id, mode, database)
         update_stat_session('training', [0, 0], user_id, database)
 
     if ("помощь" in input_message or "что ты умеешь" in input_message):
@@ -826,7 +848,8 @@ def handle_dialog(request, response, user_storage, database, morph):
                                                     mode.startswith('translator') or
                                                     mode == 'sasha_name' or
                                                     mode == 'jen_name' or
-                                                    mode[0] == '!'):
+                                                    mode[0] == '!' or
+                                                    mode == 'training_choice'):
         buttons, user_storage = get_suggests(user_storage)
         output_message = choice(['Ок, начнем с начала.', 'Что будем делать теперь?',
                                 'Чтобы начать, не нужно быть великим, но чтобы стать великим, необходимо начать. (Из книги "Куриный бульон для души")',
@@ -850,9 +873,9 @@ def handle_dialog(request, response, user_storage, database, morph):
                               mode)
 
     elif handle == 'use_mode':
-        if get_mode(user_id, database) == 'training':
+        if get_mode(user_id, database).startswith('training'):
             output_message = training.main(get_q(user_id, database), answer, 'revise&next', user_id, database, request)
-            if get_mode(user_id, database) == 'training':
+            if get_mode(user_id, database).startswith('training'):
                 but = training.get_buttons(get_q(user_id, database), user_id, database)
                 stor = {'suggests': but + (['Закончить тренировку'] if get_q(user_id, database) != '###empty' else [])}
             else:
