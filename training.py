@@ -129,7 +129,7 @@ def main(q, answer, q_type, id, database, request):
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
         noScreen = False if "screen" in request.interfaces.keys() else True
-        return 'Отвечай правильно, чтобы слова становились изученными. Подробнее о тренировке в разделе помощь.\n' + \
+        return 'Отвечай правильно, чтобы слова становились изученными.\n' + \
                'Поехали!\n'+ get_question(id, database, request)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
