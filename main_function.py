@@ -481,7 +481,7 @@ def handle_dialog(request, response, user_storage, database, morph):
 
     print("!!!!!!!?!?!??!? " + input_message)
 
-    if mode == 'training_choice' and input_message in {'русский  английский', 'английский  русский', 'совместный'}:
+    if mode == 'training_choice' and input_message.split()[0] in {'русский', 'английский', 'совместный'}:
         mode = 'training'
         if input_message == 'русский  английский':
             mode += 'ru'
