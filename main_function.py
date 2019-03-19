@@ -398,9 +398,11 @@ def handle_dialog(request, response, user_storage, database, morph):
             output_message = 'В твоем словаре {} сл+ов'.format(count) + ending(count)+"."
         if count == 0:
             mode = ''
-            output_message += '\nТы можешь добавить в словарь готовые наборы слов'
+            output_message += '\nТы можешь добавить в словарь готовые наборы слов или прочитать в разделе помощь о том,' \
+                              ' как добавлять свои.'
             buttons, user_storage = get_suggests({'suggests': ['Наборы слов', 'Режим переводчика', 'В начало']})
         else:
+            output_message += '\nВ разделе помощь ты можешь узнать, как добавлять или удалять слова.'
             buttons, user_storage = get_suggests({'suggests': ['Неизученные слова', 'Изученные слова', 'Наборы слов', 'Тренировка', 'Режим переводчика', 'В начало']})
             mode = '0_dict'
         return message_return(response, user_storage, output_message, buttons, database, request,
