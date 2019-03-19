@@ -129,10 +129,7 @@ def main(q, answer, q_type, id, database, request):
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
         noScreen = False if "screen" in request.interfaces.keys() else True
-        return 'В этом режиме нужно переводить слова из твоего словаря :)\n'\
-               'Отвечай правильно, чтобы слова становились изученными. Подробнее о тренировке в разделе помощь.\n' + \
-               'Я еще не научилась как следует воспринимать английскую речь, поэтому мы не будем переводить русские слова.' * noScreen + \
-               'С английским языком я пока не так хорошо дружу, так что лучше используй кнопки при переводе русских слов. ' * (not noScreen) + \
+        return 'Отвечай правильно, чтобы слова становились изученными. Подробнее о тренировке в разделе помощь.\n' + \
                'Поехали!\n'+ get_question(id, database, request)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
