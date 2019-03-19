@@ -463,7 +463,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'тренировка', 'тонировка'} and mode in {'', '0_dict'}:
+    if input_message in {'тренировка', 'тонировка', 'давай на тренировку', 'потренируемся', 'на тренировку', 'на тонировку'} and mode in {'', '0_dict'}:
         noScreen = False if "screen" in request.interfaces.keys() else True
         if not noScreen:
             update_mode(user_id, 'training_choice', database)
