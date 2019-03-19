@@ -463,7 +463,7 @@ def handle_dialog(request, response, user_storage, database, morph):
         return message_return(response, user_storage, output_message, buttons, database, request,
                               mode)
 
-    if input_message in {'тренировка', 'тонировка'} and mode in {'', '0_dict'}:
+    if input_message in {'тренировка', 'тонировка', 'давай на тренировку', 'потренируемся', 'на тренировку', 'на тонировку', 'давай'} and mode in {'', '0_dict'}:
         noScreen = False if "screen" in request.interfaces.keys() else True
         if not noScreen:
             update_mode(user_id, 'training_choice', database)
@@ -479,11 +479,13 @@ def handle_dialog(request, response, user_storage, database, morph):
             update_mode(user_id, mode, database)
             update_stat_session('training', [0, 0], user_id, database)
 
-    if mode == 'training_choice' and input_message in {'русский -> английский', 'английский -> русский', 'совместный'}:
+    print("!!!!!!!?!?!??!? " + input_message)
+
+    if mode == 'training_choice' and input_message.split()[0] in {'русский', 'английский', 'совместный'}:
         mode = 'training'
-        if input_message == 'русский -> английский':
+        if input_message == 'русский английский':
             mode += 'ru'
-        elif input_message == 'английский -> русский':
+        elif input_message == 'английский русский':
             mode += 'en'
         else:
             mode += 't'
