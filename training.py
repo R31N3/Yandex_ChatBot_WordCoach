@@ -65,7 +65,7 @@ def get_buttons(q, id, database):
         update_q(id, '{}#{}'.format(q, rand + 1), database)
         return output
 
-def get_question(id, database):
+def get_question(id, database, request):
     dictionary = get_dictionary(id, database)
     k = randint(0, 10)
     if len(dictionary['learned']) == 0:
@@ -77,7 +77,8 @@ def get_question(id, database):
     else:
         key = 'to_learn'
     index_word = randint(0, len(list(dictionary[key].keys())) - 1)
-    if randint(0, 1) == 0:
+    noScreen = False if "screen" in request.interfaces.keys() else True
+    if randint(0, 1) == 0 or noScreen:
         update_q(id, list(dictionary[key].keys())[index_word], database)
         return '\n pause ' + (list(dictionary[key].keys())[index_word]).upper()
     else:
@@ -100,7 +101,7 @@ def random_false(id, database):
     return choice(aliceAnswers["random_false"]["no_gender"])
 
 
-def main(q, answer, q_type, id, database):
+def main(q, answer, q_type, id, database, request):
     if answer == 'help' or answer == 'помощь':
         return inf()
     elif answer == 'end' or answer == 'закончить' or answer == 'закончить тренировку':
@@ -127,9 +128,12 @@ def main(q, answer, q_type, id, database):
             return 'Словарь пуст. Для начала добавьте в него слова.'
         stat_session[0] += 1
         update_stat_session('training', stat_session, id, database)
+        noScreen = False if "screen" in request.interfaces.keys() else True
         return 'В этом режиме нужно переводить слова из твоего словаря :)\n'\
                'Отвечай правильно, чтобы слова становились изученными. Подробнее о тренировке в разделе помощь.\n'\
-               'Поехали!\n'+ get_question(id, database)
+               'Я еще не научилась как следует воспринимать английскую речь, поэтому мы не будем переводить русские слова.' * noScreen + \
+               'С английским языком я пока не так хорошо дружу, так что лучше используй кнопки при переводе русских слов' * (not noScreen) + \
+               'Поехали!\n'+ get_question(id, database, request)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
@@ -156,7 +160,7 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return random_true(id, database) + '\n' + get_question(id, database)
+            return random_true(id, database) + '\n' + get_question(id, database, request)
         else:
             update_stat_session('training', stat_session, id, database)
             score = get_progress_mode('training', id, database)
@@ -178,6 +182,6 @@ def main(q, answer, q_type, id, database):
                     updated = True
                 if updated:
                     update_dictionary(id, dictionary, database)
-            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database)
+            return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database, request)
     else:
         return False
