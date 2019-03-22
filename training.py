@@ -136,12 +136,15 @@ def main(q, answer, q_type, id, database, request):
                'Поехали!\n'+ get_question(id, database, request)
     elif q_type == 'revise&next':
         stat_session = get_stat_session('training', id, database)
-        stat_session[0] += 1
+        if not answer.lower().startswith('изучен'):
+            stat_session[0] += 1
         answer = answer.capitalize()
         if answer.lower().startswith('изучен'):
             print('THIS PRINT:', q, answer)
             if language_match(q.lower(), 'f'):
                 q = get_ans(q, id, database).capitalize()
+            else:
+                q = q[:-2]
             score = get_progress_mode('training', id, database)
             score[q] = 4
             dictionary = get_dictionary(id, database)
