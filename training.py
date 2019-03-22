@@ -47,7 +47,8 @@ def get_buttons(q, id, database):
 
         output.insert(rand, ans)
         update_q(id, '{}#{}'.format(q, rand + 1), database)
-        return output + ['Изучено']
+        score = get_progress_mode('training', id, database)
+        return output + ['Изучено'] * (score[q] <= 4 if q in score else True)
     elif language_match('f', q):
         words = {'Fish', 'Pot+ato', 'Grass', 'Pasta', 'Bruise', 'Hunk', 'Car', 'Trunk', 'Mascara', 'Bugle'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
@@ -63,11 +64,12 @@ def get_buttons(q, id, database):
         rand = randint(0, 3)
         output.insert(rand, ans)
         update_q(id, '{}#{}'.format(q, rand + 1), database)
-        return output + ['Изучено']
+        score = get_progress_mode('training', id, database)
+        return output + ['Изучено'] * (score[ans] <= 4 if q in score else True)
 
 def get_question(id, database, request):
     dictionary = get_dictionary(id, database)
-    k = randint(0, 10)
+    k = randint(0, 20)
     if len(dictionary['learned']) == 0:
         k = 5
     elif len(dictionary['to_learn']) == 0:
@@ -137,12 +139,14 @@ def main(q, answer, q_type, id, database, request):
         stat_session[0] += 1
         answer = answer.capitalize()
         if answer.lower().startswith('изучен'):
-            if language_match(q, 'f'):
-                q = get_ans(q, id, database)
+            print('THIS PRINT:', q, answer)
+            if language_match(q.lower(), 'f'):
+                q = get_ans(q, id, database).capitalize()
             score = get_progress_mode('training', id, database)
             score[q] = 4
             dictionary = get_dictionary(id, database)
             updated = False
+            print('THIS PRINT:', q, answer)
             if q not in dictionary['learned']:
                 dictionary['learned'][q] = dictionary['to_learn'][q]
                 updated = True
