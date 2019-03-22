@@ -47,7 +47,7 @@ def get_buttons(q, id, database):
 
         output.insert(rand, ans)
         update_q(id, '{}#{}'.format(q, rand + 1), database)
-        return output
+        return output + ['Изучено']
     elif language_match('f', q):
         words = {'Fish', 'Pot+ato', 'Grass', 'Pasta', 'Bruise', 'Hunk', 'Car', 'Trunk', 'Mascara', 'Bugle'}
         words = words.union(set(list(dictionary['to_learn'].keys())))
@@ -63,7 +63,7 @@ def get_buttons(q, id, database):
         rand = randint(0, 3)
         output.insert(rand, ans)
         update_q(id, '{}#{}'.format(q, rand + 1), database)
-        return output
+        return output + ['Изучено']
 
 def get_question(id, database, request):
     dictionary = get_dictionary(id, database)
@@ -136,6 +136,22 @@ def main(q, answer, q_type, id, database, request):
         stat_session = get_stat_session('training', id, database)
         stat_session[0] += 1
         answer = answer.capitalize()
+        if answer.lower().startswith('изучен'):
+            if language_match(q, 'f'):
+                q = get_ans(q, id, database)
+            score = get_progress_mode('training', id, database)
+            score[q] = 4
+            dictionary = get_dictionary(id, database)
+            updated = False
+            if q not in dictionary['learned']:
+                dictionary['learned'][q] = dictionary['to_learn'][q]
+                updated = True
+            if q in dictionary['to_learn']:
+                dictionary['to_learn'].pop(q, None)
+                updated = True
+            if updated:
+                update_dictionary(id, dictionary, database)
+            return 'Слово теперь изучено' + '\n' + get_question(id, database, request)
         if revise(q, answer, q_type, id, database):
             if language_match(q, 'f'):
                 q = get_ans(q, id, database)
@@ -145,7 +161,7 @@ def main(q, answer, q_type, id, database, request):
             if q in score:
                 score[q] += 1
             else:
-                score[q] = 0
+                score[q] = 1
             update_progress('training', id, score, database)
             if score[q] >= 4:
                 dictionary = get_dictionary(id, database)
