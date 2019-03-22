@@ -41,6 +41,9 @@ def message_return(response, user_storage, message, button, database, request, m
     message = message.replace('(Английская пословица)', ' - Английская пословица.')
     message = message.replace('Гранде', 'Грандэ')
     message = message.replace('4000 строк', 'четырех тысяч строк')
+    for i in range(1, 1002, 10):
+        if ' {} '.format(i) in message:
+            message = message.replace(' {} '.format(i), ' {} одно'.format(i - 1 if i != 1 else ''))
     if 'Неизучено' in message or 'Изучено' in message:
         for i in range(1, 1002, 10):
             if 'Изучено {} слово'.format(i) in message:
