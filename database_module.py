@@ -151,3 +151,4 @@ def show_leaderboard(base, top_number):
     entries = sorted([entry[::-1] for entry in entries], reverse=True)
     lst = [{entries[i][1]:entries[i][0]} for i in range(top_number)]
     return lst
+ 
