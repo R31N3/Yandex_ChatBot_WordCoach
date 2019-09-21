@@ -5,7 +5,7 @@ def timer(executable_function):  # декоратор, честно скопир
         time_point = time.time()
         result = executable_function(*args, **kwargs)
         print('Время выполнения функции "{}": {:f} секунд'
-              .format(executable_function.__name__, time.time() - time_point))
+              .format(executable_function.__name__, time.time() - time_point)) 
         return result
     return decorate
 
