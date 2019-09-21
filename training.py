@@ -206,3 +206,4 @@ def main(q, answer, q_type, id, database, request):
             return random_false(id, database) + '\nПравильный ответ: pause "{}"\n'.format(get_ans(q, id, database)) + get_question(id, database, request)
     else:
         return False
+   
