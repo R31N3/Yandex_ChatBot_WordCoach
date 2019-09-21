@@ -1,8 +1,1 @@
-# Невероятно секретный проект
-Страшно даже смотреть в код. Не советуем.
-
-Terrible, cut down!
-
-`А вот тут можно вставочки кода делать, 
-хотя и написано, что это заголовок.
-Зато было бы красиво.`
+“Coach” is a service that helps people learn new words and translate texts. It allows one to make his own vocabulary and train it. Сompound system capable of efficiently serving more than 1000 users simultaneously and storing 100K+ clients personal data.
