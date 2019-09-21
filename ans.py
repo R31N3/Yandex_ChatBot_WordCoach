@@ -100,3 +100,4 @@ def classify(text, mode):
             return {'class': 'use_mode', 'answer': text}
 
     return {'class': 'use_mode', 'answer': text}
+
