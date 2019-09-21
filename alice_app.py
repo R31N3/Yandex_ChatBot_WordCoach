@@ -34,9 +34,7 @@ def init_database(host, user, password, dbname):
     'column_name': "type DEFAULT value", где value в зависомости от
     типа ДОЛЖНО принимать следующие значения:
     INTEGER -> 0; REAL -> 0.00; TEXT -> 'text here'; BOOLEAN -> True;
-    list -> '[entry1#&% запись2 #&% "3"]' - ТОЛЬКО ТАК на вход
-    И угадывайте как хотите, лист чего нам пришёл, туплей или нет,
-    тех или не тех. УДОБНО, ДА? Как просили, так и сделали.
+    list -> '[entry1#&% запись2 #&% "3"]'
     =================================================================
     """
     psdb = postgresql_database.DatabaseManager(host, user, password, dbname)
